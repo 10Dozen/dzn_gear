@@ -1,1 +1,30 @@
-d
+<kit>
+	<itemCategoty id="0" type="weapons">
+		<item id="0">
+			<classname>"a_rifle_MX_F"</classname>
+			<count>5</count>
+		</item>
+	    <item id="1">
+			<classname>"a_rifle_MXM_F"</classname>
+			<count>1</count>
+	    </item>
+	</itemCategoty>
+	<itemCategoty id="1" type="magazines">
+	    <item id="0">
+			<classname>"30Rnd_65_MX"</classname>
+			<count>10</count>
+	    </item>
+	</itemCategoty>
+	<itemCategoty id="2" type="items">
+		<item id="0">
+			<classname>"ItemFirstAid"</classname>
+			<count>10</count>
+	    </item>
+	</itemCategoty>
+	<itemCategoty id="3" type="backpacks">
+		<item id="0">
+			<classname>"B_AssaultPack_Oli"</classname>
+			<count>2</count>
+	    </item>
+	</itemCategoty>
+</kit>
