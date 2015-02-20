@@ -48,16 +48,16 @@ There are several ways to assign kit to unit:
  <li>GameLogic's variable</li>
  <li>GameLogic's name</li>
 </ol>
-(1) At the unit's <tt>init field</tt> place line: <tt>this setVariable ["dzn_gear", "%kitName%"]</tt>(for gear kit) or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt>(for cargo kit).
-<br>(2) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and add a line <tt>this setVariable ["dzn_gear", "%kitName%"]</tt> or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt> to it's <tt>init field</tt>. Then synchronize GameLogic with units to assign gear on them (F5 in editor, to better accuracy - link unit to GameLogic). You can also synchronize vehicles with crew to assign gear kit.
+(1) At the unit's <tt>init</tt> field place line: <tt>this setVariable ["dzn_gear", "%kitName%"]</tt>(for gear kit) or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt>(for cargo kit).
+<br>(2) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and add a line <tt>this setVariable ["dzn_gear", "%kitName%"]</tt> or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt> to it's <tt>init</tt> field. Then synchronize GameLogic with units to assign gear on them (F5 in editor, to better accuracy - link unit to GameLogic). You can also synchronize vehicles with crew to assign gear kit.
 <br>(3) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and name it <tt>dzn_gear_%kitname%</tt> or <tt>dzn_gear_box_%kitname%</tt>. Then synchronize GameLogic with units to assign gear on them. You can also synchronize vehicles with crew to assign gear kit.
 
 <h3>How it works</h3> 
-After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable will be returned all synchronized objects, for each object the chosen kit will be assigned.
-Then all units will be checked for variable "dzn_gear" or "dzn_gear_box".
-<br>After gear assigned, unit/object get variable "dzn_gear_assigned" which store the name of assigned kit.
+After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable. All synchronized objects will be returned, for each object the chosen kit will be assigned.
+Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kits will be assigned.
+<br>After gear assigned, unit/object updates with variable "dzn_gear_assigned" which store the name of assigned kit.
 <br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side do not forget to comment this line.
-<br>You can also use gear assignment by youtself using next function:
+<br>You can also use gear assignment "manually" using next function:
 <ul>
  <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_gearSetup</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
 </ul>
