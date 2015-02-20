@@ -20,10 +20,12 @@ Download files (except "shemes" folder - it's only shows structure of kits for d
 <br><tt>_kitName = ["U_B_CombatUniform_mcam", ... ];</tt>
 <br>Change <tt>_kitName</tt> to some unique kit name, e.g. <tt>riflemanNATO</tt>, <tt>SF_Demo_NATO</tt>, <tt>OPFOR_OfficerWithMG</tt>. It's preffered to use global variable as name of kit.
 
-<h3>Prepare kits</h3>
-There are several types of gear kits are presented:
+<h3>Kits</h3>
+Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf" file.
+
+<br><br>There are several types of gear kits are presented:
 <ul>
- <li><ul>Gear Kit (for infantries)
+ <li>Gear Kit (for infantries)<ul>
   <li>Simple Kits</li>
   <li>Randomized Kits</li>
   <li>Simple Kits</li>
@@ -31,3 +33,8 @@ There are several types of gear kits are presented:
  <li>Cargo Kit (for vehicle and ammoboxes)</li>
 </ul>
 
+<tt>Gear Kit</tt> could be assigned to any infantry (even to crew of vehicles). It has some randomization option.
+<br><tt>Simple Kits</tt> are simple. It has one item for each of category (uniform, weapons) which will be assigned to unid as is.
+<br><tt>Randomized Kits</tt> has some variations of gear for some category. E.g. if you change classname of uniform to array of classnames, then unit will get random item from this array (<tt>BIS_fnc_selectRandom</tt> is used). If you want to give unit random weapon, then change weapon's classname to array of classnames and change magazines for weapon to array of magazines - e.g. for Primary weapon:
+<br>    change weapon <tt>"arifle_MX_SW_Black_F"</tt> to <tt>["arifle_MX_SW_Black_F","LMG_Zafir_F"]</tt> and then change primary weapon's magazines from <tt>["100Rnd_65x39_caseless_mag_Tracer",3]</tt> to <tt>[["100Rnd_65x39_caseless_mag_Tracer",3],["150Rnd_762x51_Box",3]]</tt>
+<br>Categories allowed to randomization are: <tt>Catego</tt>
