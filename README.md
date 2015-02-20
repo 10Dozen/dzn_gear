@@ -15,7 +15,7 @@ In 'EDIT' mode open mission in Editor and click "Preview": inside the mission yo
   <li><tt>Copy and Assign Gear of Cursor Unit</tt> -- Shows up when you staring on infantryman, action will copy unit's gear to player and additionally copy kit to the clipboard</li>
   <li><tt>Copy Gear of Cursor Vehicle or Box</tt> -- Shows up when you staring on vehicle or ammobox, action will copy vehicle's cargo to the clipboard in vehicle kit's format</li>
   <li><tt>Kit with (mission time) (primary weapon classname)</tt> -- After any infanty's kit copied, new action will be added. On action - copied kit will be assigned to player.</li>
-  <li><tt>Kit for Vehicle/Box (mission time)</tt> -- After any vehicle's kit copied, new action will be added. Shows up when you starung on vehicle or box, action will assign kit to pointed vehicle/box.</li>
+  <li><tt>Kit for Vehicle/Box (mission time)</tt> -- After any vehicle's kit copied, new action will be added. Shows up when you starung on vehicle or box, action will assign kit to vehicle/box player looking at.</li>
 </ul> 
 <br>Basic flow of usage is: Open Virtual Arsenal, choose any gear you need, quit Arsenal and use Copy Current Gear to Clipboard. Than open <tt>dzn_gear_kit.sqf</tt> and paste kit. It will be something like:
 <br><tt>_kitName = ["U_B_CombatUniform_mcam", ... ];</tt>
