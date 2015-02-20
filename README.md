@@ -28,7 +28,7 @@ Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> an
  <li>Gear Kit (for infantries)<ul>
   <li>Simple Kits</li>
   <li>Randomized Kits</li>
-  <li>Simple Kits</li>
+  <li>Random Kits</li>
  </ul></li>
  <li>Cargo Kit (for vehicle and ammoboxes)</li>
 </ul>
@@ -37,4 +37,19 @@ Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> an
 <br><tt>Simple Kits</tt> are simple. It has one item for each of category (uniform, weapons) which will be assigned to unid as is.
 <br><tt>Randomized Kits</tt> has some variations of gear for some category. E.g. if you change classname of uniform to array of classnames, then unit will get random item from this array (<tt>BIS_fnc_selectRandom</tt> is used). If you want to give unit random weapon, then change weapon's classname to array of classnames and change magazines for weapon to array of magazines - e.g. for Primary weapon:
 <br>    change weapon <tt>"arifle_MX_SW_Black_F"</tt> to <tt>["arifle_MX_SW_Black_F","LMG_Zafir_F"]</tt> and then change primary weapon's magazines from <tt>["100Rnd_65x39_caseless_mag_Tracer",3]</tt> to <tt>[["100Rnd_65x39_caseless_mag_Tracer",3],["150Rnd_762x51_Box",3]]</tt>
-<br>Categories allowed to randomization are: <tt>Equipment: Uniform, Vest, Backpack, Headgear, Goggles</tt>
+<br>Categories allowed to randomization are: <tt>Equipment: Uniform, Vest, Backpack, Headgear, Goggles</tt>,  <tt>Primary Weapon: Weapon, Optics Attachement, Muzzle Attachement, Pointer Attachement</tt>, <tt>Secondary (Launcher) Weapon: Weapon</tt>, <tt>Handgun Weapon: Weapon, Optics Attachement, Muzzle Attachement, Pointer Attachement</tt>, <tt>Items</tt>, <tt>Magazines: Primary Weapon Magazine, Secondary Weapon Magazine, Handgun Weapon Magazine</tt>
+<br>tt>Random Kits</tt> is a kit of kits. It doesn't contain any classname, but it is the array of another kit's names (bounded with "). Script will choose random kit from this array and assign it to unit.
+<br><br><tt>Cargo Kit</tt> could be assigned to vehicles and ammoboxes. It contain only items which will be placed in cargo of unit (there is no weight/volume limits, so check quantitu of items).
+
+<h3>Assign Kits</h3>
+There are several ways to assign kit to unit:
+<ol>
+ <li>Unit's variable</li>
+ <li>GameLogic's variable</li>
+ <li>GameLogic's name</li>
+</ol>
+(1) At the unit's <tt>init field</tt> place line: <tt>this setVariable ["dzn_gear", "%kitName%"]</tt>(for gear kit) or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt>(for cargo kit).
+<br>(2) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and add a line <tt>this setVariable ["dzn_gear", "%kitName%"]</tt> or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt> to it's <tt>init field</tt>. Then synchronize GameLogic with units to assign gear on them (F5 in editor, to better accuracy - link unit to GameLogic).
+<br>(3) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and name it <tt>dzn_gear_%kitname%</tt> or <tt>dzn_gear_box_%kitname%</tt>. Then synchronize GameLogic with units to assign gear on them.
+
+<h3>How it works</h3> 
