@@ -2,7 +2,83 @@
 <kit>
 	<itemCategory id="0" type="Equipment">
 		<item id="0" type="Uniform">
-			<classname>"U_B_CTRG_3" |OR| ["U_B_CTRG_3","U_B_CTRG_1"]</classname>
+			<!-- Simple Kit -->
+			<classname>"U_B_CTRG_3"</classname>
+			<!-- Randomized Kit -->
+			<classname id="0">"U_B_CTRG_1"</classname>
+			<classname id="1">"U_B_CTRG_2"</classname>
+		</item>
+		<item id="1" type="Vest">
+			<classname>"V_PlateCarrierH_CTRG"</classname>
+				<classname>"V_PlateCarrierH_CTRG_2"</classname>
+		</item>
+		<item id="2" type="Backpack">
+			<classname>"B_Kitbag_mcamo"</classname>
+				<classname></classname>
+		</item>
+		<item id="3" type="Headgear">
+			<classname>"H_Cap_headphones"</classname>
+		</item>
+		<item id="4" type="Goggles">
+			<classname>"G_Sport_Blackyellow"</classname>
+		</item>
+	</itemCategory>
+	<itemCategory id="1" type="Primary Weapon">
+		<item id="0" type="Weapon">
+			<classname></classname>
+		</item>
+		<item id="1" type="Optics Attachement">
+			<classname></classname>
+		</item>
+		<item id="2" type="Muzzle Attachement">
+			<classname></classname>
+		</item>
+		<item id="3" type="Pointer Attachement">
+			<classname></classname>
+		</item>
+	</itemCategory>
+	<itemCategory id="2" type="Secondary (Launcher) Weapon">
+		<item id="0" type="Weapon">
+			<classname></classname>
+		</item>
+	</itemCategory>
+	<itemCategory id="3" type="Handgun Weapon">
+		<item id="0" type="Weapon">
+			<classname></classname>
+		</item>
+		<item id="1" type="Optics Attachement">
+			<classname></classname>
+		</item>
+		<item id="2" type="Muzzle Attachement">
+			<classname></classname>
+		</item>
+		<item id="3" type="Pointer Attachement">
+			<classname></classname>
+		</item>
+	</itemCategory>
+	<itemCategory id="4" type="Items">
+		<item id="0">
+			<classname></classname>
+		</item>
+		<item id="1">
+			<classname></classname>
+		</item>
+		<item id="2">
+			<classname></classname>
+		</item>
+	</itemCategory>
+	<itemCategory id="5" type="Magazines">
+		<item id="0" type="Primary Weapon Magazine">
+			<classname></classname>
+			<count></count>
+		</item>
+		<item id="1" type="Secondary Weapon Magazine">
+			<classname></classname>
+			<count></count>
+		</item>
+		<item id="2" type="Handgun Weapon Magazine">
+			<classname></classname>
+			<count></count>
 		</item>
 	</itemCategory>
 </kit>
