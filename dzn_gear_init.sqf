@@ -397,6 +397,27 @@ dzn_gear_assignBoxGear = {
 		Function will change gear of chosen unit with chosen gear set.	
 	*/
 	
+	_box = _this select 0;
+	
+	// Clear boxes
+	clearWeaponCargoGlobal _box;
+	clearMagazineCargoGlobal _box;
+	clearBackpackCargoGlobal _box;
+	clearItemCargoGlobal _box;
+	
+	// Add items to box
+	
+	// _truck addWeaponCargoGlobal["M16",5];
+	//_truck addMagazineCargoGlobal ["M16", 5];
+	// this addBackpackCargoGlobal ["TK_RPG_Backpack_EP1",2];
+	// unit addItemCargoGlobal [item, count]
+	
+	// clearMagazineCargo _truck;
+	// clearWeaponCargo vehicleName
+	// clearItemCargoGlobal box
+	// clearBackpackCargoGlobal jeepOne;
+	
+	//
 	
 };
 
