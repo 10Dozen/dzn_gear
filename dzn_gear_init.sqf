@@ -529,8 +529,6 @@ if !(_logics isEqualTo []) then {
 					} else {
 						vehicle (crew _x select 0)
 					};
-					player sideChat str(_veh);
-					player sideChat str(_kitName);
 					[_veh, _kitName, true] spawn dzn_gear_assignKit;
 					sleep 0.1;
 				};
