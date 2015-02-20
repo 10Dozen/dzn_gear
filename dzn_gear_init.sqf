@@ -181,16 +181,19 @@ if (_editMode) then {
 			
 			OUTPUT:	kitArray
 		*/
-		private ["_outputKit", "_classnames", "_count", "_cargo"];
+		private ["_outputKit", "_classnames", "_count", "_cargo", "_categoryKit"];
 		
 		_outputKit = [];
 		_cargo = [getWeaponCargo _this, getMagazineCargo _this, getItemCargo _this, getBackpackCargo _this];
 		{
 			_classnames = _x select 0;
 			_count = _x select 1;
+			_categoryKit = [];
 			{
-				_outputKit = _outputKit + [ [_x, (_count select _forEachIndex)];
-			} forEach _classnames;
+				_categoryKit = _categoryKit + [ [_x, (_count select _forEachIndex)] ];
+			} forEach _classnames;		
+			
+			_outputKit = _outputKit + [_categoryKit];
 		} forEach _cargo;
 		
 		_outputKit
@@ -234,9 +237,9 @@ if (_editMode) then {
 		private ["_outputKit","_colorString"];
 		
 		_outputKit = if (_this select 1) then {
-			(_this select 0) call dzn_gear_editMode_getGear;
-		} else {
 			(_this select 0) call dzn_gear_editMode_getBoxGear;
+		} else {
+			(_this select 0) call dzn_gear_editMode_getGear;
 		};
 		_colorString = _outputKit call dzn_gear_editMode_copyToClipboard;
 		
@@ -249,7 +252,7 @@ if (_editMode) then {
 					_outputKit select 1 select 0
 				],
 				{
-					[(_this select 1), _this select 3 ] call dzn_gear_assignGear;
+					[(_this select 1), _this select 3] call dzn_gear_assignGear;
 					(_this select 3) call dzn_gear_editMode_copyToClipboard;
 				},
 				_outputKit
@@ -262,11 +265,11 @@ if (_editMode) then {
 					round(time)
 				],
 				{
-					[cursorTarget, _this select 3 ] call dzn_gear_assignBoxGear;
+					[cursorTarget, _this select 3] call dzn_gear_assignBoxGear;
 					(_this select 3) call dzn_gear_editMode_copyToClipboard;
 				},
 				_outputKit,
-				3,true,true,"",
+				0,true,true,"",
 				"(cursorTarget in vehicles)"
 			];
 		};
@@ -289,22 +292,22 @@ if (_editMode) then {
 	
 	// Copy gear of cursorTarget
 	player addAction [
-		"<t color='#4083AD'>Copy and Assign Gear of Cursor Target</t>",
+		"<t color='#1DBDF2'>Copy and Assign Gear of Cursor </t><t color='#F2A81D'>Unit</t>",
 		{
 			private["_kit"];
 			_kit = cursorTarget call dzn_gear_editMode_getGear;
 			[(_this select 1), _kit ] call dzn_gear_assignGear;
 			_kit call dzn_gear_editMode_copyToClipboard;
 		},
-		"",3,true,true,"",
+		"",0,true,true,"",
 		"(cursorTarget isKindOf 'CAManBase')"
 	];
 	
 	// Copy gear of cursorTarget == vehicle
 	player addAction [
-		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
+		"<t color='#1DBDF2'>Copy Gear of Cursor </t><t color='#F2A81D'>Vehicle or Box</t>",
 		{[cursorTarget, true] spawn dzn_gear_editMode_createKit;},
-		"",3,true,true,"",
+		"",0,true,true,"",
 		"(cursorTarget in vehicles)"
 	];
 };
@@ -480,19 +483,19 @@ dzn_gear_assignBoxGear = {
 	// Add items to box
 	// Weapons
 	_category = (_this select 1) select 0;
-	{_unit addWeaponCargoGlobal _x;} forEach _category;
+	{_box addWeaponCargoGlobal _x;} forEach _category;
 	
 	// Magazines
 	_category = (_this select 1) select 1;
-	{_unit addWeaponMagazineCargoGlobal _x;} forEach _category;
+	{_box addMagazineCargoGlobal _x;} forEach _category;
 	
 	// Items
 	_category = (_this select 1) select 2;
-	{_unit addItemCargoGlobal _x;} forEach _category;
+	{_box addItemCargoGlobal _x;} forEach _category;
 	
 	// Backpacks
 	_category = (_this select 1) select 3;
-	{_unit addBackpackCargoGlobal _x;} forEach _category;
+	{_box addBackpackCargoGlobal _x;} forEach _category;
 };
 
 // **************************
@@ -506,21 +509,29 @@ dzn_gear_assignBoxGear = {
 // INITIALIZATION
 // **************************
 waitUntil { time > 0 };
+waitUntil {!isNil "dzn_gear_assignKit"};
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
 // Logics
 _logics = entities "Logic";
 if !(_logics isEqualTo []) then {	
 	{
-		#define checkIsGearLogic(PAR)	if ([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
+		#define checkIsGearLogic(PAR)	([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
 		#define	getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
 		
 		if checkIsGearLogic("dzn_gear_box") then {
 			_synUnits = synchronizedObjects _x;
 			_kitName = getKitName("dzn_gear_box",13)
 			{
-				if !(_x isKindOf "CAManBase") then {
-					[_x, _kitName, true] spawn dzn_gear_assignKit;
+				if (!(_x isKindOf "CAManBase") || {vehicle (crew _x select 0) != _x}) then {
+					_veh = if ((crew _x) isEqualTo []) then {
+						_x
+					} else {
+						vehicle (crew _x select 0)
+					};
+					player sideChat str(_veh);
+					player sideChat str(_kitName);
+					[_veh, _kitName, true] spawn dzn_gear_assignKit;
 					sleep 0.1;
 				};
 			} forEach _synUnits;
@@ -549,7 +560,7 @@ if !(_logics isEqualTo []) then {
 		};
 	} forEach _logics;
 };
-
+sleep 10;
 // Units
 _units = allUnits;
 {
