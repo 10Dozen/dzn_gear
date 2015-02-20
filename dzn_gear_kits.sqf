@@ -57,3 +57,10 @@ specForSquadKit = [
 	"specForMGKit",
 	"specForDemoKit"
 ];
+
+vehicleKit = [
+	[["arifle_Mk20_F",25]],
+	[["30Rnd_556x45_Stanag",16],["200Rnd_65x39_cased_Box",3],["HandGrenade",10],["SmokeShell",4],["SmokeShellGreen",4],["SmokeShellOrange",4],["SmokeShellPurple",4],["1Rnd_HE_Grenade_shell",10],["1Rnd_Smoke_Grenade_shell",4],["1Rnd_SmokeGreen_Grenade_shell",4],["1Rnd_SmokeOrange_Grenade_shell",4],["1Rnd_SmokePurple_Grenade_shell",4],["9Rnd_45ACP_Mag",12],["NLAW_F",2]],
+	[["FirstAidKit",10]],
+	[]
+];
