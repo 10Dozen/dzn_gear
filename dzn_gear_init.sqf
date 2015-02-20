@@ -175,13 +175,25 @@ if (_editMode) then {
 	
 	dzn_gear_editMode_getBoxGear = {
 		/*
+			BOX call dzn_gear_editMode_getBoxGear;
 			Return kit of given box
 			0: 	OBJ	Box or vehicle
 			
 			OUTPUT:	kitArray
 		*/
+		private ["_outputKit", "_classnames", "_count", "_cargo"];
 		
+		_outputKit = [];
+		_cargo = [getWeaponCargo _this, getMagazineCargo _this, getItemCargo _this, getBackpackCargo _this];
+		{
+			_classnames = _x select 0;
+			_count = _x select 1;
+			{
+				_outputKit = _outputKit + [ [_x, (_count select _forEachIndex)];
+			} forEach _classnames;
+		} forEach _cargo;
 		
+		_outputKit
 	};
 	
 	dzn_gear_editMode_copyToClipboard = {
@@ -268,7 +280,9 @@ if (_editMode) then {
 	player addAction [
 		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
 		{
-			//get kit
+			_kit = cursorTarget call dzn_gear_editMode_getBoxGear;
+			[cursorTarget, _kit] spawn dzn_gearSetup;;
+			_kit call dzn_gear_editMode_copyToClipboard;
 		},
 		"",3,true,true,"",
 		"(cursorTarget in vehicles)"
