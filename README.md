@@ -11,7 +11,7 @@ Download files (except "schemes" folder - it's only shows structure of kits for 
 In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see new actions at the action menu:
  <ul>
   <li><tt>Open Virtual Arsenal</tt> -- Simply opens VA with all available gear</li>
-  <li><tt>Copy Current Gear to Clipboard</tt> -- Copy current gear to clipboard for inserting to <tt>dzn_gear_kit.sqf</tt> file</li>
+  <li><tt>Copy Current Gear to Clipboard</tt> -- Copy current gear to clipboard for inserting to <tt>dzn_gear_kits.sqf</tt> file</li>
   <li><tt>Copy and Assign Gear of Cursor Unit</tt> -- Shows up when you staring on infantryman, action will copy unit's gear to player and additionally copy kit to the clipboard</li>
   <li><tt>Copy Gear of Cursor Vehicle or Box</tt> -- Shows up when you staring on vehicle or ammobox, action will copy vehicle's cargo to the clipboard in vehicle kit's format</li>
   <li><tt>Kit with (mission time) (primary weapon classname)</tt> -- After any infanty's kit copied, new action will be added. On action - copied kit will be assigned to player.</li>
