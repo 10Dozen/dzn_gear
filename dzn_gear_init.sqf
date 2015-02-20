@@ -386,30 +386,38 @@ private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 _logics = entities "Logic";
 if !(_logics isEqualTo []) then {	
 	{
+		#define checkIsGearLogic(PAR)	if ([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
+		#define	getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
 		
-		if (["dzn_gear_", str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable "dzn_gear"}) then {
-			_kitName = if (!isNil {_x getVariable "dzn_gear"}) then {
-				_x getVariable "dzn_gear"
-			} else {
-				str(_x) select [9]
-			};
-			
+		if checkIsGearLogic("dzn_gear_box") then {
 			_synUnits = synchronizedObjects _x;
+			_kitName = getKitName("dzn_gear_box",13)
 			{
-				if (_x  isKindOf "CAManBase") then {
-					[_x, _kitName] spawn dzn_gear_assignKit;
-				} else {
-					private ["_crew"];
-					_crew = crew _x;
-					if !(_crew isEqualTo []) then {
-						{
-							[_x, _kitName] spawn dzn_gear_assignKit;
-							sleep 0.1;
-						} forEach _crew;
-					};
+				if !(_x isKindOf "CAManBase") then {
+				
 				};
-				sleep 0.2;
 			} forEach _synUnits;
+			deleteVehicle _x;
+		} else {
+			if checkIsGearLogic("dzn_gear") then {
+				_synUnits = synchronizedObjects _x;
+				_kitName = getKitName("dzn_gear",9)
+				{
+					if (_x  isKindOf "CAManBase") then {
+						[_x, _kitName] spawn dzn_gear_assignKit;
+					} else {
+						private ["_crew"];
+						_crew = crew _x;
+						if !(_crew isEqualTo []) then {
+							{
+								[_x, _kitName] spawn dzn_gear_assignKit;
+								sleep 0.1;
+							} forEach _crew;
+						};
+					};
+					sleep 0.2;
+				} forEach _synUnits;
+			};
 			deleteVehicle _x;
 		};
 	} forEach _logics;
