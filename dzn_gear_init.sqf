@@ -281,7 +281,7 @@ if (_editMode) then {
 		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
 		{
 			_kit = cursorTarget call dzn_gear_editMode_getBoxGear;
-			[cursorTarget, _kit] spawn dzn_gearSetup;;
+			[cursorTarget, _kit] spawn dzn_gear_assignBoxGear;
 			_kit call dzn_gear_editMode_copyToClipboard;
 		},
 		"",3,true,true,"",
