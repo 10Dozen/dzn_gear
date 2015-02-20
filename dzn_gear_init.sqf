@@ -10,6 +10,12 @@ if (_editMode) then {
 	// FUNCTIONS
 	
 	dzn_gear_editMode_getGear = {
+		/*
+			_units call dzn_gear_editMode_getGear
+			0:	OBJ	Unit to take gear from
+			
+			OUTPUT: kitArray
+		*/
 		private[
 			"_unit","_item1","_item2","_item3","_item4","_item5","_item6","_items",
 			"_pwMags","_swMags","_hgMags","_mag1","_mag2","_mag3","_mag4","_mag5","_mag6",
@@ -167,7 +173,23 @@ if (_editMode) then {
 		_outputKit
 	};
 	
+	dzn_gear_editMode_getBoxGear = {
+		/*
+			Return kit of given box
+			0: 	OBJ	Box or vehicle
+			
+			OUTPUT:	kitArray
+		*/
+		
+		
+	};
+	
 	dzn_gear_editMode_copyToClipboard = {
+		/*
+			call dzn_gear_editMode_getGear
+			
+			OUTPUT: colorString
+		*/
 		private ["_colorString"];
 		
 		// Copying to clipboard
@@ -189,6 +211,12 @@ if (_editMode) then {
 	};
 	
 	dzn_gear_editMode_createKit = {
+		/*
+			call dzn_gear_editMode_createKit
+			
+			OUTPUT: no (take gear from unit, add action with kit, copy kit to clipboard)
+		*/
+		
 		private ["_outputKit","_colorString"];
 		_outputKit = _this call dzn_gear_editMode_getGear;		
 		_colorString = _outputKit call dzn_gear_editMode_copyToClipboard;
@@ -234,6 +262,16 @@ if (_editMode) then {
 		},
 		"",3,true,true,"",
 		"(cursorTarget isKindOf 'CAManBase')"
+	];
+	
+	// Copy gear of cursorTarget == vehicle
+	player addAction [
+		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
+		{
+			//get kit
+		},
+		"",3,true,true,"",
+		"(cursorTarget in vehicles)"
 	];
 };
 
