@@ -1,7 +1,9 @@
 // Init of dzn_gear
 private["_editMode"];
 
+// **************************
 // EDIT MODE
+// **************************
 _editMode = _this select 0;
 
 if (_editMode) then {
@@ -235,9 +237,14 @@ if (_editMode) then {
 	];
 };
 
-if !(isServer) exitWith {};
 
+
+
+// **************************
 // FUNCTIONS
+// **************************
+
+if !(isServer) exitWith {};
 waitUntil { !isNil "BIS_fnc_selectRandom" };
 
 dzn_gear_assignKit = {
@@ -375,10 +382,24 @@ dzn_gear_assignGear = {
 	};
 };
 
+dzn_gear_assignBoxKit = {
+
+};
+
+dzn_gear_assignBoxGear = {
+
+};
+
+// **************************
 // GEARS
+// **************************
+
 #include "dzn_gear_kits.sqf"
 
+
+// **************************
 // INITIALIZATION
+// **************************
 waitUntil { time > 0 };
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
