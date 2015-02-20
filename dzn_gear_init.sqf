@@ -396,7 +396,7 @@ dzn_gear_assignBoxGear = {
 		
 		Function will change gear of chosen unit with chosen gear set.	
 	*/
-	
+	private["_box","_category"];
 	_box = _this select 0;
 	
 	// Clear boxes
@@ -406,19 +406,21 @@ dzn_gear_assignBoxGear = {
 	clearItemCargoGlobal _box;
 	
 	// Add items to box
+	// Weapons
+	_category = (_this select 1) select 0;
+	{_unit addWeaponCargoGlobal _x;} forEach _category;
 	
-	// _truck addWeaponCargoGlobal["M16",5];
-	//_truck addMagazineCargoGlobal ["M16", 5];
-	// this addBackpackCargoGlobal ["TK_RPG_Backpack_EP1",2];
-	// unit addItemCargoGlobal [item, count]
+	// Magazines
+	_category = (_this select 1) select 1;
+	{_unit addWeaponMagazineCargoGlobal _x;} forEach _category;
 	
-	// clearMagazineCargo _truck;
-	// clearWeaponCargo vehicleName
-	// clearItemCargoGlobal box
-	// clearBackpackCargoGlobal jeepOne;
+	// Items
+	_category = (_this select 1) select 2;
+	{_unit addItemCargoGlobal _x;} forEach _category;
 	
-	//
-	
+	// Backpacks
+	_category = (_this select 1) select 3;
+	{_unit addBackpackCargoGlobal _x;} forEach _category;
 };
 
 // **************************
