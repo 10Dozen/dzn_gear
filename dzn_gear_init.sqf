@@ -509,7 +509,7 @@ dzn_gear_assignBoxGear = {
 // INITIALIZATION
 // **************************
 waitUntil { time > 0 };
-waitUntil {!isNil "dzn_gear_assignKit"};
+if !(isServer) exitWith {};
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
 // Logics
