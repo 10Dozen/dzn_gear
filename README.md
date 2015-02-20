@@ -5,7 +5,7 @@
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 
 <h2>How To</h2>
-Download files (except "shemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf". To use 'EDIT' mode use "true" as argument in line <tt>[true] execVM "dzn_gear_init.sqf";</tt>.
+Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf". To use 'EDIT' mode use "true" as argument in line <tt>[true] execVM "dzn_gear_init.sqf";</tt>.
 
 <h3>EDIT mode</h3>
 In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see a new actions at the action menu:
