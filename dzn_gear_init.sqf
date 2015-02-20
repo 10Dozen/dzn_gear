@@ -240,7 +240,7 @@ if (_editMode) then {
 		};
 		_colorString = _outputKit call dzn_gear_editMode_copyToClipboard;
 		
-		if (_this select 1) then {
+		if !(_this select 1) then {
 			player addAction [
 				format [
 					"<t color='%1'>Kit with %2 %3</t>",
@@ -255,19 +255,14 @@ if (_editMode) then {
 				_outputKit
 			];
 		} else {
-		// !!!!!!!!!!!!!!!!!!!!
-		//!!!!!!!!!
-		//!!!!!!!!!
-		//!!!!!!!!!
 			player addAction [
 				format [
-					"<t color='%1'>Kit with %2 %3</t>",
+					"<t color='%1'>Kit for Vehicle/Box %2</t>",
 					_colorString,
-					round(time),
-					_outputKit select 1 select 0
+					round(time)
 				],
 				{
-					[(_this select 1), _this select 3 ] call dzn_gear_assignBoxGear;
+					[cursorTarget, _this select 3 ] call dzn_gear_assignBoxGear;
 					(_this select 3) call dzn_gear_editMode_copyToClipboard;
 				},
 				_outputKit,
@@ -277,12 +272,6 @@ if (_editMode) then {
 		};
 	};
 	
-	dzn_editMode_createBoxKit = {
-	
-	
-		_kit = cursorTarget call dzn_gear_editMode_getBoxGear;
-		_kit call dzn_gear_editMode_copyToClipboard;
-	};
 	// ACTIONS
 	
 	// Add virtual arsenal action
@@ -295,7 +284,7 @@ if (_editMode) then {
 	// https://github.com/10Dozen/ArmaDesk/blob/master/A3-Gear-Set-Up/Kit%20Examples.sqf
 	player addAction [
 		"<t color='#8AD2FF'>Copy Current Gear to Clipboard</t>",
-		{(_this select 1) call dzn_gear_editMode_createKit;}
+		{[(_this select 1), false] call dzn_gear_editMode_createKit;}
 	];
 	
 	// Copy gear of cursorTarget
@@ -314,12 +303,7 @@ if (_editMode) then {
 	// Copy gear of cursorTarget == vehicle
 	player addAction [
 		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
-		{
-			
-			//	[cursorTarget, _kit] spawn dzn_gear_assignBoxGear;
-			[cursorTarget, _kit] spawn dzn_editMode_createBoxKit;
-			
-		},
+		{[cursorTarget, true] spawn dzn_gear_editMode_createKit;},
 		"",3,true,true,"",
 		"(cursorTarget in vehicles)"
 	];
