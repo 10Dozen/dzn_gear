@@ -558,7 +558,7 @@ if !(_logics isEqualTo []) then {
 		};
 	} forEach _logics;
 };
-sleep 10;
+
 // Units
 _units = allUnits;
 {
