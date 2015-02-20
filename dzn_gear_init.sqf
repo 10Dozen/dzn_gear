@@ -225,29 +225,64 @@ if (_editMode) then {
 	dzn_gear_editMode_createKit = {
 		/*
 			call dzn_gear_editMode_createKit
+			0:	OBJ		Source of gear
+			1:	BOOLEAN		Is box kit?
 			
 			OUTPUT: no (take gear from unit, add action with kit, copy kit to clipboard)
 		*/
 		
 		private ["_outputKit","_colorString"];
-		_outputKit = _this call dzn_gear_editMode_getGear;		
+		
+		_outputKit = if (_this select 1) then {
+			(_this select 0) call dzn_gear_editMode_getGear;
+		} else {
+			(_this select 0) call dzn_gear_editMode_getBoxGear;
+		};
 		_colorString = _outputKit call dzn_gear_editMode_copyToClipboard;
 		
-		player addAction [
-			format [
-				"<t color='%1'>Kit with %2 %3</t>",
-				_colorString,
-				round(time),
-				_outputKit select 1 select 0
-			],
-			{
-				[(_this select 1), _this select 3 ] call dzn_gear_assignGear;
-				(_this select 3) call dzn_gear_editMode_copyToClipboard;
-			},
-			_outputKit
-		];		
+		if (_this select 1) then {
+			player addAction [
+				format [
+					"<t color='%1'>Kit with %2 %3</t>",
+					_colorString,
+					round(time),
+					_outputKit select 1 select 0
+				],
+				{
+					[(_this select 1), _this select 3 ] call dzn_gear_assignGear;
+					(_this select 3) call dzn_gear_editMode_copyToClipboard;
+				},
+				_outputKit
+			];
+		} else {
+		// !!!!!!!!!!!!!!!!!!!!
+		//!!!!!!!!!
+		//!!!!!!!!!
+		//!!!!!!!!!
+			player addAction [
+				format [
+					"<t color='%1'>Kit with %2 %3</t>",
+					_colorString,
+					round(time),
+					_outputKit select 1 select 0
+				],
+				{
+					[(_this select 1), _this select 3 ] call dzn_gear_assignBoxGear;
+					(_this select 3) call dzn_gear_editMode_copyToClipboard;
+				},
+				_outputKit,
+				3,true,true,"",
+				"(cursorTarget in vehicles)"
+			];
+		};
 	};
 	
+	dzn_editMode_createBoxKit = {
+	
+	
+		_kit = cursorTarget call dzn_gear_editMode_getBoxGear;
+		_kit call dzn_gear_editMode_copyToClipboard;
+	};
 	// ACTIONS
 	
 	// Add virtual arsenal action
@@ -280,9 +315,10 @@ if (_editMode) then {
 	player addAction [
 		"<t color='#4083AD'>Copy Gear of Cursor Vehicle or Box</t>",
 		{
-			_kit = cursorTarget call dzn_gear_editMode_getBoxGear;
-			[cursorTarget, _kit] spawn dzn_gear_assignBoxGear;
-			_kit call dzn_gear_editMode_copyToClipboard;
+			
+			//	[cursorTarget, _kit] spawn dzn_gear_assignBoxGear;
+			[cursorTarget, _kit] spawn dzn_editMode_createBoxKit;
+			
 		},
 		"",3,true,true,"",
 		"(cursorTarget in vehicles)"
