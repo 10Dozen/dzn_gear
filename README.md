@@ -22,7 +22,7 @@ In 'EDIT' mode open mission in Editor and click "Preview": inside the mission yo
 <br>Change <tt>_kitName</tt> to some unique kit name, e.g. <tt>riflemanNATO</tt>, <tt>SF_Demo_NATO</tt>, <tt>OPFOR_OfficerWithMG</tt>. It's preffered to use global variable as name of kit.
 
 <h3>Kits</h3>
-Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf" file.
+Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf</tt> file.
 <br>There are several types of gear kits are presented:
 <ol>
  <li>Gear Kit (for infantries)<ol>
