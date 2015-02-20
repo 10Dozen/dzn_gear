@@ -6,8 +6,9 @@
 
 <h2>How To</h2>
 Download files (except "shemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf". To use 'EDIT' mode use "true" as argument in line <tt>[true] execVM "dzn_gear_init.sqf";</tt>.
+
 <h3>EDIT mode</h3>
-<br>In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see a new actions at the action menu:
+In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see a new actions at the action menu:
  <ul>
   <li><tt>Open Virtual Arsenal</tt> -- Simply opens VA with all available gear</li>
   <li><tt>Copy Current Gear to Clipboard</tt> -- Copy current gear to clipboard for inserting to <tt>dzn_gear_kit.sqf</tt> file</li>
@@ -22,8 +23,7 @@ Download files (except "shemes" folder - it's only shows structure of kits for d
 
 <h3>Kits</h3>
 Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf" file.
-
-<br><br>There are several types of gear kits are presented:
+<br>There are several types of gear kits are presented:
 <ul>
  <li>Gear Kit (for infantries)<ul>
   <li>Simple Kits</li>
@@ -37,4 +37,4 @@ Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> an
 <br><tt>Simple Kits</tt> are simple. It has one item for each of category (uniform, weapons) which will be assigned to unid as is.
 <br><tt>Randomized Kits</tt> has some variations of gear for some category. E.g. if you change classname of uniform to array of classnames, then unit will get random item from this array (<tt>BIS_fnc_selectRandom</tt> is used). If you want to give unit random weapon, then change weapon's classname to array of classnames and change magazines for weapon to array of magazines - e.g. for Primary weapon:
 <br>    change weapon <tt>"arifle_MX_SW_Black_F"</tt> to <tt>["arifle_MX_SW_Black_F","LMG_Zafir_F"]</tt> and then change primary weapon's magazines from <tt>["100Rnd_65x39_caseless_mag_Tracer",3]</tt> to <tt>[["100Rnd_65x39_caseless_mag_Tracer",3],["150Rnd_762x51_Box",3]]</tt>
-<br>Categories allowed to randomization are: <tt>Catego</tt>
+<br>Categories allowed to randomization are: <tt>Equipment: Uniform, Vest, Backpack, Headgear, Goggles</tt>
