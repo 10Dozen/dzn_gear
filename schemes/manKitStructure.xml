@@ -1,1 +1,18 @@
-s
+<!-- Simple Kit |OR| Randomized Kit-->
+<kit>
+	<itemCategory id="0" type="Equipment">
+		<item id="0" type="Uniform">
+			<classname>"U_B_CTRG_3" |OR| ["U_B_CTRG_3","U_B_CTRG_1"]</classname>
+		</item>
+	</itemCategory>
+</kit>
+
+
+
+<!-- Random Kit -->
+<randomKit>
+	<kit id="0">"kitName"</kit>
+	<kit id="1">"kitName"</kit>
+	<kit id="2">"kitName"</kit>
+</randomKit>
+
