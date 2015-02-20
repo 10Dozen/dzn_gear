@@ -394,7 +394,8 @@ if !(_logics isEqualTo []) then {
 			_kitName = getKitName("dzn_gear_box",13)
 			{
 				if !(_x isKindOf "CAManBase") then {
-				
+					[_x, _kitName] spawn dzn_gear_assignBoxKit;
+					sleep 0.1;
 				};
 			} forEach _synUnits;
 			deleteVehicle _x;
@@ -439,6 +440,12 @@ _units = allUnits;
 					};
 					sleep 0.1;
 				} forEach _crew;
+			};
+		};
+	} else {
+		if (!isNil {_x getVariable "dzn_gear_box"}) then {
+			if !(_x isKindOf "CAManBase") then {
+				[_x, _x getVariable "dzn_gear_box"] spawn dzn_gear_assignBoxKit;
 			};
 		};
 	};
