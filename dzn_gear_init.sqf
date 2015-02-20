@@ -249,9 +249,10 @@ waitUntil { !isNil "BIS_fnc_selectRandom" };
 
 dzn_gear_assignKit = {
 	/*
-		[ unit, gearSetName ] spawn dzn_gearSetup;
-		0:	OBJ					Unit for which gear will be set
-		1:	ARRAY or STRING		List of Kits for assignment	
+		[ unit, gearSetName, isBox ] spawn dzn_gearSetup;
+		0:	OBJ			Unit for which gear will be set
+		1:	ARRAY or STRING		List of Kits for assignment
+		2:	BOOLEAN			Is given unit a box?
 		
 		Function will change gear of chosen unit with chosen gear set.	
 	*/
@@ -260,7 +261,6 @@ dzn_gear_assignKit = {
 	
 	_kit = [];
 	if (!isNil {call compile (_this select 1)}) then {
-		
 		_kit = call compile (_this select 1);
 		
 		if (typename (_kit select 0) != "ARRAY") then {
@@ -269,7 +269,13 @@ dzn_gear_assignKit = {
 			_kit = call compile _randomKit;
 		};		
 		
-		[_this select 0, _kit] call dzn_gear_assignGear;
+		if ( !isNil {_this select 2} && { _this select 2 } ) then {
+			// Box
+			[_this select 0, _kit] call dzn_gear_assignBoxGear;
+		} else {
+			// Man
+			[_this select 0, _kit] call dzn_gear_assignGear;
+		};
 	} else {
 		diag_log format ["There is no kit with name %1", (_this select 1)];
 		player sideChat format ["There is no kit with name %1", (_this select 1)];
@@ -382,12 +388,16 @@ dzn_gear_assignGear = {
 	};
 };
 
-dzn_gear_assignBoxKit = {
-
-};
-
 dzn_gear_assignBoxGear = {
-
+	/*
+		[ unit, gearSetName ] spawn dzn_gearSetup;
+		0:	OBJ	Unit for which gear will be set
+		1:	ARRAY	Set of gear
+		
+		Function will change gear of chosen unit with chosen gear set.	
+	*/
+	
+	
 };
 
 // **************************
@@ -415,7 +425,7 @@ if !(_logics isEqualTo []) then {
 			_kitName = getKitName("dzn_gear_box",13)
 			{
 				if !(_x isKindOf "CAManBase") then {
-					[_x, _kitName] spawn dzn_gear_assignBoxKit;
+					[_x, _kitName, true] spawn dzn_gear_assignKit;
 					sleep 0.1;
 				};
 			} forEach _synUnits;
@@ -466,7 +476,7 @@ _units = allUnits;
 	} else {
 		if (!isNil {_x getVariable "dzn_gear_box"}) then {
 			if !(_x isKindOf "CAManBase") then {
-				[_x, _x getVariable "dzn_gear_box"] spawn dzn_gear_assignBoxKit;
+				[_x, _x getVariable "dzn_gear_box", true] spawn dzn_gear_assignKit;
 			};
 		};
 	};
