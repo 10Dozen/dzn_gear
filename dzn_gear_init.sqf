@@ -255,7 +255,7 @@ if (_editMode) then {
 					[(_this select 1), _this select 3] call dzn_gear_assignGear;
 					(_this select 3) call dzn_gear_editMode_copyToClipboard;
 				},
-				_outputKit
+				_outputKit,0
 			];
 		} else {
 			player addAction [
