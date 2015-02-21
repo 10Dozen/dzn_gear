@@ -49,7 +49,7 @@ There are several ways to assign kit to unit:
  <li>GameLogic's name</li>
 </ol>
 (1) At the unit's <tt>init</tt> field place line: <tt>this setVariable ["dzn_gear", "%kitName%"]</tt>(for gear kit) or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt>(for cargo kit).
-<br>(2) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and add a line <tt>this setVariable ["dzn_gear", "%kitName%"]</tt> or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt> to it's <tt>init</tt> field. Then synchronize GameLogic with units to assign gear on them (F5 in editor, to better accuracy - link unit to GameLogic). You can also synchronize vehicles with crew to assign gear kit.
+<br>(2) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and add a line <tt>this setVariable ["dzn_gear", "%kitName%"]</tt> or <tt>this setVariable ["dzn_gear_box", "%kitName%"]</tt> to it's <tt>init</tt> field. Then synchronize GameLogic with units to assign gear to them (F5 in editor, to better accuracy - link unit to GameLogic). You can also synchronize vehicles with crew to assign gear kit.
 <br>(3) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and name it <tt>dzn_gear_%kitname%</tt> or <tt>dzn_gear_box_%kitname%</tt>. Then synchronize GameLogic with units to assign gear on them. You can also synchronize vehicles with crew to assign gear kit.
 
 <h3>How it works</h3> 
