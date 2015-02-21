@@ -30,7 +30,7 @@ Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> an
   <li>Randomized Kits</li>
   <li>Random Kits</li>
  </ol></li>
- <li>Cargo Kit (for vehicle and ammoboxes)</li>
+ <li>Cargo Kit (for vehicles and ammoboxes)</li>
 </ol>
 
 (1)<tt>Gear Kit</tt> could be assigned to any infantry (even to crew of vehicles). It has some randomization option.
