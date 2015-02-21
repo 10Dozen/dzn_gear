@@ -1,10 +1,11 @@
 // Init of dzn_gear
-private["_editMode"];
+private["_editMode","_isServerSide"];
 
 // **************************
 // EDIT MODE
 // **************************
 _editMode = _this select 0;
+_isServerSide = _this select 1;
 
 if (_editMode) then {
 	// FUNCTIONS
@@ -319,7 +320,9 @@ if (_editMode) then {
 // FUNCTIONS
 // **************************
 
-if !(isServer) exitWith {};
+if (_isServerSide) then {
+	if !(isServer) exitWith {};
+};
 waitUntil { !isNil "BIS_fnc_selectRandom" };
 
 dzn_gear_assignKit = {
