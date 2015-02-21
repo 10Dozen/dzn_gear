@@ -5,7 +5,9 @@
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 
 <h2>How To</h2>
-Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf". To use 'EDIT' mode use "true" as argument in line <tt>[true] execVM "dzn_gear_init.sqf";</tt>.
+Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
+<br>Script runs from with optins<tt>[ editMode(BOOL), isServerSide(BOOL) ] execVM "dzn_gear_init.sqf";</tt>.
+
 
 <h3>EDIT mode</h3>
 In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see new actions at the action menu:
@@ -56,7 +58,7 @@ There are several ways to assign kit to unit:
 After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable. All synchronized objects will be returned, for each object the chosen kit will be assigned.
 Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kits will be assigned.
 <br>After gear assigned, unit/object updates with variable "dzn_gear_assigned" which store the name of assigned kit.
-<br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side do not forget to comment this line.
+<br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side run script with arguments <tt>[ false, false ] execVM "dzn_gear_init.sqf";</tt>.
 <br>You can also use gear assignment "manually" using next function:
 <ul>
  <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
