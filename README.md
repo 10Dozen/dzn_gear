@@ -61,5 +61,5 @@ Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kit
 <br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side run script with arguments <tt>[ false, false ] execVM "dzn_gear_init.sqf";</tt>.
 <br>You can also use gear assignment "manually" using next function:
 <ul>
- <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
+ <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_fnc_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
 </ul>
