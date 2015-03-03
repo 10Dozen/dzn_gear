@@ -326,6 +326,7 @@ if (_editMode) then {
 // FUNCTIONS
 // **************************
 
+// Exits when no initialization for clients given
 if (_isServerSide) then {
 	if !(isServer) exitWith {};
 };
@@ -346,15 +347,20 @@ dzn_fnc_gear_assignKit = {
 	(_this select 0) setVariable ["dzn_gear_assigned", _this select 1];
 	
 	_kit = [];
+	
+	// Resolve kit name to kitArray or throw and error message to chat
 	if (!isNil {call compile (_this select 1)}) then {
 		_kit = call compile (_this select 1);
 		
+		// Checks if given kit is array of kits (check first item of array - for kitArray it is array) 
+		// selects a random kit name from given array
 		if (typename (_kit select 0) != "ARRAY") then {
 			_randomKit =  (_kit call BIS_fnc_selectRandom);
 			(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
 			_kit = call compile _randomKit;
 		};		
 		
+		// Check if third parameter is given and equals TRUE - then run assign of box gear, else - assign infantry kit
 		if ( !isNil {_this select 2} && { _this select 2 } ) then {
 			// Box
 			[_this select 0, _kit] call dzn_fnc_gear_assignBoxGear;
@@ -363,6 +369,7 @@ dzn_fnc_gear_assignKit = {
 			[_this select 0, _kit] call dzn_fnc_gear_assignGear;
 		};
 	} else {
+		// If given kit name wasn't resolved
 		diag_log format ["There is no kit with name %1", (_this select 1)];
 		player sideChat format ["There is no kit with name %1", (_this select 1)];
 	};
@@ -397,12 +404,24 @@ dzn_fnc_gear_assignGear = {
 	
 	waitUntil { (items _unit) isEqualTo [] };
 	
-	// Adding gear
+	/* 		Adding gear macros
+		cItem(INDEX) - get item with INDEX from currently chosen category of items in kit array
+		isItem(INDEX) - checks is selected item value is type of string (not empty array)
+		NotEmpty(INDEX) - checks is selected item is a classname, not an empty string ("")
+		getRandom(INDEX) - select random from array which selected item is
+		assignGear(IDX,ACT) - assign selected item (if item is classname) or assign random item from given (if item is array)
+		assignWeapon(IDX,WT) - assign selected weapon (if item is classname) or assign one of the chosen weapons (if item is array)
+		getRandomType(IDX) - select random index for choosing random weapon if item is not a string (classname), but is array
+		assignMags(IDX, WT) - assign selected magazine (if item is classname) or assign on of the chosen magazines (if item is array)
+	*/
 	#define cItem(INDEX)		(_category select INDEX)
 	#define isItem(INDEX)		(typename cItem(INDEX) == "STRING")
 	#define NotEmpty(INDEX)		(cItem(INDEX) != "")
 	#define getRandom(INDEX)	(cItem(INDEX) call BIS_fnc_selectRandom)
 	#define assignGear(IDX, ACT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit ACT cItem(IDX); }; } else { _unit ACT getRandom(IDX); };
+	#define assignWeapon(IDX,WT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit addWeapon cItem(IDX); }; } else { _unit addWeapon (cItem(IDX) select WT); };
+	#define getRandomType(IDX)	if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
+	#define assignMags(IDX, WT)	if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
 	
 	// Adding UVBHG
 	_category = _kit select 0;
@@ -412,17 +431,14 @@ dzn_fnc_gear_assignGear = {
 	assignGear(3, addHeadgear)
 	assignGear(4, addGoggles)
 
-	#define assignWeapon(IDX,WT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit addWeapon cItem(IDX); }; } else { _unit addWeapon (cItem(IDX) select WT); };
-	#define getRandomType(IDX)		if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
-	#define assignMags(IDX, WT)		if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
-	
-	// Add Primary, Secondary and Handgun Magazines
+	// Get random primary, secondary and handgun weapons and mags
 	_category = _kit select 5;
 	
 	_primaryRandom = getRandomType(0);
 	_secondaryRandom = getRandomType(1);
-	_handgunRandom = getRandomType(2);	
+	_handgunRandom = getRandomType(2);
 	
+	// Add Primary, Secondary and Handgun Magazines
 	{
 		assignMags(_forEachIndex, _x)
 	} forEach [_primaryRandom, _secondaryRandom, _handgunRandom];
@@ -500,15 +516,15 @@ dzn_fnc_gear_assignBoxGear = {
 	_category = (_this select 1) select 0;
 	{_box addWeaponCargoGlobal _x;} forEach _category;
 	
-	// Magazines
+	// Add Magazines
 	_category = (_this select 1) select 1;
 	{_box addMagazineCargoGlobal _x;} forEach _category;
 	
-	// Items
+	// Add Items
 	_category = (_this select 1) select 2;
 	{_box addItemCargoGlobal _x;} forEach _category;
 	
-	// Backpacks
+	// Add Backpacks
 	_category = (_this select 1) select 3;
 	{_box addBackpackCargoGlobal _x;} forEach _category;
 };
@@ -527,13 +543,14 @@ waitUntil { time > 0 };
 if !(isServer) exitWith {};
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
-// Logics
+// Search for Logics with name or variable "dzn_gear"/"dzn_gear_box" and assign gear to synced units
 _logics = entities "Logic";
 if !(_logics isEqualTo []) then {	
 	{
 		#define checkIsGearLogic(PAR)	([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
 		#define	getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
 		
+		// Check for vehicle kits
 		if checkIsGearLogic("dzn_gear_box") then {
 			_synUnits = synchronizedObjects _x;
 			_kitName = getKitName("dzn_gear_box",13)
@@ -550,10 +567,12 @@ if !(_logics isEqualTo []) then {
 			} forEach _synUnits;
 			deleteVehicle _x;
 		} else {
+			// Check for infantry kit (order defined by function BIS_fnc_inString - it will return True on 'dzn_gear_box' when searching 'dzn_gear'
 			if checkIsGearLogic("dzn_gear") then {
 				_synUnits = synchronizedObjects _x;
 				_kitName = getKitName("dzn_gear",9)
 				{
+					// Assign gear to infantry and to crewmen
 					if (_x  isKindOf "CAManBase") then {
 						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 					} else {
@@ -574,11 +593,14 @@ if !(_logics isEqualTo []) then {
 	} forEach _logics;
 };
 
-// Units
+// Searching for Units with Variable "dzn_gear" or "dzn_gear_box" to change gear
 _units = allUnits;
 {
+	// Unit has variable with infantry kit 
 	if (!isNil {_x getVariable "dzn_gear"}) then {
 		_kitName = _x getVariable "dzn_gear";
+		
+		// Search for infantry or crewman and assign kit
 		if (_x isKindOf "CAManBase" && isNil {_x getVariable "dzn_gear_done"}) then {
 			[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 		} else {
@@ -593,10 +615,9 @@ _units = allUnits;
 			};
 		};
 	} else {
-		if (!isNil {_x getVariable "dzn_gear_box"}) then {
-			if !(_x isKindOf "CAManBase") then {
-				[_x, _x getVariable "dzn_gear_box", true] spawn dzn_fnc_gear_assignKit;
-			};
+		// Vehicle has variable with vehicle/box kit 
+		if (!isNil {_x getVariable "dzn_gear_box"} && { !(_x isKindOf "CAManBase") }) then {
+			[_x, _x getVariable "dzn_gear_box", true] spawn dzn_fnc_gear_assignKit;
 		};
 	};
 	sleep 0.2;
