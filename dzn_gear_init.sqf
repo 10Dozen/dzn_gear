@@ -333,8 +333,7 @@ waitUntil { !isNil "BIS_fnc_selectRandom" };
 
 dzn_fnc_gear_assignKit = {
 	/*
-		Will get 
-		Function will change gear of chosen unit with chosen gear set.	
+		Resolve given kit and call function to assign existing kit to unit.	
 		EXAMPLE:	[ unit, gearSetName, isBox ] spawn dzn_gearSetup;
 		INPUT:
 			0: OBJECT		- Unit for which gear will be set
@@ -371,12 +370,14 @@ dzn_fnc_gear_assignKit = {
 
 dzn_fnc_gear_assignGear = {
 	/*
-		[ unit, gearSetName ] spawn dzn_gearSetup;
-		0:	OBJ		Unit for which gear will be set
-		1:	ARRAY	Set of gear
-		
-		Function will change gear of chosen unit with chosen gear set.	
+		Change gear of given unit with given gear set	
+		EXAMPLE:	[ unit, gearSetName ] spawn dzn_gearSetup;
+		INPUT:
+			0: OBJECT	- Unit for which gear will be set
+			1: ARRAY	- Set of gear
+		OUTPUT: NULL
 	*/
+	
 	private ["_unit","_kit","_category","_i"];
 	
 	_unit = _this select 0;
@@ -477,12 +478,14 @@ dzn_fnc_gear_assignGear = {
 
 dzn_fnc_gear_assignBoxGear = {
 	/*
-		[ unit, gearSetName ] spawn dzn_gearSetup;
-		0:	OBJ	Unit for which gear will be set
-		1:	ARRAY	Set of gear
-		
-		Function will change gear of chosen unit with chosen gear set.	
+		Change gear of given box or vehicle with given gear set	
+		EXAMPLE:	[ unit, gearSetName ] spawn dzn_fnc_gear_assignBoxGear;
+		INPUT:
+			0: OBJECT	- Vehicle or box for which gear will be set
+			1: ARRAY	- Set of gear
+		OUTPUT: NULL
 	*/
+
 	private["_box","_category"];
 	_box = _this select 0;
 	
