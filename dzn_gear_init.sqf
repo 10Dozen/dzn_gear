@@ -12,11 +12,13 @@ if (_editMode) then {
 	
 	dzn_fnc_gear_editMode_getGear = {
 		/*
-			Return structured array of given unit's gear. 
+			Return structured array of gear (kit) of given unit. 
 			EXAMPLE:	_units call dzn_fnc_gear_editMode_getGear
-			0:	OBJECT		- Unit to take gear from
+			INPUT:
+				0:	OBJECT		- Unit to take gear from
 			OUTPUT: ARRAY (kitArray)
 		*/
+		
 		private[
 			"_unit","_item1","_item2","_item3","_item4","_item5","_item6","_items",
 			"_pwMags","_swMags","_hgMags","_mag1","_mag2","_mag3","_mag4","_mag5","_mag6",
@@ -178,12 +180,13 @@ if (_editMode) then {
 	
 	dzn_fnc_gear_editMode_getBoxGear = {
 		/*
-			BOX call dzn_fnc_gear_editMode_getBoxGear;
-			Return kit of given box
-			0: 	OBJ	Box or vehicle
-			
-			OUTPUT:	kitArray
+			Return structured array of gear (kit) of given box
+			EXAMPLE: BOX call dzn_fnc_gear_editMode_getBoxGear;
+			INPUT:
+				0: OBJECT	- Box or vehicle
+			OUTPUT:	ARRAY (kitArray)
 		*/
+		
 		private ["_outputKit", "_classnames", "_count", "_cargo", "_categoryKit"];
 		
 		_outputKit = [];
@@ -230,11 +233,12 @@ if (_editMode) then {
 	
 	dzn_fnc_gear_editMode_createKit = {
 		/*
-			call dzn_fnc_gear_editMode_createKit
-			0:	OBJ		Source of gear
-			1:	BOOLEAN		Is box kit?
-			
-			OUTPUT: no (take gear from unit, add action with kit, copy kit to clipboard)
+			Create kit from given unit or box, add action to assign it on player and copy kit to clipboard 
+			EXAMPLE:	[player, false] call dzn_fnc_gear_editMode_createKit
+			INPUT:
+				0: OBJECT	- Source of gear (unit or vehicle)
+				1: BOOLEAN	- Is box kit?
+			OUTPUT: NULL
 		*/
 		
 		private ["_outputKit","_colorString"];
@@ -329,13 +333,16 @@ waitUntil { !isNil "BIS_fnc_selectRandom" };
 
 dzn_fnc_gear_assignKit = {
 	/*
-		[ unit, gearSetName, isBox ] spawn dzn_gearSetup;
-		0:	OBJ			Unit for which gear will be set
-		1:	ARRAY or STRING		List of Kits for assignment
-		2:	BOOLEAN			Is given unit a box?
-		
+		Will get 
 		Function will change gear of chosen unit with chosen gear set.	
+		EXAMPLE:	[ unit, gearSetName, isBox ] spawn dzn_gearSetup;
+		INPUT:
+			0: OBJECT		- Unit for which gear will be set
+			1: ARRAY or STRING	- List of Kits for assignment
+			2: BOOLEAN		- Is given unit a box?
+		OUTPUT: NULL
 	*/
+
 	private ["_kit","_randomKit"];
 	(_this select 0) setVariable ["dzn_gear_assigned", _this select 1];
 	
