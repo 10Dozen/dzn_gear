@@ -348,30 +348,36 @@ dzn_fnc_gear_assignKit = {
 	
 	_kit = [];
 	
-	// Resolve kit name to kitArray or throw and error message to chat
-	if (!isNil {call compile (_this select 1)}) then {
-		_kit = call compile (_this select 1);
-		
-		// Checks if given kit is array of kits (check first item of array - for kitArray it is array) 
-		// selects a random kit name from given array
-		if (typename (_kit select 0) != "ARRAY") then {
-			_randomKit =  (_kit call BIS_fnc_selectRandom);
-			(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
-			_kit = call compile _randomKit;
-		};		
-		
-		// Check if third parameter is given and equals TRUE - then run assign of box gear, else - assign infantry kit
-		if ( !isNil {_this select 2} && { _this select 2 } ) then {
-			// Box
-			[_this select 0, _kit] call dzn_fnc_gear_assignBoxGear;
-		} else {
-			// Man
-			[_this select 0, _kit] call dzn_fnc_gear_assignGear;
-		};
+	#define checkKitIsArray(PAR)	(typename (PAR) == "ARRAY")
+	#define assignKitByType(KIT)	if ( !isNil {_this select 2} && { _this select 2 } ) then { [_this select 0, KIT] call dzn_fnc_gear_assignBoxGear; } else {	[_this select 0, KIT] call dzn_fnc_gear_assignGear;};
+	#define checkIfKitExists(PAR)	(!isNil {call compile (PAR)})
+	#define convertKitnameToAKit(PAR)	call compile (PAR)
+	
+	// Resolve kit by type
+	if checkKitIsArray(_this select 1) && { checkKitIsArray((_this select 1) select 0) } then {
+		// Assign kitArray [ARRAY]
+		assignKitByType(_this select 1)
 	} else {
-		// If given kit name wasn't resolved
-		diag_log format ["There is no kit with name %1", (_this select 1)];
-		player sideChat format ["There is no kit with name %1", (_this select 1)];
+		// Assign kit by kitname [STRING]
+		if checkIfKitExists(_this select 1) then {
+			_kit = convertKitnameToAKit(_this select 1);
+			
+			// Checks if given kit is array of kits (check first item of array - for kitArray it is array) 
+			// selects a random kit name from given array
+			if checkKitIsArray(_kit select 0) then {
+				_randomKit =  (_kit call BIS_fnc_selectRandom);
+				(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
+				
+				// Convert from name(string) to kitArray(array)
+				_kit = convertKitnameToAKit(_randomKit);	
+			};
+			
+			assignKitByType(_kit)
+		} else {
+			// If given kit name wasn't resolved
+			diag_log format ["There is no kit with name %1", (_this select 1)];
+			player sideChat format ["There is no kit with name %1", (_this select 1)];
+		};
 	};
 };
 
