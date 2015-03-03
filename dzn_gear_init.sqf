@@ -12,10 +12,10 @@ if (_editMode) then {
 	
 	dzn_fnc_gear_editMode_getGear = {
 		/*
-			_units call dzn_fnc_gear_editMode_getGear
-			0:	OBJ	Unit to take gear from
-			
-			OUTPUT: kitArray
+			Return structured array of given unit's gear. 
+			EXAMPLE:	_units call dzn_fnc_gear_editMode_getGear
+			0:	OBJECT		- Unit to take gear from
+			OUTPUT: ARRAY (kitArray)
 		*/
 		private[
 			"_unit","_item1","_item2","_item3","_item4","_item5","_item6","_items",
@@ -26,7 +26,7 @@ if (_editMode) then {
 			
 		_unit = _this;
 		
-		// Нужно получить все айтемы и собрать их в стеки
+		// Get unit's items in stack, e.g. 2 ItemName in [ItemName, 2]
 		_item1 = ["", 0];
 		_item2 = ["", 0];
 		_item3 = ["", 0];
@@ -56,12 +56,12 @@ if (_editMode) then {
 						_count
 					];
 				} else {
-					hint "Maximum of 6 item slots were exceeded";
+					player globalChat "Maximum of 6 item slots were exceeded";
 				};	
 			};
 		} forEach _items;
 		
-		// Нужно получить все магазины и собрать их в стеки
+		// Get all unit's magazines in stack, e.g. 2 30RndMag in [30RndMag, 2]
 		_pwMags = ["", 0];
 		_swMags = ["", 0];
 		_hgMags = ["", 0];
@@ -75,6 +75,7 @@ if (_editMode) then {
 		_mags = magazines _unit;
 		_duplicates = [];
 		
+		// Choose magazine class for primary, secondary and handgun weapons
 		_pwMag = if (count (primaryWeaponMagazine _unit) > 0) then {primaryWeaponMagazine _unit  select 0} else { "" };
 		_swMag = if (count (secondaryWeaponMagazine _unit) > 0) then {secondaryWeaponMagazine _unit  select 0} else { "" };
 		_hgMag = if (count (handgunMagazine _unit) > 0) then {handgunMagazine _unit  select 0} else { "" };
@@ -112,7 +113,8 @@ if (_editMode) then {
 				};
 			};
 		} forEach _mags;
-			
+		
+		// Get structured array of gear via macroses
 		#define hasPrimaryThen(PW)		if (primaryWeapon _unit != "") then {PW} else {""}
 		#define hasSecondaryThen(SW)	if (secondaryWeapon _unit != "") then {SW} else {""}
 		#define hasHandgunThen(HW)		if (handgunWeapon _unit != "") then {HW} else {""}
@@ -143,7 +145,7 @@ if (_editMode) then {
 				hasHandgunThen((handgunItems _unit) select 0),
 				hasHandgunThen((handgunItems _unit) select 1)
 			],
-			/* Personal Items */
+			/* Personal assigned Items */
 			assignedItems _unit,
 			/* Magazines */
 			[
