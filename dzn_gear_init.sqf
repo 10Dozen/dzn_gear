@@ -556,8 +556,8 @@ if !(_logics isEqualTo []) then {
 					};
 					sleep 0.2;
 				} forEach _synUnits;
+				deleteVehicle _x;
 			};
-			deleteVehicle _x;
 		};
 	} forEach _logics;
 };
