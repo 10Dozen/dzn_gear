@@ -353,10 +353,10 @@ dzn_fnc_gear_assignKit = {
 	#define checkIfKitExists(PAR)	(!isNil {call compile (PAR)})
 	#define convertKitnameToAKit(PAR)	call compile (PAR)
 	
-	// Resolve kit by type	
-	if (checkKitIsArray(_this select 1) && { checkKitIsArray((_this select 1) select 0) }) then {
+	// Resolve kit by type
+	if checkKitIsArray(_this select 1) && { checkKitIsArray((_this select 1) select 0) } then {
 		// Assign kitArray [ARRAY]
-		assignKitByType(_this select 1)		
+		assignKitByType(_this select 1)
 	} else {
 		// Assign kit by kitname [STRING]
 		if checkIfKitExists(_this select 1) then {
@@ -364,7 +364,7 @@ dzn_fnc_gear_assignKit = {
 			
 			// Checks if given kit is array of kits (check first item of array - for kitArray it is array) 
 			// selects a random kit name from given array
-			if !checkKitIsArray(_kit select 0) then {
+			if checkKitIsArray(_kit select 0) then {
 				_randomKit =  (_kit call BIS_fnc_selectRandom);
 				(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
 				
