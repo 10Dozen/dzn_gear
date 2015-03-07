@@ -55,7 +55,7 @@ There are several ways to assign kit to unit:
 <br>(3) Place object <tt>GameLogic-Objects-GameLogic</tt> on map and name it <tt>dzn_gear_%kitname%</tt> or <tt>dzn_gear_box_%kitname%</tt>. Then synchronize GameLogic with units to assign gear on them. You can also synchronize vehicles with crew to assign gear kit.
 
 <h3>How it works</h3> 
-After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable. All synchronized objects will be returned, for each object the chosen kit will be assigned.
+After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable all synchronized objects will be returned. For each object the chosen kitname will be checked for existence in file <tt>dzn_gear\dzn_gear_kit.sqf</tt> and then kit with such name will be assigned.
 Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kits will be assigned.
 <br>After gear assigned, unit/object updates with variable "dzn_gear_assigned" which store the name of assigned kit.
 <br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side run script with arguments <tt>[ false, false ] execVM "dzn_gear_init.sqf";</tt>.
