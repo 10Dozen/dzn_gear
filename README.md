@@ -6,7 +6,7 @@
 
 <h2>How To</h2>
 Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
-<br>Script runs from with optins<tt>[ editMode(BOOL), isServerSide(BOOL) ] execVM "dzn_gear_init.sqf";</tt>.
+<br>Script should be ran with options<tt>[ editMode(BOOL), isServerSide(BOOL) ] execVM "dzn_gear_init.sqf";</tt>.
 
 
 <h3>EDIT mode</h3>
