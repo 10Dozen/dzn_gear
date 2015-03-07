@@ -8,7 +8,9 @@
 Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
 <br>Script should be ran with options<tt>[ editMode(BOOL), isServerSide(BOOL) ] execVM "dzn_gear_init.sqf";</tt>.
 <br>
-Video HowTo: https://www.youtube.com/watch?v=rhsF5Jw3Vdo
+
+<h3>Video HowTo</h3> 
+https://www.youtube.com/watch?v=rhsF5Jw3Vdo
 
 <h3>EDIT mode</h3>
 In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see new actions at the action menu:
