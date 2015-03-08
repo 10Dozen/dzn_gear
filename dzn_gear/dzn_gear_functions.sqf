@@ -325,12 +325,18 @@ if (_editMode) then {
 // **************************
 // FUNCTIONS
 // **************************
-
-// Exits when no initialization for clients given
-if (_isServerSide) then {
-	if !(isServer) exitWith {};
-};
 waitUntil { !isNil "BIS_fnc_selectRandom" };
+
+
+dzn_fnc_gear_assignKitLocal = {
+	/*
+		MP wrap of dzn_fnc_gear_assignKit function
+		INPUT:
+			0:	STRING or ARRAY		- Kitname or kitArray
+	*/
+	
+	[player, _this] call dzn_fnc_gear_assignKit;
+};
 
 dzn_fnc_gear_assignKit = {
 	/*
@@ -345,6 +351,11 @@ dzn_fnc_gear_assignKit = {
 
 	private ["_kit","_randomKit"];
 	(_this select 0) setVariable ["dzn_gear_assigned", _this select 1];
+	// If is player - run script on player localy
+	if (isPlayer (_this select 0) && { !local (_this select 0)} ) exitWith {
+		[_this select 1, "dzn_fnc_gear_assignKitLocal", (_this select 0)] call BIS_fnc_MP;
+	};
+	
 	
 	_kit = [];
 	
