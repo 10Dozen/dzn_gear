@@ -1,21 +1,27 @@
 // **************************
 // FUNCTIONS
 // **************************
-
 #include "dzn_gear_functions.sqf"
 
 // **************************
 // GEARS
 // **************************
-
 #include "dzn_gear_kits.sqf"
-
 
 // **************************
 // INITIALIZATION
 // **************************
-waitUntil { time > 0 };
-if !(isServer) exitWith {};
+
+// Delay before run
+if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then { 
+	waitUntil { time > _this select 1 };
+};
+
+if !(isServer) exitWith {
+	waitUntil { !isNil { player getVariable "dzn_gear_assigned" } && !isNil { dzn_fnc_gear_assignKit } };
+	[player, player getVariable "dzn_gear_assigned"] call dzn_fnc_gear_assignKit;
+};
+
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
 // Search for Logics with name or variable "dzn_gear"/"dzn_gear_box" and assign gear to synced units
@@ -37,7 +43,7 @@ if !(_logics isEqualTo []) then {
 						vehicle (crew _x select 0)
 					};
 					[_veh, _kitName, true] spawn dzn_fnc_gear_assignKit;
-					sleep 0.1;
+					sleep 0.3;
 				};
 			} forEach _synUnits;
 			deleteVehicle _x;
@@ -56,11 +62,11 @@ if !(_logics isEqualTo []) then {
 						if !(_crew isEqualTo []) then {
 							{
 								[_x, _kitName] spawn dzn_fnc_gear_assignKit;
-								sleep 0.1;
+								sleep 0.3;
 							} forEach _crew;
 						};
 					};
-					sleep 0.2;
+					sleep 0.3;
 				} forEach _synUnits;
 				deleteVehicle _x;
 			};
@@ -85,7 +91,7 @@ _units = allUnits;
 					if (isNil {_x getVariable "dzn_gear_done"}) then {
 						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 					};
-					sleep 0.1;
+					sleep 0.3;
 				} forEach _crew;
 			};
 		};
