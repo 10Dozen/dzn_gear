@@ -179,6 +179,8 @@ dzn_fnc_gear_assignGear = {
 			};
 		};		
 	};
+	
+	_unit setVariable ["dzn_gear_done", true, true];
 };
 
 dzn_fnc_gear_assignBoxGear = {
@@ -216,6 +218,8 @@ dzn_fnc_gear_assignBoxGear = {
 	// Add Backpacks
 	_category = (_this select 1) select 3;
 	{_box addBackpackCargoGlobal _x;} forEach _category;
+	
+	_unit setVariable ["dzn_gear_done", true, true];
 };
 
 // **************************
