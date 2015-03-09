@@ -17,29 +17,23 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 	waitUntil { time > _this select 1 };
 };
 
-if (!isServer || !isDedicated) exitWith {
-	waitUntil { !isNil { dzn_fnc_gear_assignKit } && !isNil { player getVariable "dzn_gear" } };
-	[player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
-	
-	{
-		if (!isPlayer _x && local _x) then {
-			[_x, _x getVariable "dzn_gear"] call dzn_fnc_assignKit;
-		};
-	} forEach (units group player);
-};
-
-
-
-
+#define	assignKitToPlayer	[] spawn { waitUntil {!isNil {dzn_fnc_gear_assignKit} && !isNil {player getVariable "dzn_gear"}}; [player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit; };
+if (!isServer && !isDedicated) exitWith { assignKitToPlayer };
+if (!isNull player) then { assignKitToPlayer };
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
+enableSentences false;
+
 // Search for Logics with name or variable "dzn_gear"/"dzn_gear_box" and assign gear to synced units
 _logics = entities "Logic";
+
 if !(_logics isEqualTo []) then {	
 	{
 		#define checkIsGearLogic(PAR)	([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
 		#define	getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
+		#define assignGearKit(UNIT,KIT,BOX)	if (BOX) then { UNIT setVariable ["dzn_gear_box", KIT, true]; } else { UNIT setVariable ["dzn_gear", KIT, true]; };
+		#define callAssignGearMP(UNIT,KIT,BOX)	if (!isPlayer UNIT) then { [ [UNIT,KIT,BOX], "dzn_fnc_gear_assignKit", UNIT ] call BIS_fnc_MP; };
 		
 		// Check for vehicle kits
 		if checkIsGearLogic("dzn_gear_box") then {
@@ -52,8 +46,8 @@ if !(_logics isEqualTo []) then {
 					} else {
 						vehicle (crew _x select 0)
 					};
-					[_veh, _kitName, true] spawn dzn_fnc_gear_assignKit;
-					sleep 0.3;
+					assignGearKit(_veh, _kitName, true)
+					callAssignGearMP(_veh, _kitName, true)
 				};
 			} forEach _synUnits;
 			deleteVehicle _x;
@@ -64,19 +58,19 @@ if !(_logics isEqualTo []) then {
 				_kitName = getKitName("dzn_gear",9)
 				{
 					// Assign gear to infantry and to crewmen
-					if (_x  isKindOf "CAManBase" && local _x) then {
-						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
+					if (_x isKindOf "CAManBase" ) then {
+						assignGearKit(_x, _kitName, false)
+						callAssignGearMP(_x, _kitName, false)				
 					} else {
 						private ["_crew"];
 						_crew = crew _x;
-						if (!(_crew isEqualTo [])  && local _x) then {
+						if (!(_crew isEqualTo [])) then {
 							{
-								[_x, _kitName] spawn dzn_fnc_gear_assignKit;
-								sleep 0.3;
+								assignGearKit(_x, _kitName, false)
+								callAssignGearMP(_x, _kitName, false)
 							} forEach _crew;
 						};
 					};
-					sleep 0.3;
 				} forEach _synUnits;
 				deleteVehicle _x;
 			};
@@ -93,23 +87,25 @@ _units = allUnits;
 		
 		// Search for infantry or crewman and assign kit
 		if (_x isKindOf "CAManBase" && isNil {_x getVariable "dzn_gear"} && local _x) then {
-			[_x, _kitName] spawn dzn_fnc_gear_assignKit;
+			assignGearKit(_x, _kitName, false)
+			callAssignGearMP(_x, _kitName, false)
 		} else {
 			_crew = crew _x;
 			if (!(_crew isEqualTo []) && (local _x)) then {
 				{
 					if (isNil {_x getVariable "dzn_gear_done"}) then {
-						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
+						callAssignGearMP(_x, _kitName, false)
 					};
-					sleep 0.3;
 				} forEach _crew;
 			};
 		};
 	} else {
 		// Vehicle has variable with vehicle/box kit 
 		if (!isNil {_x getVariable "dzn_gear_box"} && { !(_x isKindOf "CAManBase") }) then {
-			[_x, _x getVariable "dzn_gear_box", true] spawn dzn_fnc_gear_assignKit;
+			callAssignGearMP(_x, _x getVariable "dzn_gear_box", true)
 		};
 	};
-	sleep 0.2;
 } forEach _units;
+
+waitUntil { time > 5 };
+enableSentences true;
