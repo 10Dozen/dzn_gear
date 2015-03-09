@@ -17,7 +17,20 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 	waitUntil { time > _this select 1 };
 };
 
-if (!isServer || !isDedicated) exitWith {};
+if (!isServer || !isDedicated) exitWith {
+	waitUntil { !isNil { dzn_fnc_gear_assignKit } && !isNil { player getVariable "dzn_gear" } };
+	[player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
+	
+	{
+		if (!isPlayer _x && local _x) then {
+			[_x, _x getVariable "dzn_gear"] call dzn_fnc_assignKit;
+		};
+	} forEach (units group player);
+};
+
+
+
+
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
@@ -51,12 +64,12 @@ if !(_logics isEqualTo []) then {
 				_kitName = getKitName("dzn_gear",9)
 				{
 					// Assign gear to infantry and to crewmen
-					if (_x  isKindOf "CAManBase") then {
+					if (_x  isKindOf "CAManBase" && local _x) then {
 						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 					} else {
 						private ["_crew"];
 						_crew = crew _x;
-						if !(_crew isEqualTo []) then {
+						if (!(_crew isEqualTo [])  && local _x) then {
 							{
 								[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 								sleep 0.3;
@@ -79,11 +92,11 @@ _units = allUnits;
 		_kitName = _x getVariable "dzn_gear";
 		
 		// Search for infantry or crewman and assign kit
-		if (_x isKindOf "CAManBase" && isNil {_x getVariable "dzn_gear_done"}) then {
+		if (_x isKindOf "CAManBase" && isNil {_x getVariable "dzn_gear"} && local _x) then {
 			[_x, _kitName] spawn dzn_fnc_gear_assignKit;
 		} else {
 			_crew = crew _x;
-			if !(_crew isEqualTo []) then {
+			if (!(_crew isEqualTo []) && (local _x)) then {
 				{
 					if (isNil {_x getVariable "dzn_gear_done"}) then {
 						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
