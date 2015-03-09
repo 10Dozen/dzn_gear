@@ -17,10 +17,34 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 	waitUntil { time > _this select 1 };
 };
 
-if !(isServer) exitWith {
+if (hasInterface && !isServer) exitWith {
 	waitUntil { !isNil { player getVariable "dzn_gear_assigned" } && !isNil { dzn_fnc_gear_assignKit } };
+
+	// Change gear of player localy
 	[player, player getVariable "dzn_gear_assigned"] call dzn_fnc_gear_assignKit;
+	
+	// Get local groupmembers and assign gear on them:
+	_localUnits = units group player;
+	{
+		if (local _x) then {
+			if (_x  isKindOf "CAManBase") then {
+				[_x, _kitName] spawn dzn_fnc_gear_assignKit;
+			} else {
+				private ["_crew"];
+				_crew = crew _x;
+				if !(_crew isEqualTo []) then {
+					{
+						[_x, _kitName] spawn dzn_fnc_gear_assignKit;
+						sleep 0.3;
+					} forEach _crew;
+				};
+			};
+			[_x, _x getVariable "dzn_gear_assigned"] call dzn_fnc_gear_assignKit;
+		};
+	} forEach _localUnits;
 };
+
+
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
