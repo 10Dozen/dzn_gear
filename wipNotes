@@ -1,3 +1,16 @@
-1) Search all units for assign gear
-2) For each add variable "dzn_gear" with kitname
-3)
+| Search all units for assign gear
+| For each add variable "dzn_gear" and "dzn_gear_box" with kitname
+| On Player: 
+|| if Player
+||| Run assignKit
+|| forEach (units group player)
+||| if unit !isPlayer && unit is local to player
+|||| Run assignKit
+
+| On Server || Headless
+|| forEach entities
+||| if (local to server) 
+|||| if (has dzn_gear)
+||||| run assignKit
+|||| if (has dzn_gear_box)
+||||| run assignKitBox?
