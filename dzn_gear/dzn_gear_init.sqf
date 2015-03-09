@@ -17,7 +17,7 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 	waitUntil { time > _this select 1 };
 };
 
-if (hasInterface || !isServer || !isDedicated) exitWith {};
+if (hasInterface && !isServer) exitWith {};
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
