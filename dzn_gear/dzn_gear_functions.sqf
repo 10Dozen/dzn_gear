@@ -3,6 +3,11 @@
 // FUNCTIONS
 // **************************
 
+dzn_fnc_gear_assignKitMP = {
+	// MP Wrap of dzn_fnc_gear_assignGear
+	[player, _this] call dzn_fnc_gear_assignKit;
+};
+
 dzn_fnc_gear_assignKit = {
 	/*
 		Resolve given kit and call function to assign existing kit to unit.	
@@ -17,10 +22,12 @@ dzn_fnc_gear_assignKit = {
 	private ["_kit","_randomKit"];	
 	(_this select 0) setVariable ["dzn_gear_assigned", _this select 1, true];
 	
-	waitUntil { !isNil { dzn_fnc_gear_assignKit } && !isNil {dzn_gear_kitsInitialized}  };
+	waitUntil { !isNil { dzn_fnc_gear_assignGear } && !isNil {dzn_gear_kitsInitialized}  };
 	
 	// If is player - run script on player localy
-	if (isPlayer (_this select 0) && { !local (_this select 0)} ) exitWith {};	
+	if (isPlayer (_this select 0) && { !local (_this select 0)} ) exitWith {
+		[_this select 1, "dzn_fnc_gear_assignKitMP", _this select 0] call BIS_fnc_MP;
+	};	
 	
 	_kit = [];
 	
