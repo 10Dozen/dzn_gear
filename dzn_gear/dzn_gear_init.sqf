@@ -12,6 +12,8 @@
 // INITIALIZATION
 // **************************
 
+enableSentences false;
+
 // Delay before run
 if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then { 
 	waitUntil { time > _this select 1 };
@@ -23,7 +25,7 @@ if (!isNull player) then { assignKitToPlayer };
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
-enableSentences false;
+
 
 // Search for Logics with name or variable "dzn_gear"/"dzn_gear_box" and assign gear to synced units
 _logics = entities "Logic";
