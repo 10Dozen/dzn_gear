@@ -49,7 +49,7 @@ dzn_fnc_gear_assignKit = {
 			// selects a random kit name from given array
 			if !checkKitIsArray(_kit select 0) then {
 				_randomKit =  (_kit call BIS_fnc_selectRandom);
-				(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
+				(_this select 0) setVariable ["dzn_gear_assigned", _randomKit, true];
 				
 				// Convert from name(string) to kitArray(array)
 				_kit = convertKitnameToAKit(_randomKit);	
