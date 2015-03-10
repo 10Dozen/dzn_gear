@@ -6,7 +6,7 @@
 
 <h2>How To</h2>
 Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
-<br>Script should be ran with options<tt>[ editMode(BOOL), isServerSide(BOOL) ] execVM "dzn_gear_init.sqf";</tt>.
+<br>Script should be ran with options<tt>[ editMode(BOOL), startDelay(NUMBER, Optional) ] execVM "dzn_gear_init.sqf";</tt>.
 <br>
 
 <h3>Video HowTo</h3> 
@@ -61,7 +61,7 @@ There are several ways to assign kit to unit:
 After mission starts, all GameLogics will be checked. For any of them which have "dzn_gear" or "dzn_gear_box" in the name or as the variable all synchronized objects will be returned. For each object the chosen kitname will be checked for existence in file <tt>dzn_gear\dzn_gear_kit.sqf</tt> and then kit with such name will be assigned.
 Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kits will be assigned.
 <br>After gear assigned, unit/object updates with variable "dzn_gear_assigned" which store the name of assigned kit.
-<br>Seems that script should be runned from server side, so at the <tt>dzn_gear_init.sqf</tt> there is line <tt>if !(isServer) exitWith {};</tt> before any function or kit will be defined. If you want to use script at client side run script with arguments <tt>[ false, false ] execVM "dzn_gear_init.sqf";</tt>.
+<br>Script runs at mission initialization. If you want to delay it, use second argument - e.g. 15 seconds after mission start:  <tt>[ false,  15 ] execVM "dzn_gear_init.sqf";</tt>.
 <br>You can also use gear assignment "manually" using next function:
 <ul>
  <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_fnc_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
