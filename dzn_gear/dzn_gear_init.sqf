@@ -83,8 +83,6 @@ _units = allUnits;
 	// Unit has variable with infantry kit 
 	if (!isNil {_x getVariable "dzn_gear"} && _x isKindOf "CAManBase") then {				
 		// Infantry - assign gear via MP (to local)
-		// assignGearKit(_x, _kitName, false)			
-		// player sideChat "Assign gear - INF";
 		callAssignGearMP(_x, (_x getVariable "dzn_gear"), false)
 	};
 } forEach _units;
