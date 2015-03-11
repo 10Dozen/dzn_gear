@@ -25,8 +25,6 @@ if (!isNull player) then { assignKitToPlayer };
 
 private ["_logics", "_kitName", "_synUnits","_units","_crew"];
 
-// player sideChat "START";
-
 // Search for Logics with name or variable "dzn_gear"/"dzn_gear_box" and assign gear to synced units
 _logics = entities "Logic";
 
@@ -36,22 +34,20 @@ if !(_logics isEqualTo []) then {
 		#define	getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
 		#define assignGearKit(UNIT,KIT,BOX)	if (BOX) then { UNIT setVariable ["dzn_gear_box", KIT, true]; } else { UNIT setVariable ["dzn_gear", KIT, true]; };
 		#define callAssignGearMP(UNIT,KIT,BOX)	if (!isPlayer UNIT) then { [ [UNIT,KIT,BOX], "dzn_fnc_gear_assignKit", UNIT ] call BIS_fnc_MP; };
-		// player sideChat "LOGIC";
+		
 		// Check for vehicle kits
 		if checkIsGearLogic("dzn_gear_box") then {
 			_synUnits = synchronizedObjects _x;
-			// player sideChat format ["Sync: %1", str[_synUnits]];
-			_kitName = getKitName("dzn_gear_box",13)
-			{
-				if (!(_x isKindOf "CAManBase") || {vehicle (crew _x select 0) != _x}) then {
-					_veh = if ((crew _x) isEqualTo []) then {
-						_x
-					} else {
-						vehicle (crew _x select 0)
+			
+			if !(_synUnits isEqualTo []) then {
+				_kitName = getKitName("dzn_gear_box",13)
+				{
+					if (!(_x isKindOf "CAManBase") || {vehicle (crew _x select 0) != _x}) then {
+						_veh = if ((crew _x) isEqualTo []) then { _x } else { vehicle (crew _x select 0)};
+						assignGearKit(_veh, _kitName, true)
 					};
-					assignGearKit(_veh, _kitName, true)
-				};
-			} forEach _synUnits;
+				} forEach _synUnits;
+			};
 			deleteVehicle _x;
 		} else {			
 			// Check for infantry kit (order defined by function BIS_fnc_inString - it will return True on 'dzn_gear_box' when searching 'dzn_gear'
@@ -79,9 +75,8 @@ if !(_logics isEqualTo []) then {
 	} forEach _logics;
 };
 
-// Searching for Units with Variable "dzn_gear" or "dzn_gear_box" to change gear
+// Searching for Units (men) with Variable "dzn_gear" to change gear
 _units = allUnits;
-// player sideChat format ["%1 - %2", count(_units), str[_units]];
 {
 	// player sideChat format ["Unit: %1 - %2", str(_x), typeOf _x];
 	
@@ -94,14 +89,13 @@ _units = allUnits;
 	};
 } forEach _units;
 
+// Searching for Vehicles with Variable "dzn_gear" or "dzn_gear_box" to change gear
 _vehicles = vehicles;
 {
-	// player sideChat format ["Veh: %1 - %2", str(_x), typeOf _x];
 	if (!isNil {_x getVariable "dzn_gear"}) then {
 		_crew = crew _x;
 		if (!(_crew isEqualTo [])) then {
 			{
-				// player sideChat format ["Crewman: %1", str(_x)];
 				if (isNil {_x getVariable "dzn_gear_done"}) then {
 					assignGearKit(_x, _kitName, false)
 					callAssignGearMP(_x, _kitName, false)
@@ -115,7 +109,6 @@ _vehicles = vehicles;
 		callAssignGearMP(_x, (_x getVariable "dzn_gear_box"), true)	
 	};
 } forEach _vehicles;
-
 
 waitUntil { time > 5 };
 enableSentences true;
