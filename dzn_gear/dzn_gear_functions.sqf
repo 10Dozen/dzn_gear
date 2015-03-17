@@ -14,13 +14,7 @@ dzn_fnc_gear_assignKit = {
 		OUTPUT: NULL
 	*/
 
-	private ["_kit","_randomKit"];	
-	(_this select 0) setVariable ["dzn_gear_assigned", _this select 1, true];
-	
-	waitUntil { !isNil { dzn_fnc_gear_assignKit } && !isNil {dzn_gear_kitsInitialized}  };
-	
-	// If is player - run script on player localy
-	if (isPlayer (_this select 0) && { !local (_this select 0)} ) exitWith {};	
+	private ["_kit","_randomKit"];
 	
 	_kit = [];
 	
@@ -42,7 +36,7 @@ dzn_fnc_gear_assignKit = {
 			// selects a random kit name from given array
 			if !checkKitIsArray(_kit select 0) then {
 				_randomKit =  (_kit call BIS_fnc_selectRandom);
-				(_this select 0) setVariable ["dzn_gear_assigned", _randomKit];
+				(_this select 0) setVariable ["dzn_gear", _randomKit, true];
 				
 				// Convert from name(string) to kitArray(array)
 				_kit = convertKitnameToAKit(_randomKit);	
@@ -71,7 +65,7 @@ dzn_fnc_gear_assignGear = {
 	
 	_unit = _this select 0;
 	_kit = _this select 1;
-		
+	
 	// Clear Gear
 	removeUniform _unit;
 	removeVest _unit;
@@ -172,6 +166,8 @@ dzn_fnc_gear_assignGear = {
 			};
 		};		
 	};
+	
+	_unit setVariable ["dzn_gear_done", true, true];
 };
 
 dzn_fnc_gear_assignBoxGear = {
@@ -209,6 +205,8 @@ dzn_fnc_gear_assignBoxGear = {
 	// Add Backpacks
 	_category = (_this select 1) select 3;
 	{_box addBackpackCargoGlobal _x;} forEach _category;
+	
+	_box setVariable ["dzn_gear_done", true, true];
 };
 
 // **************************
