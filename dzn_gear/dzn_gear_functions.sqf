@@ -66,6 +66,8 @@ dzn_fnc_gear_assignGear = {
 	_unit = _this select 0;
 	_kit = _this select 1;
 	
+	_unit setVariable ["BIS_enableRandomization", false];
+	
 	// Clear Gear
 	removeUniform _unit;
 	removeVest _unit;
