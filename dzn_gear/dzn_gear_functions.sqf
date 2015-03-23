@@ -122,15 +122,16 @@ dzn_fnc_gear_assignGear = {
 		assignMags(_forEachIndex, _x)
 	} forEach [_primaryRandom, _secondaryRandom, _handgunRandom];
 	
-	// for "_i" from 0 to 2 do {
-		// assignMags(_i, WT)
-		// if !(cItem(_i) select 0 == "") then {_unit addMagazines cItem(_i);};
-	// };
+	/*
+	for "_i" from 0 to 2 do {
+		assignMags(_i, WT)
+		if !(cItem(_i) select 0 == "") then {_unit addMagazines cItem(_i);};
+	};
+	*/
 	
 	// Add Primary Weapon and accessories
 	_category = _kit select 1;
 	assignWeapon(0,_primaryRandom)
-	//assignGear(0, addWeapon);
 	for "_i" from 1 to count(_category) do {
 		assignGear(_i, addPrimaryWeaponItem);
 	};
@@ -138,12 +139,13 @@ dzn_fnc_gear_assignGear = {
 	// Add Secondary Weapon
 	_category = _kit select 2;
 	assignWeapon(0,_secondaryRandom)
-	//assignGear(0, addWeapon);
+	for "_i" from 1 to count(_category) do {
+		assignGear(_i, addSecondaryWeaponItem);
+	};
 	
 	// Add Handgun and accessories
 	_category = _kit select 3;
 	assignWeapon(0,_handgunRandom)
-	//assignGear(0, addWeapon);
 	for "_i" from 1 to count(_category) do {
 		assignGear(_i, addHandgunItem);
 	};
