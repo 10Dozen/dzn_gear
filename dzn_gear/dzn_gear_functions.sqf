@@ -66,6 +66,9 @@ dzn_fnc_gear_assignGear = {
 	_unit = _this select 0;
 	_kit = _this select 1;
 	
+	// Disable randomization of unit's gear
+	_unit setVariable ["BIS_enableRandomization", false];
+	
 	// Clear Gear
 	removeUniform _unit;
 	removeVest _unit;
@@ -167,7 +170,13 @@ dzn_fnc_gear_assignGear = {
 		};		
 	};
 	
-	_unit setVariable ["dzn_gear_done", true, true];
+	sleep 1;
+	_checkGearAssigned = (primaryWeapon _unit == X) && (secondaryWeapon _unit == X) && (handgunWeapon _unit == X) && (uniform _unit ==X);
+	if (_checkGearAssigned) then {
+		_unit setVariable ["dzn_gear_done", true, true];
+	} else {
+		// Run assign by MP again;
+	};
 };
 
 dzn_fnc_gear_assignBoxGear = {
