@@ -66,6 +66,8 @@ dzn_fnc_gear_assignGear = {
 	_unit = _this select 0;
 	_kit = _this select 1;
 	
+	//	_itemsToCheck = [];
+	
 	// Disable randomization of unit's gear
 	_unit setVariable ["BIS_enableRandomization", false];
 	
@@ -172,12 +174,15 @@ dzn_fnc_gear_assignGear = {
 		};		
 	};
 	
-	sleep 1;
-	_checkGearAssigned = (primaryWeapon _unit == X) && (secondaryWeapon _unit == X) && (handgunWeapon _unit == X) && (uniform _unit ==X);
+	// Re-start script if no weapons given by script (locality troubles)
+	sleep 4;
+	_checkGearAssigned = true;
+	//_checkGearAssigned = (primaryWeapon _unit == _kit select 0) && (secondaryWeapon _unit == X) && (handgunWeapon _unit == X) && (uniform _unit ==X);
 	if (_checkGearAssigned) then {
 		_unit setVariable ["dzn_gear_done", true, true];
 	} else {
 		// Run assign by MP again;
+		[ [_unit, _kit, false], "dzn_fnc_gear_assignKit", _unit ] call BIS_fnc_MP;
 	};
 };
 
