@@ -132,7 +132,7 @@ if (_this select 0) then {
 			],
 			/* Secondary Weapon */
 			[
-				hasSecondaryThen(secondaryWeapon _unit)
+				hasSecondaryThen(secondaryWeapon _unit),
 				hasSecondaryThen((secondaryWeaponItems _unit) select 2),
 				hasSecondaryThen((secondaryWeaponItems _unit) select 0),
 				hasSecondaryThen((secondaryWeaponItems _unit) select 1)
