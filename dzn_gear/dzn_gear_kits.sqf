@@ -71,44 +71,84 @@ vehicleKit = [
 // Useful kits
 // ************************
 
+#define EMPTYWEAPON	["","","",""]
+
 //	***************
 //	Asad Loalysts Kits
 //	Mods: 	RHS, CUP
 //	***************
-#define ASAD_LOAYL_UNIFORM	"rhs_uniform_FROG01_m81"
+#define ASAD_LOYAL_UNIFORM	"rhs_uniform_FROG01_m81"
+#define ASAD_LOYAL_VEST		"rhs_6b23_ML_6sh92_radio"
 
 asadLoyalistsKit_SL = [
-	[ASAD_LOAYL_UNIFORM,"rhs_6b23_ML_6sh92_radio","","H_MilCap_gry",""],
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"","H_MilCap_gry",""],
 	["rhs_weap_akms","","",""],
-	[""],
-	["","","",""],
+	EMPTYWEAPON,
+	EMPTYWEAPON,
 	["ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","Binocular"],
 	[["rhs_30Rnd_762x39mm",7],["",0],["",0],["rhs_mag_rdg2_white",4],["MiniGrenade",3],["",0],["",0],["",0],["",0]],
-	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],
-	[]
+	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]
 ];
 
 asadLoyalistsKit_TL = [
-	"opforKit_TL_akms",
-	"opforKit_TL_akm"
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"CUP_B_AlicePack_Khaki","H_MilCap_gry",""],
+	[["rhs_weap_akms_gp25","rhs_weap_akm_gp25"],"","",""],
+	EMPTYWEAPON,
+	EMPTYWEAPON,
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","Binocular"],
+	[[["rhs_30Rnd_762x39mm",8],["rhs_30Rnd_762x39mm",8]],["",0],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["rhs_VOG25",10],["rhs_VG40OP_white",3],["rhs_VG40OP_green",2],["rhs_VG40OP_red",2]],
+	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]
 ];
-opforKit_TL_akms = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","H_MilCap_gry",""],["rhs_weap_akms_gp25","","",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","Binocular"],[["rhs_30Rnd_762x39mm",8],["",0],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["rhs_VOG25",10],["rhs_VG40OP_white",3],["rhs_VG40OP_green",2],["rhs_VG40OP_red",2]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
-opforKit_TL_akm = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","H_MilCap_gry",""],["rhs_weap_akm_gp25","","",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","Binocular"],[["rhs_30Rnd_762x39mm",4],["",0],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["rhs_VOG25",9],["rhs_VG40OP_white",3],["rhs_VG40OP_green",2],["rhs_VG40OP_red",2]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
 
 asadLoyalistsKit_R = [
-	"opforKit_R_ak74",
-	"opforKit_R_aks74"
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],
+	[["CUP_arifle_AK74","CUP_arifle_AKS74"],"","",""],
+	EMPTYWEAPON,
+	EMPTYWEAPON,
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	[[["CUP_30Rnd_545x39_AK_M",10],["CUP_30Rnd_545x39_AK_M",10]],["",0],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["",0],["",0],["",0]],
+	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]
 ];
-asadLoyalistsKit_R_ak74 = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],["CUP_arifle_AK74","","",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["CUP_30Rnd_545x39_AK_M",10],["",0],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["",0],["",0],["",0]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
-asadLoyalistsKit_R_aks74 = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],["CUP_arifle_AKS74","","",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["CUP_30Rnd_545x39_AK_M",9],["",0],["",0],["rhs_mag_rdg2_white",8],["MiniGrenade",3],["",0],["",0],["",0]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
 
-asadLoyalistsKit_MG = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],["CUP_lmg_PKM","","",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["CUP_100Rnd_TE4_LRT4_762x54_PK_Tracer_Green_M",5],["",0],["",0],["rhs_mag_rdg2_white",8],["MiniGrenade",3],["",0],["",0],["",0],["",0]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
-asadLoyalistsKit_G = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],["rhs_weap_ak74m_gp25","","rhs_acc_dtk",""],[""],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["rhs_30Rnd_545x39_AK",6],["",0],["",0],["rhs_mag_rdg2_white",8],["MiniGrenade",3],["rhs_VOG25",12],["",0],["",0],["",0]],[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]];
-asadLoyalistsKit_RAT = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],["CUP_arifle_AKS74","","",""],["rhs_weap_rpg7"],["","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["CUP_30Rnd_545x39_AK_M",8],["rhs_rpg7_OG7V_mag",4],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["",0],["",0],["",0],["",0]],[["AGM_Bandage",5],["AGM_Morphine",2],["",0],["",0],["",0],["",0]],[]];
+asadLoyalistsKit_MG = [
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],
+	["CUP_lmg_PKM","","",""],
+	EMPTYWEAPON,
+	EMPTYWEAPON,
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	[["CUP_100Rnd_TE4_LRT4_762x54_PK_Tracer_Green_M",5],["",0],["",0],["rhs_mag_rdg2_white",8],["MiniGrenade",3],["",0],["",0],["",0],["",0]],
+	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]
+];
 
-asadLoyalistsKit_MM = [["rhs_uniform_FROG01_m81","rhs_6b23_ML_6sh92_radio","","rhs_6b27m_green",""],["rhs_weap_svdp_wd","rhs_acc_pso1m2","",""],[""],["rhs_weap_pya","","",""],["ItemMap","ItemCompass","ItemWatch","ItemRadio"],[["rhs_10Rnd_762x54mmR_7N1",9],["",0],["rhs_mag_9x19_17",4],["rhs_mag_rdg2_white",5],["MiniGrenade",1],["",0],["",0],["",0],["",0]],[["",0],["",0],["",0],["",0],["",0],["",0]],[]];
+asadLoyalistsKit_G = [
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],
+	["rhs_weap_ak74m_gp25","","rhs_acc_dtk",""],
+	EMPTYWEAPON,
+	EMPTYWEAPON,
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	[["rhs_30Rnd_545x39_AK",6],["",0],["",0],["rhs_mag_rdg2_white",8],["MiniGrenade",3],["rhs_VOG25",12],["",0],["",0],["",0]],
+	[["AGM_Bandage",4],["AGM_Morphine",3],["",0],["",0],["",0],["",0]],[]
 
+];
+asadLoyalistsKit_RAT = [
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"CUP_B_AlicePack_Khaki","rhs_6b27m_green",""],
+	["CUP_arifle_AKS74","","",""],
+	["rhs_weap_rpg7","","",""],
+	EMPTYWEAPON,
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	[["CUP_30Rnd_545x39_AK_M",8],["rhs_rpg7_OG7V_mag",4],["",0],["rhs_mag_rdg2_white",5],["MiniGrenade",3],["",0],["",0],["",0],["",0]],
+	[["AGM_Bandage",5],["AGM_Morphine",2],["",0],["",0],["",0],["",0]],[]
+];
 
+asadLoyalistsKit_MM = [
+	[ASAD_LOYAL_UNIFORM,ASAD_LOYAL_VEST,"","rhs_6b27m_green",""],
+	["rhs_weap_svdp_wd","rhs_acc_pso1m2","",""],
+	EMPTYWEAPON,
+	["rhs_weap_pya","","",""],
+	["ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	[["rhs_10Rnd_762x54mmR_7N1",9],["",0],["rhs_mag_9x19_17",4],["rhs_mag_rdg2_white",5],["MiniGrenade",1],["",0],["",0],["",0],["",0]],
+	[["",0],["",0],["",0],["",0],["",0],["",0]],[]
+];
 
 
 vehicleCombatKit = [
@@ -193,7 +233,6 @@ vehicleMediboxKit = [
 #define	INS_HEADGEAR	["H_ShemagOpen_tan","H_ShemagOpen_khk","rhs_fieldcap_ml","rhs_beanie_green","rhs_Booniehat_m81"]
 #define	INS_MASK		["G_Balaclava_blk","G_Bandanna_blk","G_Bandanna_khk"]
 #define INS_ITEMS	["ItemCompass","ItemWatch","ItemRadio"]
-#define EMPTYWEAPON	["","","",""]
 
 
 insurgentRandomKit = [
