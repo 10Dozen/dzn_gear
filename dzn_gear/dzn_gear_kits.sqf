@@ -20,7 +20,7 @@ randomizedKit2 = [
 		"muzzle_snds_H_SW",
 		""
 	],
-	[""],
+	["","",""],
 	[
 		["hgun_Pistol_heavy_01_F","hgun_P07_F"],
 		"optic_MRD",
