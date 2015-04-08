@@ -75,6 +75,27 @@
 			<classname id="0"></classname>
 			<classname id="1"></classname>
 		</item>
+		<item id="1" type="Optics Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
+		<item id="2" type="Muzzle Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
+		<item id="3" type="Pointer Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
 	</itemCategory>
 	<itemCategory id="3" type="Handgun Weapon">
 		<item id="0" type="Weapon">
