@@ -376,16 +376,13 @@ dzn_fnc_gear_assignGear = {
 	};
 	
 	// Re-start script if no weapons given by script (locality troubles)
-	// sleep 4;
-	// _gearAfter = _unit call dzn_fnc_gear_getGear;
-	
-	//_checkGearAssigned = (primaryWeapon _unit == _kit select 0) && (secondaryWeapon _unit == X) && (handgunWeapon _unit == X) && (uniform _unit ==X);
-	// if !(_gearBefore isEqualTo _gearAfter) then {
-		// _unit setVariable ["dzn_gear_done", true, true];
-	// } else {
+	_gearAfter = _unit call dzn_fnc_gear_getGear;
+	if (_kit isEqualTo _gearAfter) then {
+		_unit setVariable ["dzn_gear_done", true, true];
+	} else {
 		// Run assign by MP again;
-		// [ [_unit, _kit, false], "dzn_fnc_gear_assignKit", _unit ] call BIS_fnc_MP;
-	// };
+		[ [_unit, _kit, false], "dzn_fnc_gear_assignKit", _unit ] call BIS_fnc_MP;
+	};
 };
 
 dzn_fnc_gear_assignBoxGear = {
