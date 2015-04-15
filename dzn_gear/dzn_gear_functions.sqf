@@ -126,22 +126,26 @@ dzn_fnc_gear_getGear = {
 			hasPrimaryThen(primaryWeapon _unit),
 			hasPrimaryThen((primaryWeaponItems _unit) select 2),
 			hasPrimaryThen((primaryWeaponItems _unit) select 0),
-			hasPrimaryThen((primaryWeaponItems _unit) select 1)					
+			hasPrimaryThen((primaryWeaponItems _unit) select 1),
+			hasPrimaryThen((primaryWeaponItems _unit) select 3)
 		],
 		/* Secondary Weapon */
 		[
 			hasSecondaryThen(secondaryWeapon _unit),
 			hasSecondaryThen((secondaryWeaponItems _unit) select 2),
 			hasSecondaryThen((secondaryWeaponItems _unit) select 0),
-			hasSecondaryThen((secondaryWeaponItems _unit) select 1)
+			hasSecondaryThen((secondaryWeaponItems _unit) select 1),
+			hasSecondaryThen((secondaryWeaponItems _unit) select 3)
 		],
 		/* Handgun Weapon */
 		[
 			hasHandgunThen(handgunWeapon _unit),
 			hasHandgunThen((handgunItems _unit) select 2),
 			hasHandgunThen((handgunItems _unit) select 0),
-			hasHandgunThen((handgunItems _unit) select 1)
+			hasHandgunThen((handgunItems _unit) select 1),
+			hasHandgunThen((handgunItems _unit) select 3)
 		],
+		
 		/* Personal assigned Items */
 		assignedItems _unit,
 		/* Magazines */
