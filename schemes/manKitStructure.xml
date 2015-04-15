@@ -66,6 +66,13 @@
 			<classname id="0"></classname>
 			<classname id="1"></classname>
 		</item>
+		<item id="4" type="Bipod Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
 	</itemCategory>
 	<itemCategory id="2" type="Secondary (Launcher) Weapon">
 		<item id="0" type="Weapon">
@@ -96,6 +103,13 @@
 			<classname id="0"></classname>
 			<classname id="1"></classname>
 		</item>
+		<item id="4" type="Bipod Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
 	</itemCategory>
 	<itemCategory id="3" type="Handgun Weapon">
 		<item id="0" type="Weapon">
@@ -120,6 +134,13 @@
 			<classname id="1"></classname>
 		</item>
 		<item id="3" type="Pointer Attachement">
+			<!-- Simple Kit -->
+			<classname></classname>
+			<!-- Randomized Kit -->
+			<classname id="0"></classname>
+			<classname id="1"></classname>
+		</item>
+		<item id="4" type="Bipod Attachement">
 			<!-- Simple Kit -->
 			<classname></classname>
 			<!-- Randomized Kit -->
@@ -237,7 +258,6 @@
 		</item>
 	</itemCategory>
 </kit>
-
 
 <!-- Random Kit -->
 <randomKit>
