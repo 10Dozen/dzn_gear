@@ -369,7 +369,7 @@ dzn_fnc_gear_assignGear = {
 	_category = _kit select 6;
 	for "_i" from 0 to count(_category) do {
 		if !(cItem(_i) select 0 == "") then {
-			for "_j" from 0 to (cItem(_i) select 1) do {
+			for "_j" from 1 to (cItem(_i) select 1) do {
 				_unit addItem (cItem(_i) select 0);
 			};
 		};		
