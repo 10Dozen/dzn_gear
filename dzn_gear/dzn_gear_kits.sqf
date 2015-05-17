@@ -1,6 +1,12 @@
 // Gear Kits
 #include "dzn_gear_defaultGearElements"
 
+// ******** USEFUL MACROSES *******
+// Macros for the list of items to be chosen randomly
+#define RANDOM_ITEM	["H_HelmetB_grass","H_HelmetB"]
+// Macros to give the item only if daytime is in given inerval (e.g. to give NVGoggles only at night)
+#define NIGHT_ITEM(X)	if (daytime < 9 || daytime > 18) then { X } else { "" }
+
 /*
 // Simple Kit
 simpleKit = [["U_I_G_Story_Protagonist_F","V_PlateCarrierIA1_dgtl","B_AssaultPack_blk","H_MilCap_ocamo","G_Balaclava_combat"],["arifle_Mk20_GL_F","optic_Holosight_smg","",""],["launch_B_Titan_short_F"],["hgun_Rook40_F","","",""],["ItemCompass","ItemWatch"],[["30Rnd_556x45_Stanag",9],["",0],["16Rnd_9x21_Mag",3],["1Rnd_HE_Grenade_shell",5],["Titan_AT",1],["",0],["",0],["",0],["",0]],[["",0],["",0],["",0],["",0],["",0],["",0]],[]];
