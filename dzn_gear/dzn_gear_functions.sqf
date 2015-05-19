@@ -304,7 +304,7 @@ dzn_fnc_gear_assignGear = {
 	#define assignWeapon(IDX,WT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit addWeaponGlobal cItem(IDX); }; } else { _unit addWeaponGlobal (cItem(IDX) select WT); };
 	#define getRandomType(IDX)	if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
 	#define assignMags(IDX, WT)	if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
-	
+
 	// Adding UVBHG
 	_category = _kit select 0;
 	assignGear(0, forceAddUniform)
@@ -322,7 +322,27 @@ dzn_fnc_gear_assignGear = {
 	
 	// Add Primary, Secondary and Handgun Magazines
 	{
-		assignMags(_forEachIndex, _x)
+		if (_forEachIndex == 0 && {dzn_gear_primagsToVest && vest _unit != ""}) then {
+			// Assigning PriMags to Vest if vest exists: cItem(0) - item from category (5 - is for all mags)
+			private["_magToVest","_magsMaxCount"];
+			_magToVest = if (typename (cItem(0) select 0) == "STRING") then { 
+				cItem(0)	/* Single type of PriMag: cItem(0) = ["Classname", 2] */
+			} else {
+				cItem(0) select _x /* Array type of PriMag */
+			};
+			
+			_magsMaxCount = if (_magToVest select 1 > dzn_gear_maxMagsToVest) then { dzn_gear_maxMagsToVest } else { _magToVest select 1 };
+			
+			for "_i" from 1 to _magsMaxCount do {
+				_unit addItemToVest (_magToVest select 0);
+			};
+			
+			if ((_magToVest select 1) - _magsMaxCount > 0) then {
+				_unit addMagazines [ _magToVest select 0, (_magToVest select 1) - _magsMaxCount ] ; 
+			};
+		} else {
+			assignMags(_forEachIndex, _x)
+		};		
 	} forEach [_primaryRandom, _secondaryRandom, _handgunRandom];
 	
 	/*
