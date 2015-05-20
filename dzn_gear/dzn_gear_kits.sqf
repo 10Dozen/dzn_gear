@@ -1,5 +1,5 @@
 // Gear Kits
-#include "dzn_gear_defaultGearElements"
+//#include "dzn_gear_defaultGearElements.sqf"
 
 // ******** USEFUL MACROSES *******
 // Macros for the list of items to be chosen randomly
