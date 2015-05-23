@@ -87,13 +87,13 @@ dzn_fnc_gear_getGear = {
 
 			switch (_item) do {
 				case _pwMag: {
-					_pwMags = [_item, _count + 1];
+					_pwMags = [_item, _count];
 				};
 				case _swMag: {
-					_swMags = [_item, _count + 1];
+					_swMags = [_item, _count];
 				};
 				case _hgMag: {
-					_hgMags = [_item, _count + 1];
+					_hgMags = [_item, _count];
 				};
 				default {
 					call compile format [
@@ -278,23 +278,30 @@ dzn_fnc_gear_assignGear = {
 	removeBackpack _unit;
 	removeHeadgear _unit;
 	removeGoggles _unit;
-	{
-		_unit unassignItem _x;
-		_unit removeItem _x;
-	} forEach ["NVGoggles", "NVGoggles_OPFOR", "NVGoggles_INDEP", "ItemRadio", "ItemGPS", "ItemMap", "ItemCompass", "ItemWatch"];
+	removeAllAssignedItems _unit;
 	removeAllWeapons _unit;
 	
 	waitUntil { (items _unit) isEqualTo [] };
 	
 	/* 		Adding gear macros
-		cItem(INDEX) - get item with INDEX from currently chosen category of items in kit array
-		isItem(INDEX) - checks is selected item value is type of string (not empty array)
-		NotEmpty(INDEX) - checks is selected item is a classname, not an empty string ("")
-		getRandom(INDEX) - select random from array which selected item is
-		assignGear(IDX,ACT) - assign selected item (if item is classname) or assign random item from given (if item is array)
-		assignWeapon(IDX,WT) - assign selected weapon (if item is classname) or assign one of the chosen weapons (if item is array)
-		getRandomType(IDX) - select random index for choosing random weapon if item is not a string (classname), but is array
-		assignMags(IDX, WT) - assign selected magazine (if item is classname) or assign on of the chosen magazines (if item is array)
+		cItem(INDEX) 
+			- get item with INDEX from currently chosen category of items in kit array
+		isItem(INDEX) 
+			- checks is selected by INDEX item value is type of string (not empty array)
+		NotEmpty(INDEX) 
+			- checks is selected by INDEX item is a classname, not an empty string ("")
+		getRandom(INDEX) 
+			- select random from array which selected by INDEX item is
+		assignGear(IDX,ACT) 
+			- assign selected by IDX item (if item is classname) or assign random item from given (if item is array). ACT - command to assign (addWEapon, addItem, etc.)
+		assignWeapon(IDX,WT) 
+			- assign selected by IDX weapon (if item is classname) or assign one of the chosen weapons (if item is array, WT - index of chosen element)
+		getRandomType(IDX) 
+			- select random index for choosing random weapon if item is not a string (classname), but is array
+		assignMags(IDX, WT) 
+			- assign selected magazine (if item is classname) or assign one of the chosen magazines (if item is array)
+		assignFirstMag(IDX,WT)
+			- assign 1 selected magazine(classname or random from array of magazines)
 	*/
 	#define cItem(INDEX)		(_category select INDEX)
 	#define isItem(INDEX)		(typename cItem(INDEX) == "STRING")
@@ -302,9 +309,41 @@ dzn_fnc_gear_assignGear = {
 	#define getRandom(INDEX)	(cItem(INDEX) call BIS_fnc_selectRandom)
 	#define assignGear(IDX, ACT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit ACT cItem(IDX); }; } else { _unit ACT getRandom(IDX); };
 	#define assignWeapon(IDX,WT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit addWeaponGlobal cItem(IDX); }; } else { _unit addWeaponGlobal (cItem(IDX) select WT); };
-	#define getRandomType(IDX)	if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
-	#define assignMags(IDX, WT)	if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
+	#define getRandomType(IDX)		if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
+	#define assignMags(IDX, WT)		if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
+	#define assignFirstMag(IDX,WT)	if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazine (cItem(IDX) select 0); } else { _unit addMagazine ((cItem(IDX) select WT) select 0); };	
+	
+	// Backpack to add first mag for all weapons
+	_unit addBackpack "B_Carryall_khk";
+		
+	// Get random primary, secondary and handgun weapons and mags
+	_category = _kit select 5;
+	
+	_primaryRandom = getRandomType(0);
+	_secondaryRandom = getRandomType(1);
+	_handgunRandom = getRandomType(2);
+	
+	// Assigning weapons with first mags
+	{
+		// - Add mag
+		_category = _kit select 5;
+		assignFirstMag(_forEachIndex, (_x select 0))
+			
+		// Add Weapon and accessories
+		_category = _kit select (_forEachIndex + 1);
+		assignWeapon(0, (_x select 0))
+		for "_i" from 1 to count(_category) do {
+			assignGear(_i, (_x select 1));
+		};	
+	} forEach [
+		[_primaryRandom, addPrimaryWeaponItem],
+		[_secondaryRandom, addSecondaryWeaponItem],
+		[_handgunRandom, addHandgunItem]	
+	];
 
+	// Removing backpack for first mags
+	removeBackpack _unit;	
+	
 	// Adding UVBHG
 	_category = _kit select 0;
 	assignGear(0, forceAddUniform)
@@ -312,13 +351,6 @@ dzn_fnc_gear_assignGear = {
 	assignGear(2, addBackpackGlobal)
 	assignGear(3, addHeadgear)
 	assignGear(4, addGoggles)
-
-	// Get random primary, secondary and handgun weapons and mags
-	_category = _kit select 5;
-	
-	_primaryRandom = getRandomType(0);
-	_secondaryRandom = getRandomType(1);
-	_handgunRandom = getRandomType(2);
 	
 	// Add Primary, Secondary and Handgun Magazines
 	{
@@ -344,34 +376,6 @@ dzn_fnc_gear_assignGear = {
 			assignMags(_forEachIndex, _x)
 		};		
 	} forEach [_primaryRandom, _secondaryRandom, _handgunRandom];
-	
-	/*
-	for "_i" from 0 to 2 do {
-		assignMags(_i, WT)
-		if !(cItem(_i) select 0 == "") then {_unit addMagazines cItem(_i);};
-	};
-	*/
-	
-	// Add Primary Weapon and accessories
-	_category = _kit select 1;
-	assignWeapon(0,_primaryRandom)
-	for "_i" from 1 to count(_category) do {
-		assignGear(_i, addPrimaryWeaponItem);
-	};
-	
-	// Add Secondary Weapon
-	_category = _kit select 2;
-	assignWeapon(0,_secondaryRandom)
-	for "_i" from 1 to count(_category) do {
-		assignGear(_i, addSecondaryWeaponItem);
-	};
-	
-	// Add Handgun and accessories
-	_category = _kit select 3;
-	assignWeapon(0,_handgunRandom)
-	for "_i" from 1 to count(_category) do {
-		assignGear(_i, addHandgunItem);
-	};
 	
 	// Add items
 	_category = _kit select 4;
