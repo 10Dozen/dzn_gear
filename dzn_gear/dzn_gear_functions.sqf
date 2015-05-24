@@ -107,7 +107,15 @@ dzn_fnc_gear_getGear = {
 			};
 		};
 	} forEach _mags;
-
+	
+	// Add loaded magazines	
+	{
+		call compile format [
+			"if (%1Mag != '' && { %1Mags isEqualTo ['',0] }) then { %1Mags = [%1Mag, 0]; };",
+			_x
+		];			
+	} forEach ["_pw","_sw","_hg"];	
+	
 	// Get structured array of gear via macroses
 	#define hasPrimaryThen(PW)		if (primaryWeapon _unit != "") then {PW} else {""}
 	#define hasSecondaryThen(SW)	if (secondaryWeapon _unit != "") then {SW} else {""}
@@ -294,6 +302,8 @@ dzn_fnc_gear_assignGear = {
 			- select random from array which selected by INDEX item is
 		assignGear(IDX,ACT) 
 			- assign selected by IDX item (if item is classname) or assign random item from given (if item is array). ACT - command to assign (addWEapon, addItem, etc.)
+		assignWeaponItem(IDX,ACT)
+			- assign item for weapon of given IDX with ACT command name		
 		assignWeapon(IDX,WT) 
 			- assign selected by IDX weapon (if item is classname) or assign one of the chosen weapons (if item is array, WT - index of chosen element)
 		getRandomType(IDX) 
@@ -308,6 +318,7 @@ dzn_fnc_gear_assignGear = {
 	#define NotEmpty(INDEX)		(cItem(INDEX) != "")
 	#define getRandom(INDEX)	(cItem(INDEX) call BIS_fnc_selectRandom)
 	#define assignGear(IDX, ACT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit ACT cItem(IDX); }; } else { _unit ACT getRandom(IDX); };
+	#define assignWeaponItem(IDX,ACT)	if isItem(IDX) then { if NotEmpty(IDX) then { call compile format["_unit %2 (_category select %1);",IDX, ACT];  }; } else { call compile format["_unit %2 ((_category select (%1)) call BIS_fnc_selectRandom);",IDX, ACT]; };
 	#define assignWeapon(IDX,WT)	if isItem(IDX) then { if NotEmpty(IDX) then { _unit addWeaponGlobal cItem(IDX); }; } else { _unit addWeaponGlobal (cItem(IDX) select WT); };
 	#define getRandomType(IDX)		if isItem(IDX) then { 0 } else { round(random(count cItem(IDX) - 1)) }
 	#define assignMags(IDX, WT)		if (typename (cItem(IDX) select 0) == "STRING") then { _unit addMagazines cItem(IDX); } else { _unit addMagazines (cItem(IDX) select WT); };
@@ -328,17 +339,17 @@ dzn_fnc_gear_assignGear = {
 		// - Add mag
 		_category = _kit select 5;
 		assignFirstMag(_forEachIndex, (_x select 0))
-			
-		// Add Weapon and accessories
+
+		// - Add Weapon and accessories
 		_category = _kit select (_forEachIndex + 1);
 		assignWeapon(0, (_x select 0))
 		for "_i" from 1 to count(_category) do {
-			assignGear(_i, (_x select 1));
+			 assignWeaponItem(_i, _x select 1);
 		};	
 	} forEach [
-		[_primaryRandom, addPrimaryWeaponItem],
-		[_secondaryRandom, addSecondaryWeaponItem],
-		[_handgunRandom, addHandgunItem]	
+		[_primaryRandom, "addPrimaryWeaponItem"],
+		[_secondaryRandom, "addSecondaryWeaponItem"],
+		[_handgunRandom, "addHandgunItem"]	
 	];
 
 	// Removing backpack for first mags
@@ -351,8 +362,9 @@ dzn_fnc_gear_assignGear = {
 	assignGear(2, addBackpackGlobal)
 	assignGear(3, addHeadgear)
 	assignGear(4, addGoggles)
-	
+
 	// Add Primary, Secondary and Handgun Magazines
+	_category = _kit select 5;
 	{
 		if (_forEachIndex == 0 && {dzn_gear_primagsToVest && vest _unit != ""}) then {
 			// Assigning PriMags to Vest if vest exists: cItem(0) - item from category (5 - is for all mags)
