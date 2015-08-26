@@ -461,6 +461,25 @@ dzn_fnc_gear_assignBoxGear = {
 };
 
 // **************************
+// AEROSAN'S GET/SET LOADOUT
+// **************************
+aerosan_fnc_getLoadout = compile preprocessFileLineNumbers " dzn_gear/dzn_gear/aerosan/get_loadout.sqf";
+aerosan_fnc_setLoadout = compile preprocessFileLineNumbers " dzn_gear/dzn_gear/aerosan/set_loadout.sqf";
+
+dzn_fnc_gear_getSimpleGear = {
+	// @SimpleGear = @Unit call dzn_gear_getSimpleGear
+	[_this select 0, "ammo"] call aerosan_fnc_getLoadout;
+};
+
+dzn_fnc_gear_setSimpleGear = {
+	// [@Unit, @SimpleGear] call dzn_fnc_gear_setSimpleGear
+	
+	[_this select 0, _this select 1, ["ammo"]] call aerosan_fnc_setLoadout;
+};
+
+
+// **************************
 // EDIT MODE
 // **************************
 #include "dzn_gear_editMode.sqf"
+
