@@ -7,12 +7,12 @@ if (_this select 0) then {
 		/*
 			call dzn_fnc_gear_getGear
 			
-			OUTPUT: colorString
+			OUTPUT: colorString and copied kit in clipboard
 		*/
 		private ["_colorString"];
 		
 		// Copying to clipboard
-		copyToClipboard ("_kitName = " + str(_this) + ";");
+		copyToClipboard ("newKitName = " + str(_this) + ";");
 	
 		// Hint here or title
 		#define GetColors ["F","C","B","3","6","9"] call BIS_fnc_selectRandom
