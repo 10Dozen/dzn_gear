@@ -1,27 +1,35 @@
 // **************************
-// SETTINGS
+// 	DZN GEAR
+//
+//
+//	SETTINGS
 // **************************
 
-// Option to assign magazines of primary weapons to vest with priority
-dzn_gear_primagsToVest = false;
-dzn_gear_maxMagsToVest = 3;
-
-
+dzn_gear_defaultBackpack = "B_Carryall_khk";
 
 
 // **************************
 // FUNCTIONS
 // **************************
-#include "dzn_gear_functions.sqf"
+#include "fn\dzn_gear_functions.sqf"
+
+// **************************
+// EDIT MODE
+// **************************
+call compile preProcessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";
 
 // **************************
 // GEARS
 // **************************
 #include "dzn_gear_kits.sqf"
 
+
+
 // **************************
 // INITIALIZATION
 // **************************
+
+
 
 enableSentences false;
 
