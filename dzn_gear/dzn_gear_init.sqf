@@ -16,7 +16,7 @@ dzn_gear_defaultBackpack = "B_Carryall_khk";
 // **************************
 // EDIT MODE
 // **************************
-call compile preProcessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";
+if (_this select 0) then {call compile preProcessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";};
 
 // **************************
 // GEARS
