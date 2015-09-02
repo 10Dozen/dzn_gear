@@ -130,19 +130,23 @@ dzn_fnc_gear_editMode_showKeybinding = {
 dzn_fnc_gear_editMode_createKit = {
 	// @Add action? call dzn_fnc_gear_editMode_createKit
 	// RETURN: 	Copy kit to clipboard, Add action in actin menu, Show notification
-	private["_colorString","_addKitAction","_kit"];
+	private["_colorString","_addKitAction","_kit","_addKitAction","_addCargoKitAction","_showHint"];
 	#define GetColors ["F","C","B","3","6","9"] call BIS_fnc_selectRandom
 	_colorString = format [
 		"#%1%2%3%4%5%6", GetColors, GetColors, GetColors, GetColors, GetColors, GetColors
-	]; 
-	
-	hintSilent parseText format[      
-		"<t size='1.25' color='%1'>Gear has been copied to clipboard</t>",     
-		_colorString
-	];
+	]; 	
+
+	_showHint = {
+		// [@UnitType("Player","Cargo","Unit"), @ColorString] call _showHint
+		hintSilent parseText format[      
+			"<t size='1.25' color='%2'>Gear has been copied from <t underline='true'>%1</t> to clipboard</t>"     
+			,_this select 0
+			,_this select 1			
+		];
+	};
 	
 	_addKitAction = {
-		// @ColorString, @Kit
+		// @ColorString, @Kit call _addKitAction
 		player addAction [
 			format [
 				"<t color='%1'>Kit with %3 at %2</t>"
@@ -154,7 +158,7 @@ dzn_fnc_gear_editMode_createKit = {
 				if (isNull cursorTarget) then {
 					[player, _this select 3] call dzn_fnc_gear_assignGear;
 				} else {
-					if (cursorTarget isKindOf "CAMAnBase") then {
+					if (cursorTarget isKindOf "CAManBase") then {
 						[cursorTarget, _this select 3] call dzn_fnc_gear_assignGear;
 					};
 				};
@@ -163,20 +167,46 @@ dzn_fnc_gear_editMode_createKit = {
 		];	
 	};
 	
+	_addCargoKitAction = {
+		// @ColorString, @Kit call _addKitAction
+		player addAction [
+			format [
+				"<t color='%1'>Cargo Kit with from %3 at %2</t>"			
+				, _this select 0
+				, [time/3600, "HH:MM:SS"] call BIS_fnc_timeToString
+				, typeOf cursorTarget			
+			]
+			, {
+				if (!isNull cursorTarget && !(cursorTarget isKindOf "CAManBase")) then {
+					[cursorTarget, _this select 3] call dzn_fnc_gear_assignCargoGear;
+				} else {
+					if (vehicle player != player) then {
+						[vehicle player, _this select 3] call dzn_fnc_gear_assignCargoGear;
+					};
+				};
+			}
+			, _this select 1, 0		
+		];
+	};	
+
 	_kit = [];
 	if (isNull cursorTarget) then {
 		// Player
 		_kit = player call dzn_fnc_gear_getGear;
 		if (_this) then { [_colorString, _kit] call _addKitAction; };
+		["Player", _colorString] call _showHint;
 	} else {
 		if (cursorTarget isKindOf "CAManBase") then {
 			// Unit
 			_kit = cursorTarget call dzn_fnc_gear_getGear;
 			if (_this) then { [_colorString, _kit] call _addKitAction; };
+			["Unit", _colorString] call _showHint;
 		} else {
 			// Vehicle
-			hint "Copy vehicle kit";
-		};		
+			_kit = cursorTarget call dzn_fnc_gear_getCargoGear;
+			if (_this) then { [_colorString, _kit] call _addCargoKitAction; };
+			["Cargo", _colorString] call _showHint;
+		};	
 	};
 };
 
@@ -290,7 +320,6 @@ dzn_fnc_gear_editMode_getBackpackDisplayName = {
 // ******************
 // Init of EDIT MODE
 // ******************
-
 
 waitUntil { !(isNull (findDisplay 46)) }; 
 (findDisplay 46) displayAddEventHandler ["KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"];

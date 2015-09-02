@@ -2,7 +2,6 @@
 // FUNCTIONS
 // **************************
 
-
 dzn_fnc_gear_getGear = {
 	// @Kit = @Unit call dzn_fnc_gear_getGear
 	// Return:	Kit, Formatted Kit in clipboard
@@ -186,6 +185,8 @@ dzn_fnc_gear_assignGear = {
 	_ctg = [];
 	_unit setVariable ["BIS_enableRandomization", false];
 	
+	enableSentences false;
+	
 	// Clear Gear
 	removeUniform _unit;
 	removeVest _unit;
@@ -194,8 +195,7 @@ dzn_fnc_gear_assignGear = {
 	removeGoggles _unit;
 	removeAllAssignedItems _unit;
 	removeAllWeapons _unit;
-	waitUntil { (items _unit) isEqualTo [] };
-	
+	waitUntil { (items _unit) isEqualTo [] };	
 	
 	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
 	#define cItem(IDX)				(_ctg select IDX)
@@ -238,8 +238,6 @@ dzn_fnc_gear_assignGear = {
 	// ADD EQUP
 	SET_CAT(0);
 	{
-		//B_Kitbag_cbr
-		player sideChat str(cItem(_forEachIndex + 1));
 		call compile format [
 			"_unit %1 '%2'"
 			, _x
@@ -276,7 +274,9 @@ dzn_fnc_gear_assignGear = {
 				, _item
 			];			
 		} forEach cItem(1);
-	} forEach ["addItemToUniform","addItemToVest","addItemToBackpack"];	
+	} forEach ["addItemToUniform","addItemToVest","addItemToBackpack"];
+	
+	[] spawn { sleep 3; enableSentences true; };
 };
 
 dzn_fnc_gear_assignCargoGear = {
@@ -365,8 +365,6 @@ dzn_fnc_gear_assignKit = {
 	};
 };
 
-
-
 // **************************
 // AEROSAN'S GET/SET LOADOUT
 // **************************
@@ -381,4 +379,97 @@ dzn_fnc_gear_getPreciseGear = {
 dzn_fnc_gear_setPreciseGear = {
 	// [@Unit, @SimpleGear] call dzn_fnc_gear_setSimpleGear
 	[_this select 0, _this select 1, ["ammo"]] call aerosan_fnc_setLoadout;
+};
+
+// **************************
+// INITIALIZING FUNCTIONS
+// **************************
+
+dzn_fnc_gear_initialize = {
+	// Check all and assign kits
+	#define assignKitToPlayer	[] spawn { waitUntil {!isNil {dzn_fnc_gear_assignKit} && !isNil {player getVariable "dzn_gear"}}; [player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit; };
+	if (!isServer && !isDedicated) exitWith { assignKitToPlayer };
+	if (!isNull player) then { assignKitToPlayer };
+
+	private ["_logics", "_kitName", "_synUnits","_units","_crew","_vehicles","_veh"];
+	
+	// Logics
+	_logics = entities "Logic";
+	if !(_logics isEqualTo []) then {	
+		{
+			#define checkIsGearLogic(PAR)	([PAR, str(_x), false] call BIS_fnc_inString || !isNil {_x getVariable PAR})
+			#define getKitName(PAR,IDX)	if (!isNil {_x getVariable PAR}) then {_x getVariable PAR} else {str(_x) select [IDX]};
+			#define assignGearKit(UNIT,KIT,BOX)	if (BOX) then { UNIT setVariable ["dzn_gear_box", KIT, true]; } else { UNIT setVariable ["dzn_gear", KIT, true]; };
+			#define callAssignGearMP(UNIT,KIT,BOX)	if (!isPlayer UNIT) then { [ [UNIT,KIT,BOX], "dzn_fnc_gear_assignKit", UNIT ] call BIS_fnc_MP; };
+			
+			// Check for vehicle kits
+			if checkIsGearLogic("dzn_gear_box") then {
+				_synUnits = synchronizedObjects _x;
+				
+				if !(_synUnits isEqualTo []) then {
+					_kitName = getKitName("dzn_gear_box",13)
+					{
+						if (!(_x isKindOf "CAManBase") || {vehicle (crew _x select 0) != _x}) then {
+							_veh = if ((crew _x) isEqualTo []) then { _x } else { vehicle (crew _x select 0)};
+							assignGearKit(_veh, _kitName, true)
+						};
+					} forEach _synUnits;
+				};
+				deleteVehicle _x;
+			} else {			
+				// Check for infantry kit (order defined by function BIS_fnc_inString - it will return True on 'dzn_gear_box' when searching 'dzn_gear'
+				if checkIsGearLogic("dzn_gear") then {
+					_synUnits = synchronizedObjects _x;
+					_kitName = getKitName("dzn_gear",9)
+					
+					{
+						// Assign gear to infantry and to crewmen
+						if ((_x isKindOf "CAManBase") && (vehicle _x == _x)) then {
+							assignGearKit(_x, _kitName, false)				
+						} else {
+							private ["_crew"];
+							_crew = crew (vehicle _x);
+							if (!(_crew isEqualTo [])) then {
+								{								
+									assignGearKit(_x, _kitName, false)
+								} forEach _crew;
+							};
+						};
+					} forEach _synUnits;
+					deleteVehicle _x;
+				};
+			};
+		} forEach _logics;
+	};
+	
+	// Searching for Units (men) with Variable "dzn_gear" to change gear
+	_units = allUnits;
+	{
+		// Unit has variable with infantry kit 
+		if (!isNil {_x getVariable "dzn_gear"} && _x isKindOf "CAManBase") then {				
+			// Infantry - assign gear via MP (to local)
+			callAssignGearMP(_x, (_x getVariable "dzn_gear"), false)
+		};
+	} forEach _units;
+
+	// Searching for Vehicles with Variable "dzn_gear" or "dzn_gear_box" to change gear
+	_vehicles = vehicles;
+	{
+		if (!isNil {_x getVariable "dzn_gear"}) then {
+			_crew = crew _x;
+			if (!(_crew isEqualTo [])) then {
+				{
+					if (isNil {_x getVariable "dzn_gear_done"}) then {
+						assignGearKit(_x, _kitName, false)
+						callAssignGearMP(_x, _kitName, false)
+					};
+				} forEach _crew;
+			};
+		};
+		
+		// Vehicle has variable with vehicle/box kit   && { !(_x isKindOf "CAManBase")
+		if (!isNil {_x getVariable "dzn_gear_box"}) then {
+			callAssignGearMP(_x, (_x getVariable "dzn_gear_box"), true)	
+		};
+	} forEach _vehicles;
 };
