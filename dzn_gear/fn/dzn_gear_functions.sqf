@@ -8,8 +8,8 @@
 
 
 dzn_fnc_gear_getGear = {
-	// @Unit call dzn_fnc_gear_getGear2
-	// Return:	Kit in clipboard	
+	// @Kit = @Unit call dzn_fnc_gear_getGear
+	// Return:	Kit, Formatted Kit in clipboard
 	private["_g","_kit","_str","_formatedString","_lastId","_i"];
 
 	#define NG			_g = []
@@ -121,6 +121,7 @@ dzn_fnc_gear_getGear = {
 	};
 	
 	copyToClipboard _formatedString;
+	_kit
 };
 
 
