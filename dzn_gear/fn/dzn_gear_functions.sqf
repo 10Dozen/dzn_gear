@@ -1,7 +1,6 @@
 // **************************
 // FUNCTIONS
 // **************************
-
 dzn_fnc_gear_getGear = {
 	// @Kit = @Unit call dzn_fnc_gear_getGear
 	// Return:	Kit, Formatted Kit in clipboard
@@ -384,7 +383,6 @@ dzn_fnc_gear_setPreciseGear = {
 // **************************
 // INITIALIZING FUNCTIONS
 // **************************
-
 dzn_fnc_gear_initialize = {
 	// Check all and assign kits
 	#define assignKitToPlayer	[] spawn { waitUntil {!isNil {dzn_fnc_gear_assignKit} && !isNil {player getVariable "dzn_gear"}}; [player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit; };
