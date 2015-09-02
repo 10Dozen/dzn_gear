@@ -287,9 +287,6 @@ dzn_fnc_gear_editMode_getBackpackDisplayName = {
 
 
 
-
-
-
 // ******************
 // Init of EDIT MODE
 // ******************

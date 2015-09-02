@@ -37,6 +37,23 @@ kit_NewKitNameR =
 	["<BACKPACK ITEMS >> ",[["FirstAidKit",2],["PRIMARY MAG",3],["SmokeShell",2],["SmokeShellYellow",2],["Chemlight_green",2],["Chemlight_red",2],["IEDUrbanSmall_Remote_Mag",2]]]
 ];
 
+kit_merc =
+	[
+	["<EQUIPEMENT >>  ","U_I_G_Story_Protagonist_F","V_HarnessO_gry","","H_MilCap_gry",""],
+	["<PRIMARY WEAPON >>  ","arifle_SDAR_F","20Rnd_556x45_UW_mag",["","","",""]],
+	["<LAUNCHER WEAPON >>  ","","",["","","",""]],
+	["<HANDGUN WEAPON >>  ","","",["","","",""]],
+	["<ASSIGNED ITEMS >>  "],
+	["<UNIFORM ITEMS >> ",[["PRIMARY MAG",3]]],
+	["<VEST ITEMS >> ",[["PRIMARY MAG",8]]],
+	["<BACKPACK ITEMS >> ",[]]
+];
+
+kit_random = [
+	"kit_NewKitName"
+	,"kit_NewKitNameR"
+	,"kit_merc"	
+];
 
 kit_NewKitNameDef = [
 	#define	E_UNIFORM		["U_I_G_Story_Protagonist_F","U_BG_Guerilla2_1"]
@@ -74,4 +91,11 @@ kit_NewKitNameDef = [
 	["<UNIFORM ITEMS >> ", UNIFORM_ITEMS],
 	["<VEST ITEMS >> ", VEST_ITEMS],
 	["<BACKPACK ITEMS >> ", BACKPACK_ITEMS]
+];
+
+kit_NewCargoKitName = [
+	[["arifle_Mk20_F",2]],
+	[["30Rnd_556x45_Stanag",16],["200Rnd_65x39_cased_Box",3],["HandGrenade",10],["SmokeShell",4],["SmokeShellGreen",4],["SmokeShellOrange",4],["SmokeShellPurple",4],["1Rnd_HE_Grenade_shell",10],["1Rnd_Smoke_Grenade_shell",4],["1Rnd_SmokeGreen_Grenade_shell",4],["1Rnd_SmokeOrange_Grenade_shell",4],["1Rnd_SmokePurple_Grenade_shell",4],["9Rnd_45ACP_Mag",12],["NLAW_F",2]],
+	[["FirstAidKit",10]],
+	[]
 ];
