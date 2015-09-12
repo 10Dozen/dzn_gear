@@ -470,4 +470,7 @@ dzn_fnc_gear_initialize = {
 			callAssignGearMP(_x, (_x getVariable "dzn_gear_box"), true)	
 		};
 	} forEach _vehicles;
+	
+	dzn_gear_initialized = true;
+	publicVariable "dzn_gear_initialized";
 };
