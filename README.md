@@ -1,4 +1,5 @@
 # dzn_gear
+<i>Uses aeroson's get_loadout/set_loadout script (see https://github.com/aeroson/a3-loadout)</i>
 
 - Allows to choose gear and create gear kit for infantry units
 - Randomized infanty kit (random weapon, equipement, uniforms, etc.)
@@ -11,26 +12,23 @@ Download files to your mission folder. If you already have "init.sqf", then upda
 <br>
 <ol>
  <li>Open Editor and place GameLogic object</li>
- <li>Name GameLogic as <tt>dzn_gear_%KIT_NAME%</tt> or <tt>dzn_gear_box_%KIT_NAME%</tt></li>
+ <li>Name GameLogic as <tt>dzn_gear_%KITNAME%</tt> or <tt>dzn_gear_box_%KITNAME%</tt></li>
  <li>Synchronize GameLogic with units to assign kit for them</li>
- <li><tt>(Optional)</tt> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to units/vehicle init</li>
- <li><tt>(Optional)</tt> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to GmaeLogic's init and synchronizing units with this GameLogic</li>
- <li></li>
- <li></li>
- <li></li>
- 
+ <li><i>(Optional)</i> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to units/vehicle init</li>
+ <li><i>(Optional)</i> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to GmaeLogic's init and synchronizing units with this GameLogic</li>
+ <li>Open mission in EDIT MODE of dzn_gear and create kits</li>
+ <li>Save kits to <tt>dzn_gear/dzn_gear_kits.sqf</tt></li>
+ <li>Rename kits (kitname from GameLogic's name or variable should match)</li>
 </ol>
-
 
 <h3>Video HowTo</h3> 
 https://www.youtube.com/watch?v=rhsF5Jw3Vdo
-
-
-
+<!--
+<h3>Google Slides HowTo</h3> 
+-->
 
 <h3>Kits</h3>
-Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf</tt> file.
-<br>There are several types of gear kits are presented:
+<br>There are several types of gear kits you can create:
 <ol>
  <li>Gear Kit (for infantries)<ol>
   <li>Simple Kits</li>
@@ -64,17 +62,19 @@ After mission starts, all GameLogics will be checked. For any of them which have
 Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kits will be assigned.
 <br>After gear assigned, unit/object updates with variable "dzn_gear_assigned" which store the name of assigned kit.
 <br>Script runs at mission initialization. If you want to delay it, use second argument - e.g. 15 seconds after mission start:  <tt>[ false,  15 ] execVM "dzn_gear_init.sqf";</tt>.
+
+<h4>API</h4>
 <br>You can also use gear assignment "manually" using next function:
 <ul>
- <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_fnc_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
+ <li><tt>[ @Unit, @Kitname(string), (Optional)@isVehicle ] spawn dzn_fnc_gear_assignKit</tt> - assign given @kitname (as string, e.g. kit_nato_ar = [...] should be given as "kit_nato_ar") to @Unit or to vehicle, if @isVehicle argument passed as TRUE</li>
+ <li><tt>[ @Unit, @Kit(array) ] spawn dzn_fnc_gear_assignGear</tt> - assign given @Kit (array of gear, returned from dzn_fnc_gear_getGear function) to @Unit (infantry)</li>
+ <li><tt>[ @Vehicle, @CargoKit(array) ] spawn dzn_fnc_gear_assignCargoGear</tt> - assign given @CargoKit(array of gear, returned from dzn_fnc_gear_getCargoGear function) to @Vehicle (or box)</li> 
+ <li><tt>@Kit = @Unit call dzn_fnc_gear_getGear</tt> - return gear of infantry unit in format of dzn_gear kit.</li>
+ <li><tt>@CargoKit = @Vehicle call dzn_fnc_gear_getCargoGear</tt> - return Cargo gear of vehicle or box in format of dzn_gear kit</li>
+ <br>
+ <li><tt>@PreciseGear = @Unit call dzn_fnc_gear_getPreciseGear</tt> - return array of @PreciseGear (gear as it exists in units inventory, ammo in magazines is counted).
+ <li><tt>[ @Unit, @PreciseGear ] call dzn_fnc_gear_setPreciseGear</tt> - assign @PreciseGear to @Unit (infantry)</li>
 </ul>
-
-
-
-
-
-
-
 
 <h3>Edit mode</h3>
 In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see hint with help text and keybinding.
