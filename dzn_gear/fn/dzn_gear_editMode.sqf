@@ -20,7 +20,7 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br /><t %1>[CTRL + {1...6}]</t><t %2> - Add item to list and copy</t>		
 		<br /><t %1>[ALT + {1...6}]</t><t %2> - Clear item list</t>
 		<br /><t align='left' size='0.8'>where
-		<br />1 -- Primary and magazine weapons
+		<br />1 -- Primary weapon and magazine 
 		<br />2 -- Uniform
 		<br />3 -- Headgear
 		<br />4 -- Glasses
@@ -524,3 +524,6 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 		};
 	}] call BIS_fnc_addStackedEventHandler;
 };
+
+
+
