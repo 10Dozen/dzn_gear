@@ -23,7 +23,7 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br />1 -- Primary weapon and magazine 
 		<br />2 -- Uniform
 		<br />3 -- Headgear
-		<br />4 -- Glasses
+		<br />4 -- Goggles
 		<br />5 -- Vest
 		<br />6 -- Backpack
 		"
