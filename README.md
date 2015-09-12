@@ -41,7 +41,7 @@ When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
  <li><tt>Cargo Kit from ZAMAK (Covered) at 00:02:32</tt> -- action will assign saved cargo gear to player's or cursor vehicle or box (vehicle name and timestamp are added to action name)</li>
 </ul>
 
-<br>Basic flow of usage is: 
+<h4>Basic flow of usage</h4> 
 <br>Open Virtual Arsenal by pressing <tt>[SPACE]</tt> key and choose any gear you need,
 <br>quit Arsenal and press <tt>[CTRL + SHIFT]</tt> to copy kit to clipboard. 
 <br>Then open <tt>dzn_gear/dzn_gear_kit.sqf</tt> and paste kit.
