@@ -64,7 +64,7 @@ Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kit
 <br>Script runs at mission initialization. If you want to delay it, use second argument - e.g. 15 seconds after mission start:  <tt>[ false,  15 ] execVM "dzn_gear_init.sqf";</tt>.
 
 <h4>API</h4>
-<br>You can also use gear assignment "manually" using next function:
+You can also use gear assignment "manually" using next function:
 <ul>
  <li><tt>[ @Unit, @Kitname(string), (Optional)@isVehicle ] spawn dzn_fnc_gear_assignKit</tt> - assign given @kitname (as string, e.g. kit_nato_ar = [...] should be given as "kit_nato_ar") to @Unit or to vehicle, if @isVehicle argument passed as TRUE</li>
  <li><tt>[ @Unit, @Kit(array) ] spawn dzn_fnc_gear_assignGear</tt> - assign given @Kit (array of gear, returned from dzn_fnc_gear_getGear function) to @Unit (infantry)</li>
