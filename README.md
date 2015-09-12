@@ -9,45 +9,24 @@
 Download files to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
 <br>Script should be ran with options<tt>[ editMode(BOOL), startDelay(NUMBER, Optional) ] execVM "dzn_gear_init.sqf";</tt>.
 <br>
+<ol>
+ <li>Open Editor and place GameLogic object</li>
+ <li>Name GameLogic as <tt>dzn_gear_%KIT_NAME%</tt> or <tt>dzn_gear_box_%KIT_NAME%</tt></li>
+ <li>Synchronize GameLogic with units to assign kit for them</li>
+ <li><tt>(Optional)</tt> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to units/vehicle init</li>
+ <li><tt>(Optional)</tt> You can also assign kit by adding <tt>this setVariable ["dzn_gear", "%KITNAME%", true]</tt> or <tt>this setVariable ["dzn_gear_box", "%KITNAME%", true]</tt> to GmaeLogic's init and synchronizing units with this GameLogic</li>
+ <li></li>
+ <li></li>
+ <li></li>
+ 
+</ol>
+
 
 <h3>Video HowTo</h3> 
 https://www.youtube.com/watch?v=rhsF5Jw3Vdo
 
-<h3>EDIT mode</h3>
-In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see hint with help text and keybinding.
 
-<h4>Keybinding</h4>
-<ul>
- <li><tt>[SPACE]</tt> -- Open Virtual Arsenal</li>
- <li><tt>[CTRL + SPACE]</tt> -- Copy gear of player or cursorTarget and add it to action list</li>
- <li><tt>[SHIFT + SPACE]</tt> -- Copy gear of player or cursorTarget without adding new action</li>
- <li></li>
- <li><tt>[1...6]</tt> -- Show item list (primary weapon, uniform, headgear, etc.) and copy to clipboard</li>
- <li><tt>[SHIFT + 1...6]</tt> -- Set current item list and copy list</li>
- <li><tt>[CTRL + 1...6]</tt> -- Add item to list and copy</li>
- <li><tt>[ALT + 1...6]</tt> --Clear item list</li>
- <br>where 1..6:
- <br><tt>1</tt> -- Primary weapon and magazine
- <br><tt>2</tt> -- Uniform 
- <br><tt>3</tt> -- Headgear
- <br><tt>4</tt> -- Goggles
- <br><tt>5</tt> -- Vest
- <br><tt>6</tt> -- Backpack
-</ul>
 
-When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
-<ul>
- <li><tt>Kit with MX at 00:01:32</tt> -- action will assign saved gear to player or cursor target (primary weapon and timestamp are added to action name)</li>
- <li><tt>Cargo Kit from ZAMAK (Covered) at 00:02:32</tt> -- action will assign saved cargo gear to player's or cursor vehicle or box (vehicle name and timestamp are added to action name)</li>
-</ul>
-
-<h4>Basic flow of usage</h4> 
-<br>Open Virtual Arsenal by pressing <tt>[SPACE]</tt> key and choose any gear you need,
-<br>quit Arsenal and press <tt>[CTRL + SHIFT]</tt> to copy kit to clipboard. 
-<br>Then open <tt>dzn_gear/dzn_gear_kit.sqf</tt> and paste kit.
-It will be something like:
-<br><tt>kit_NewKitName = [["<EQUIPEMENT >>", ...]  ... ];</tt>
-<br>Change <tt>kit_NewKitName</tt> to some unique kit name, e.g. <tt>kit_riflemanNATO</tt>, <tt>kit_SF_Demo_NATO</tt>, <tt>kit_OPFOR_OfficerWithMG</tt>. Use only global variable as name of kit.
 
 <h3>Kits</h3>
 Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf</tt> file.
@@ -89,3 +68,47 @@ Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kit
 <ul>
  <li><tt>[ unit(object), kitName(string), isBox(boolean) ] spawn dzn_fnc_gear_assignKit</tt> - will assign given kit by name, third argument <tt>isBox</tt> should be set <tt>false</tt> for gear kits or <tt>true</tt> for cargo kits</li>
 </ul>
+
+
+
+
+
+
+
+
+<h3>Edit mode</h3>
+In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see hint with help text and keybinding.
+
+<h4>Edit mode: Keybinding</h4>
+<ul>
+ <li><tt>[SPACE]</tt> -- Open Virtual Arsenal</li>
+ <li><tt>[CTRL + SPACE]</tt> -- Copy gear of player or cursorTarget and add it to action list</li>
+ <li><tt>[SHIFT + SPACE]</tt> -- Copy gear of player or cursorTarget without adding new action</li>
+ <li></li>
+ <li><tt>[1...6]</tt> -- Show item list (primary weapon, uniform, headgear, etc.) and copy to clipboard</li>
+ <li><tt>[SHIFT + 1...6]</tt> -- Set current item list and copy list</li>
+ <li><tt>[CTRL + 1...6]</tt> -- Add item to list and copy</li>
+ <li><tt>[ALT + 1...6]</tt> --Clear item list</li>
+ <br>where 1..6:
+ <br><tt>1</tt> -- Primary weapon and magazine
+ <br><tt>2</tt> -- Uniform 
+ <br><tt>3</tt> -- Headgear
+ <br><tt>4</tt> -- Goggles
+ <br><tt>5</tt> -- Vest
+ <br><tt>6</tt> -- Backpack
+</ul>
+
+When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
+<ul>
+ <li><tt>Kit with MX at 00:01:32</tt> -- action will assign saved gear to player or cursor target (primary weapon and timestamp are added to action name)</li>
+ <li><tt>Cargo Kit from ZAMAK (Covered) at 00:02:32</tt> -- action will assign saved cargo gear to player's or cursor vehicle or box (vehicle name and timestamp are added to action name)</li>
+</ul>
+
+<h4>Edit mode: Basic flow of usage</h4>
+<ol>
+ <li>Open Virtual Arsenal by pressing <tt>[SPACE]</tt> key and choose any gear you need</li>
+ <li>Quit Arsenal and press <tt>[CTRL + SHIFT]</tt> to copy kit to clipboard</li>
+ <li>Then open <tt>dzn_gear/dzn_gear_kit.sqf</tt> and paste kit. It will be something like:
+<br><tt>kit_NewKitName = [["<EQUIPEMENT >>", ...]  ... ];</tt>
+ <li>Change <tt>kit_NewKitName</tt> to some unique kit name, e.g. <tt>kit_riflemanNATO</tt>, <tt>kit_SF_Demo_NATO</tt>,  <tt>kit_OPFOR_OfficerWithMG</tt>. Use only global variable as name of kit.</li>
+</ol>
