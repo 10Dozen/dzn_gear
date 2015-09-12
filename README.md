@@ -42,9 +42,12 @@ When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
 </ul>
 
 <br>Basic flow of usage is: 
-<Open Virtual Arsenal, choose any gear you need, quit Arsenal and use Copy Current Gear to Clipboard. Than open <tt>dzn_gear_kit.sqf</tt> and paste kit. It will be something like:
-<br><tt>_kitName = ["U_B_CombatUniform_mcam", ... ];</tt>
-<br>Change <tt>_kitName</tt> to some unique kit name, e.g. <tt>riflemanNATO</tt>, <tt>SF_Demo_NATO</tt>, <tt>OPFOR_OfficerWithMG</tt>. It's preffered to use global variable as name of kit.
+<br>Open Virtual Arsenal by pressing <tt>[SPACE]</tt> key and choose any gear you need,
+<br>quit Arsenal and press <tt>[CTRL + SHIFT]</tt> to copy kit to clipboard. 
+<br>Then open <tt>dzn_gear/dzn_gear_kit.sqf</tt> and paste kit.
+It will be something like:
+<br><tt>kit_NewKitName = [["<EQUIPEMENT >>", ...]  ... ];</tt>
+<br>Change <tt>kit_NewKitName</tt> to some unique kit name, e.g. <tt>kit_riflemanNATO</tt>, <tt>kit_SF_Demo_NATO</tt>, <tt>kit_OPFOR_OfficerWithMG</tt>. Use only global variable as name of kit.
 
 <h3>Kits</h3>
 Structure of kits is described as xml at <tt>schemes/manKitStructure.xml</tt> and <tt>schemes/boxKitStructure.xml</tt>. For examples you can check <tt>dzn_gear_kits.sqf</tt> file.
