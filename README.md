@@ -28,7 +28,7 @@ https://www.youtube.com/watch?v=rhsF5Jw3Vdo
 -->
 
 <h3>Kits</h3>
-<br>There are several types of gear kits you can create:
+There are several types of gear kits you can create:
 <ol>
  <li>Gear Kit (for infantries)<ol>
   <li>Simple Kits</li>
