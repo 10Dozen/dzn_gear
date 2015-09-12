@@ -1,4 +1,6 @@
-# dzn_gear
+# dzn_gear v.2
+# WIP
+
 
 - Allows to choose gear and create gear kit for infantry units
 - Allows to create cargo gear kits for vehicles and ammoboxes
