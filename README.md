@@ -1,13 +1,12 @@
-# dzn_gear v.2
-# WIP
-
+# dzn_gear
 
 - Allows to choose gear and create gear kit for infantry units
+- Randomized infanty kit (random weapon, equipement, uniforms, etc.)
 - Allows to create cargo gear kits for vehicles and ammoboxes
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 
 <h2>How To</h2>
-Download files (except "schemes" folder - it's only shows structure of kits for design purposes) to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
+Download files to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
 <br>Script should be ran with options<tt>[ editMode(BOOL), startDelay(NUMBER, Optional) ] execVM "dzn_gear_init.sqf";</tt>.
 <br>
 
@@ -15,16 +14,35 @@ Download files (except "schemes" folder - it's only shows structure of kits for 
 https://www.youtube.com/watch?v=rhsF5Jw3Vdo
 
 <h3>EDIT mode</h3>
-In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see new actions at the action menu:
- <ul>
-  <li><tt>Open Virtual Arsenal</tt> -- Simply opens VA with all available gear</li>
-  <li><tt>Copy Current Gear to Clipboard</tt> -- Copy current gear to clipboard for inserting to <tt>dzn_gear_kits.sqf</tt> file</li>
-  <li><tt>Copy and Assign Gear of Cursor Unit</tt> -- Shows up when you staring on infantryman, action will copy unit's gear to player and additionally copy kit to the clipboard</li>
-  <li><tt>Copy Gear of Cursor Vehicle or Box</tt> -- Shows up when you staring on vehicle or ammobox, action will copy vehicle's cargo to the clipboard in vehicle kit's format</li>
-  <li><tt>Kit with (mission time) (primary weapon classname)</tt> -- After any infanty's kit copied, new action will be added. On action - copied kit will be assigned to player.</li>
-  <li><tt>Kit for Vehicle/Box (mission time)</tt> -- After any vehicle's kit copied, new action will be added. Shows up when you starung on vehicle or box, action will assign kit to vehicle/box player looking at.</li>
-</ul> 
-<br>Basic flow of usage is: Open Virtual Arsenal, choose any gear you need, quit Arsenal and use Copy Current Gear to Clipboard. Than open <tt>dzn_gear_kit.sqf</tt> and paste kit. It will be something like:
+In 'EDIT' mode open mission in Editor and click "Preview": inside the mission you'll see hint with help text and keybinding.
+
+<h4>Keybinding</h4>
+<ul>
+ <li><tt>[SPACE]</tt> -- Open Virtual Arsenal</li>
+ <li><tt>[CTRL + SPACE]</tt> -- Copy gear of player or cursorTarget and add it to action list</li>
+ <li><tt>[SHIFT + SPACE]</tt> -- Copy gear of player or cursorTarget without adding new action</li>
+ <li></li>
+ <li><tt>[1...6]</tt> -- Show item list (primary weapon, uniform, headgear, etc.) and copy to clipboard</li>
+ <li><tt>[SHIFT + 1...6]</tt> -- Set current item list and copy list</li>
+ <li><tt>[CTRL + 1...6]</tt> -- Add item to list and copy</li>
+ <li><tt>[ALT + 1...6]</tt> --Clear item list</li>
+ <br>where 1..6:
+ <br><tt>1</tt> -- Primary weapon and magazine
+ <br><tt>2</tt> -- Uniform 
+ <br><tt>3</tt> -- Headgear
+ <br><tt>4</tt> -- Goggles
+ <br><tt>5</tt> -- Vest
+ <br><tt>6</tt> -- Backpack
+</ul>
+
+When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
+<ul>
+ <li><tt>Kit with MX at 00:01:32</tt> -- action will assign saved gear to player or cursor target (primary weapon and timestamp are added to action name)</li>
+ <li><tt>Cargo Kit from ZAMAK (Covered) at 00:02:32</tt> -- action will assign saved cargo gear to player's or cursor vehicle or box (vehicle name and timestamp are added to action name)</li>
+</ul>
+
+<br>Basic flow of usage is: 
+<Open Virtual Arsenal, choose any gear you need, quit Arsenal and use Copy Current Gear to Clipboard. Than open <tt>dzn_gear_kit.sqf</tt> and paste kit. It will be something like:
 <br><tt>_kitName = ["U_B_CombatUniform_mcam", ... ];</tt>
 <br>Change <tt>_kitName</tt> to some unique kit name, e.g. <tt>riflemanNATO</tt>, <tt>SF_Demo_NATO</tt>, <tt>OPFOR_OfficerWithMG</tt>. It's preffered to use global variable as name of kit.
 
