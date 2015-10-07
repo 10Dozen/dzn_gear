@@ -1,4 +1,6 @@
 # dzn_gear
+##### Version: 2.0
+
 <i>Uses aeroson's get_loadout/set_loadout script (see https://github.com/aeroson/a3-loadout)</i>
 
 - Allows to choose gear and create gear kit for infantry units
