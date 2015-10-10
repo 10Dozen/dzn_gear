@@ -445,7 +445,7 @@ dzn_fnc_gear_initialize = {
 	_units = allUnits;
 	{
 		// Unit has variable with infantry kit 
-		if (!isNil {_x getVariable "dzn_gear"} && _x isKindOf "CAManBase") then {				
+		if (!isNil {_x getVariable "dzn_gear"} && _x isKindOf "CAManBase" && local _x) then {				
 			// Infantry - assign gear via MP (to local)
 			callAssignGearMP(_x, (_x getVariable "dzn_gear"), false)
 		};
