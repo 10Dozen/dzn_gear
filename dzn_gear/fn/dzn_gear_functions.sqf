@@ -383,9 +383,10 @@ dzn_fnc_gear_setPreciseGear = {
 // **************************
 // INITIALIZING FUNCTIONS
 // **************************
+
 dzn_fnc_gear_initialize = {
 	// Check all and assign kits
-	#define assignKitToPlayer	[] spawn { waitUntil {!isNil {dzn_fnc_gear_assignKit} && !isNil {player getVariable "dzn_gear"}}; [player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit; };
+	#define assignKitToPlayer	[] spawn { waitUntil {(local player) && !isNil {player getVariable "dzn_gear"} && !isNil {dzn_gear_initialized} && {dzn_gear_initialized}}; [player, player getVariable "dzn_gear"] call dzn_fnc_gear_assignKit; };
 	if (!isServer && !isDedicated) exitWith { assignKitToPlayer };
 	if (!isNull player) then { assignKitToPlayer };
 
