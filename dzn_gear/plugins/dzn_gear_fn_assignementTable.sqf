@@ -4,7 +4,7 @@
 //
 // ******************** Settings **********************
 
-dzn_gear_gat_table = [];
+dzn_gear_gat_table = call compile ("[" + preProcessFile "dzn_gear\GearAssignementTable.sqf" + "[]]");
 
 // ********************** FNC ************************
 dzn_fnc_gear_plugin_resolveKit = {
@@ -18,10 +18,10 @@ dzn_fnc_gear_plugin_resolveKit = {
 	if (_nameKit isEqualTo []) then {
 		_roleKit = [ dzn_gear_gat_table , { (_x select 0) isEqualTo (roleDescription _unit) }] call BIS_fnc_conditionalSelect;
 		if !(_roleKit isEqualTo []) then {
-			_kit = _roleKit;
+			_kit = _roleKit select 0 select 1;
 		};
 	} else {
-		_kit = _nameKit;
+		_kit = _nameKit select 0 select 1;
 	};
 	
 	_kit
