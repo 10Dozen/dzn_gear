@@ -4,7 +4,7 @@
 //
 // ******************** Settings **********************
 
-dzn_gear_gat_table = call compile ("[" + preProcessFile "dzn_gear\GearAssignementTable.sqf" + "[]]");
+dzn_gear_gat_table = call compile ("[" + preProcessFile "dzn_gear\GearAssignementTable.sqf" + "]");
 
 // ********************** FNC ************************
 dzn_fnc_gear_plugin_resolveKit = {
@@ -36,3 +36,5 @@ dzn_fnc_gear_plugin_assignByTable = {
 		[_unit, _kit] spawn dzn_fnc_gear_assignKit;
 	};
 };
+
+dzn_gear_gat_enabled = true;
