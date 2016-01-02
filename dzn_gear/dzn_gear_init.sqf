@@ -49,6 +49,10 @@ if (hasInterface) then {
 	};
 	
 	if (dzn_gear_enableGearAssignementTable) then {
-		[] execVM "dzn_gear\plugins\dzn_gear_fn_assignementTable.sqf";		
+		[] execVM "dzn_gear\plugins\dzn_gear_fn_assignementTable.sqf";
+		[] spawn {
+			waitUntil { !isNil "dzn_gear_initialized" && !isNil "dzn_gear_gat_enabled" };	
+			player call dzn_fnc_gear_plugin_assignByTable;
+		};
 	};
 };
