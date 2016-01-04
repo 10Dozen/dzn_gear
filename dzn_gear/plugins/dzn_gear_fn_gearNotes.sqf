@@ -3,6 +3,9 @@
 //
 // ******************** Settings **********************
 
+dzn_gear_gnotes_showMyGear = true;
+dzn_gear_gnotes_showSquadGear = true;
+
 /*
 	RIFLEMAN
 	- AK-74 (PK-A, DTK-1)
@@ -69,10 +72,11 @@ if (isNil "dzn_fnc_getItemDisplayName") then {
 
 dzn_fnc_gear_gnotes_getWeaponInfo = {
 	// type: "Primary", "Secondary", "Handgun"
-	params["_kit","type"];
+	// _mode: "personal", "squad"
+	params["_kit","_type","_mode"];
 	private["_id","_output"];
 	
-	_id = switch (toLower(type)) do {
+	_id = switch (toLower(_type)) do {
 		case "primary": { 1 };
 		case "secondary": { 2 };
 		case "handgun": { 3 };		
@@ -84,8 +88,13 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 			if (_x != "") then {
 				_output = if (_output == "") then { "(" + DNAME(_x) + ")" } else { _output + ", " + DNAME(_x) };
 			};
-		} forEach (_kit select _id select 3);		
-		_output = format ["<br /> - %1%2", _kit select _id select 1, _output];
+		} forEach (_kit select _id select 3);	
+		
+		if ( toLower(_mode) == "personal" ) then {
+			_output = format ["<br /> - %1%2", _kit select _id select 1, _output];
+		} else {
+			_output = format [", %1%2", _kit select _id select 1, _output];
+		};
 	};
 
 	_output
@@ -131,25 +140,45 @@ dzn_fnc_gear_gnotes_getItems = {
 };
 	
 dzn_fnc_gear_gnotes_addMyGearSubject = {
-	private["_kit","_text"];
+	private["_kit","_output"];
 	_kit = player call dzn_fnc_gear_getGear;
-	_text = format [
+	_output = format [
 		dzn_gear_gnotes_myUnitTemplate
 		, roleDescription player
-		, [_kit,"primary"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		, [_kit,"secondary"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		, [_kit,"handgun"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		, [_kit, "primary", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		, [_kit, "secondary", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		, [_kit, "handgun", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, "<br /> - " + DNAME(_kit select 0 select 3)
 		, _kit call dzn_fnc_gear_gnotes_getItems
 		, _kit call dzn_fnc_gear_gnotes_getAssignedItems
 	]
 
-	player createDiaryRecord ["Diary", ["Personal Equipment", _text]];
+	player createDiaryRecord ["Diary", ["Personal Equipment", _output]];
+};
+
+dzn_fnc_gear_gnotes_addSuqadGearSubject = {
+	private["_kit","_output"];
+
+	{
+		_kit = _x call dzn_fnc_gear_getGear;
+		_output = format [
+			dzn_gear_gnotes_mySquadTemplate
+			, roleDescription _x
+			, [_kit, "primary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+			, [_kit, "secondary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+			, [_kit, "handgun", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		];
+	
+	} forEach (units group player);
+	
+	player createDiaryRecord ["Diary", ["Squad Equipment", _output]];
 };
 
 // ******************** Init **************************
 waitUntil { !isNil "dzn_gear_initialized" && { dzn_gear_initialized } };
 waitUntil { call dzn_gear_gnotes_waitUntilEvent };
 
+if (dzn_gear_gnotes_showSquadGear) then { call dzn_fnc_gear_gnotes_addSuqadGearSubject };
+if (dzn_gear_gnotes_showMyGear) then { call dzn_fnc_gear_gnotes_addMyGearSubject; };
 
 dzn_gear_gnotes_enabled = true;
