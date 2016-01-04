@@ -42,7 +42,8 @@ dzn_gear_gnotes_myGearTemplate = "<font size='1.3'>%1</font><br />%2%3%4%5<br />
 	%3 - Sec Wep if exist
 	%4 - Hand Gun if exist
 */
-dzn_gear_gnotes_myUnitTemplate = "%1 (%2%3%4)";
+dzn_gear_gnotes_mySquadTemplate = "%1 (%2%3%4)";
+
 dzn_gear_gnotes_waitUntilEvent = { !isNil {player getVariable "dzn_gear"} };
 
 // ******************** Functions **********************
