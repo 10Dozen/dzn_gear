@@ -7,6 +7,7 @@
 
 // Plugins
 dzn_gear_enableGearAssignementTable		= true;
+dzn_gear_enableGearNotes			= true;
 
 
 dzn_gear_defaultBackpack = "B_Carryall_khk";
@@ -54,5 +55,9 @@ if (hasInterface) then {
 			waitUntil { !isNil "dzn_gear_initialized" && !isNil "dzn_gear_gat_enabled" };	
 			player call dzn_fnc_gear_plugin_assignByTable;
 		};
+	};
+	
+	if (dzn_gear_enableGearNotes) then {
+		[] execVM "dzn_gear\plugins\dzn_gear_fn_gearNotes.sqf";
 	};
 };
