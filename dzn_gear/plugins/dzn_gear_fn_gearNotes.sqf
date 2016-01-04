@@ -29,6 +29,8 @@ RIFLEMAN
 1'1 Squad Leader (AK-74)
 Team Leader (AK-74 (PK-A))
 MachineGunner (PKM)
+Rifleman (AK-74M / RPG-7V (PV-1A)
+)
 */
 dzn_gear_gnotes_myGearTemplate = "
 
