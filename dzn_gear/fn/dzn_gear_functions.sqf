@@ -275,6 +275,7 @@ dzn_fnc_gear_assignGear = {
 		} forEach cItem(1);
 	} forEach ["addItemToUniform","addItemToVest","addItemToBackpack"];
 	
+	_unit setVariable ["dzn_gear_done", true, true];
 	[] spawn { sleep 3; enableSentences true; };
 };
 
