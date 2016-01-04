@@ -10,8 +10,6 @@ MyGEAR:
 RIFLEMAN
 - AK-74 (PK-A, DTK-1)
 - RPG-26
-- Combat Backpack
-- NVG Gen.I
 
 - 7x 5.45x39 7N10 30Rnd Magazine
 - 2x RGO-2
@@ -74,24 +72,32 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 	if ( (_kit select _id select 1) != "" ) then {
 		{
 			if (_x != "") then {
-				// Update to getText( configFile >> "cfgWeapons" >> _x >> displayName);
 				_output = if (_output == "") then { "(" + W_DNAME(_x) + ")" } else { _output + ", " + W_DNAME(_x) };
 			};
-		} forEach (_kit select _id select 3);
-		
-		_output = format [
-			"<br /> - %1%2"
-			, _kit select _id select 1
-			, _output
-		];
+		} forEach (_kit select _id select 3);		
+		_output = format ["<br /> - %1%2", _kit select _id select 1, _output];
 	};
 
 	_output
 };
 
 dzn_fnc_gear_gnotes_getAssignedItems = {
-
+	params["_kit"];
+	private["_output"];
+	
+	_output	= "";
+	{		
+		_output = format [
+			"%1<br />%2x %3"
+			,_output
+			, _x select 1
+			, W_DNAME(_x select 0)
+		];
+	} forEach ((_kit select 4) call BIS_fnc_consolidateArray);
+	
+	_output
 };
+
 dzn_fnc_gear_gnotes_getItems = {};
 	
 dzn_fnc_gear_gnotes_addMyGearSubject = {
@@ -113,8 +119,8 @@ dzn_fnc_gear_gnotes_addMyGearSubject = {
 		, [_kit,"secondary"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit,"handgun"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, "<br /> - " + V_DNAME(_kit select 0 select 3)
-		, "%6 - Inventory (magazines, medicine)"
-		, "%7 - Assigned Items (map, radio, compass)"
+		, call dzn_fnc_gear_gnotes_getItems
+		, call dzn_fnc_gear_gnotes_getAssignedItems
 	]
 
 };
