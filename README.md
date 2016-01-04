@@ -66,6 +66,7 @@ Then all units will be checked for variable "dzn_gear" or "dzn_gear_box" and kit
 <br>Script runs at mission initialization. If you want to delay it, use second argument - e.g. 15 seconds after mission start:  <tt>[ false,  15 ] execVM "dzn_gear_init.sqf";</tt>.
 
 <h4>API</h4>
+After 'dzn_gear' initialized the <tt>dzn_gear_initialized = true</tt> variable is published via network.
 You can also use gear assignment "manually" using next function:
 <ul>
  <li><tt>[ @Unit, @Kitname(string), (Optional)@isVehicle ] spawn dzn_fnc_gear_assignKit</tt> - assign given @kitname (as string, e.g. kit_nato_ar = [...] should be given as "kit_nato_ar") to @Unit or to vehicle, if @isVehicle argument passed as TRUE</li>
