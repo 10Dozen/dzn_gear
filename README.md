@@ -115,3 +115,7 @@ When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
 <br><tt>kit_NewKitName = [["<EQUIPEMENT >>", ...]  ... ];</tt>
  <li>Change <tt>kit_NewKitName</tt> to some unique kit name, e.g. <tt>kit_riflemanNATO</tt>, <tt>kit_SF_Demo_NATO</tt>,  <tt>kit_OPFOR_OfficerWithMG</tt>. Use only global variable as name of kit.</li>
 </ol>
+
+<h3>Plugins</h4>
+<h4>Gear Assignement Table</h4>
+Map kits by RoleDescription or unit name.
