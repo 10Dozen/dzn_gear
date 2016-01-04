@@ -40,24 +40,30 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 [] spawn dzn_fnc_gear_initialize;
 waitUntil { !isNil "dzn_gear_initialized" && { dzn_gear_initialized } };
 
-if (hasInterface) then {	
+if (hasInterface) then {
+	waitUntil { !isNull player };
 	if (dzn_gear_enableGearAssignementTable) then {
-		[] execVM "dzn_gear\plugins\AssignementTable.sqf";
+		call compile preProcessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf";
 		[] spawn {
-			waitUntil { !isNil "dzn_gear_initialized" && !isNil "dzn_gear_gat_enabled" };	
+			waitUntil { !isNil "dzn_gear_initialized" && !isNil "dzn_gear_gat_enabled" && !isNil "dzn_fnc_gear_plugin_assignByTable"};	
 			player call dzn_fnc_gear_plugin_assignByTable;
+		};
+	};
+	
+	[] spawn {
+		if (didJIP) then {
+			if !(dzn_gear_enableGearAssignementTable) then {
+				if (time > 0 ) then {
+					waitUntil { sleep 1; !isNil { player getVariable "dzn_gear" } };
+				} else {
+					waitUntil { !isNil { player getVariable "dzn_gear" } };
+				};
+				[player, player getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
+			};
 		};
 	};
 	
 	if (dzn_gear_enableGearNotes) then {
 		[] execVM "dzn_gear\plugins\GearNotes.sqf";
-	};
-	
-	// Waiting until dzn_gear is initialized and then, if player is JIP - wait for "dzn_gear" variable is assigned to change kit
-	[] spawn {
-		if (didJIP) then {
-			waitUntil { sleep 1; !isNil { player getVariable "dzn_gear" } };
-			[player, player getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
-		};
 	};
 };
