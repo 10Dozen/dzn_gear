@@ -54,7 +54,11 @@ dzn_gear_gnotes_myGearTemplate = "<font size='1.3'>%1</font><br />%2%3%4%5<br />
 */
 dzn_gear_gnotes_myUnitTemplate = "%1 (%2%3%4)";
 dzn_gear_gnotes_waitUntilEvent = { !isNil {player getVariable "dzn_gear"} };
+
 // ******************** Functions **********************
+#define V_DNAME(CLASS)	getText( configFile >> "CfgVehicles" >> CLASS >> "displayName")
+#define	W_DNAME(CLASS)	getText( configFile >> "CfgWeapons" >> CLASS >> "displayName")
+
 dzn_fnc_gear_gnotes_getWeaponInfo = {
 	// type: "Primary", "Secondary", "Handgun"
 	params["_kit","type"];
@@ -71,7 +75,7 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 		{
 			if (_x != "") then {
 				// Update to getText( configFile >> "cfgWeapons" >> _x >> displayName);
-				_output = if (_output == "") then { "(" + _x + ")" } else { _output + ", " + _x };
+				_output = if (_output == "") then { "(" + W_DNAME(_x) + ")" } else { _output + ", " + W_DNAME(_x) };
 			};
 		} forEach (_kit select _id select 3);
 		
@@ -85,7 +89,9 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 	_output
 };
 
-dzn_fnc_gear_gnotes_getAssignedItems = {};
+dzn_fnc_gear_gnotes_getAssignedItems = {
+
+};
 dzn_fnc_gear_gnotes_getItems = {};
 	
 dzn_fnc_gear_gnotes_addMyGearSubject = {
@@ -106,7 +112,7 @@ dzn_fnc_gear_gnotes_addMyGearSubject = {
 		, [_kit,"primary"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit,"secondary"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit,"handgun"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		, "<br /> - " + (_kit select 0 select 3)
+		, "<br /> - " + V_DNAME(_kit select 0 select 3)
 		, "%6 - Inventory (magazines, medicine)"
 		, "%7 - Assigned Items (map, radio, compass)"
 	]
