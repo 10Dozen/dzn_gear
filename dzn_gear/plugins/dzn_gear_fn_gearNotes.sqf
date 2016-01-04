@@ -53,9 +53,16 @@ dzn_gear_gnotes_myGearTemplate = "<font size='1.3'>%1</font><br />%2%3%4%5%6%7<b
 	%4 - Hand Gun if exist
 */
 dzn_gear_gnotes_myUnitTemplate = "%1 (%2%3%4)";
-
+dzn_gear_gnotes_waitUntilEvent = { true };
 // ******************** Functions **********************
+dzn_fnc_gear_gnotes_addMyGearSubject = {};
+
+
+
 
 
 // ******************** Init **************************
+waitUntil { call dzn_gear_gnotes_waitUntilEvent };
+
+
 dzn_gear_gnotes_enabled = true;
