@@ -47,7 +47,10 @@ dzn_gear_gnotes_myGearTemplate = "<font size='18'>%1</font><br />---------------
 */
 dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'>%1 <font color='#9E9E9E'>(%2%3%4)</font></font>";
 
-dzn_gear_gnotes_waitUntilEvent = { !isNil { player getVariable "dzn_gear" } && !isNil { player getVariable "dzn_gear_done" } };
+#define ALL_SQUAD_GEARED_UP	private "_r"; _r = true; {if !(_x getVariable ["dzn_gear_done", false]) exitWith { _r = false };} forEach (units group player); _r
+dzn_gear_gnotes_waitUntilGroupEvent = { ALL_SQUAD_GEARED_UP };
+dzn_gear_gnotes_waitUntilMyEvent = { player getVariable ["dzn_gear_done", false] && !isNil {player getVariable "dzn_gear"} };
+
 
 // ******************** Functions **********************
 #define	DNAME(CLASS)	CLASS call dzn_fnc_getItemDisplayName
@@ -100,7 +103,7 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 			_output = format [
 				"%2%1"
 				, DNAME(_kit select _id select 1)
-				, if (_id == 1) then { "" } else { ", " }
+				, if (_id == 1) then { "" } else { " / " }
 			];
 		};
 	};
@@ -204,11 +207,12 @@ dzn_fnc_gear_gnotes_addSuqadGearSubject = {
 
 // ******************** Init **************************
 waitUntil { !isNil "dzn_gear_initialized" && { dzn_gear_initialized } };
-waitUntil { call dzn_gear_gnotes_waitUntilEvent };
 
-kit = player call dzn_fnc_gear_getGear;
-
-if (dzn_gear_gnotes_showSquadGear) then { call dzn_fnc_gear_gnotes_addSuqadGearSubject };
+waitUntil { call dzn_gear_gnotes_waitUntilMyEvent };
 if (dzn_gear_gnotes_showMyGear) then { call dzn_fnc_gear_gnotes_addMyGearSubject; };
+
+waitUntil { call dzn_gear_gnotes_waitUntilGroupEvent };
+if (dzn_gear_gnotes_showSquadGear) then { call dzn_fnc_gear_gnotes_addSuqadGearSubject };
+
 
 dzn_gear_gnotes_enabled = true;
