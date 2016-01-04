@@ -33,7 +33,8 @@ dzn_fnc_gear_plugin_assignByTable = {
 	
 	_kit = _unit call dzn_fnc_gear_plugin_resolveKit;
 	if !(_kit isEqualTo "") then {
-		[_unit, _kit] spawn dzn_fnc_gear_assignKit;
+		[_unit, _kit] spawn dzn_fnc_gear_assignKit;	
+		_unit setVariable ["dzn_gear", _kit, true];
 	};
 };
 
