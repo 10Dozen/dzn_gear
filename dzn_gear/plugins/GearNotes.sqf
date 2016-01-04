@@ -45,7 +45,7 @@ dzn_gear_gnotes_myGearTemplate = "<font size='18'>%1</font><br />---------------
 	%3 - Sec Wep if exist
 	%4 - Hand Gun if exist
 */
-dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'>%1 <font color='#9E9E9E'>(%2%3%4)</font></font>";
+dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'>%1%2 <font color='#9E9E9E'>(%3%4%5)</font></font>";
 
 #define ALL_SQUAD_GEARED_UP	private "_r"; _r = true; {if !(_x getVariable ["dzn_gear_done", false]) exitWith { _r = false };} forEach (units group player); _r
 dzn_gear_gnotes_waitUntilGroupEvent = { ALL_SQUAD_GEARED_UP };
@@ -170,6 +170,24 @@ dzn_fnc_gear_gnotes_getItems = {
 	
 	_output
 };
+
+dzn_fnc_gear_gnotes_getGearNote = {
+	private["_unit","_kit","_output"];
+	_unit = _this;
+	_kit = _unit call dzn_fnc_gear_getGear;
+	_output = format [
+		dzn_gear_gnotes_mySquadTemplate
+		, if (isPlayer _unit) then { format ["%1 - ", name _unit] } else { "" };
+		, roleDescription _unit
+		, [_kit, "primary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		, [_kit, "secondary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+		, [_kit, "handgun", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
+	];
+	
+	_unit setVariable ["dzn_gear_note", _output, true];
+	
+	_output
+};
 	
 dzn_fnc_gear_gnotes_addMyGearSubject = {
 	private["_kit","_output"];
@@ -184,7 +202,8 @@ dzn_fnc_gear_gnotes_addMyGearSubject = {
 		, _kit call dzn_fnc_gear_gnotes_getItems
 		, _kit call dzn_fnc_gear_gnotes_getAssignedItems
 	];
-
+	
+	player call dzn_fnc_gear_gnotes_getGearNote;
 	player createDiaryRecord ["Diary", ["Personal Equipment", _output]];
 };
 
@@ -192,14 +211,8 @@ dzn_fnc_gear_gnotes_addSuqadGearSubject = {
 	private["_kit","_output"];
 	_output = "";
 	{
-		_kit = _x call dzn_fnc_gear_getGear;
-		_output = _output + format [
-			dzn_gear_gnotes_mySquadTemplate
-			, roleDescription _x
-			, [_kit, "primary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
-			, [_kit, "secondary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
-			, [_kit, "handgun", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		];	
+		_note = if (!isNil { _x getVariable "dzn_gear_note" }) then { _x getVariable "dzn_gear_note" } else { _x call dzn_fnc_gear_gnotes_getGearNote };
+		_output = _output + _note; 
 	} forEach (units group player);
 	
 	player createDiaryRecord ["Diary", ["Squad Equipment", _output]];
