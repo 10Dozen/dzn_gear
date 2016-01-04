@@ -473,6 +473,17 @@ dzn_fnc_gear_initialize = {
 		};
 	} forEach _vehicles;
 	
+	if (dzn_gear_enableGearAssignementTable) then {
+		[] execVM "dzn_gear\plugins\AssignementTable.sqf";
+		[] spawn {
+			{
+				if !(isPlayer _x) then {
+					_x call dzn_fnc_gear_plugin_assignByTable;
+				};
+			} forEach allUnits;
+		};
+	};
+
 	dzn_gear_initialized = true;
 	publicVariable "dzn_gear_initialized";
 };
