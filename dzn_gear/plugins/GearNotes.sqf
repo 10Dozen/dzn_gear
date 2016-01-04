@@ -120,10 +120,15 @@ dzn_fnc_gear_gnotes_getAssignedItems = {
 
 dzn_fnc_gear_gnotes_getItems = {
 	params["_kit"];
-	private["_allItems","_output"];
+	private["_allItems","_items","_output","_i"];
 	
 	#define LINEITEMS(ID)	(_kit select ID select 1)
-	_allItems = ( LINEITEMS(5) + LINEITEMS(6) + LINEITEMS(7) ) call BIS_fnc_consolidateArray;
+	_allItems = ( LINEITEMS(5) + LINEITEMS(6) + LINEITEMS(7) );
+	_items = [];
+	{
+		for "_i" from 1 to (_x select 1) do { _items pushBack (_x select 0); };
+	} forEach _allItems;
+	_allItems = _items call BIS_fnc_consolidateArray;
 	
 	_output = "";
 	{
