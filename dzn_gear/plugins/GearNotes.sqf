@@ -32,7 +32,7 @@ dzn_gear_gnotes_showSquadGear = true;
 	%8 - Inventory (magazines, medicine)
 	%9 - Assigned Items (map, radio, compass)
 */
-dzn_gear_gnotes_myGearTemplate = "<font size='1.3'>%1</font><br />%2%3%4%5<br /><br />%6<br /><br />%7"
+dzn_gear_gnotes_myGearTemplate = "<font size='18'>%1</font><br />--------------------%2%3%4%5<br /><font color='#9E9E9E'>%6<br />%7</font>";
 
 /*
 	1'1 Squad Leader (AK-74)
@@ -45,9 +45,9 @@ dzn_gear_gnotes_myGearTemplate = "<font size='1.3'>%1</font><br />%2%3%4%5<br />
 	%3 - Sec Wep if exist
 	%4 - Hand Gun if exist
 */
-dzn_gear_gnotes_mySquadTemplate = "%1 (%2%3%4)";
+dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'>%1 <font color='#9E9E9E'>(%2%3%4)</font></font>";
 
-dzn_gear_gnotes_waitUntilEvent = { !isNil {player getVariable "dzn_gear"} };
+dzn_gear_gnotes_waitUntilEvent = { !isNil { player getVariable "dzn_gear" } && !isNil { player getVariable "dzn_gear_done" } };
 
 // ******************** Functions **********************
 #define	DNAME(CLASS)	CLASS call dzn_fnc_getItemDisplayName
@@ -71,10 +71,12 @@ if (isNil "dzn_fnc_getItemDisplayName") then {
 };
 
 dzn_fnc_gear_gnotes_getWeaponInfo = {
-	// type: "Primary", "Secondary", "Handgun"
-	// _mode: "personal", "squad"
+	/*
+		type: "Primary", "Secondary", "Handgun"
+		_mode: "personal", "squad"
+	*/
 	params["_kit","_type","_mode"];
-	private["_id","_output"];
+	private["_id","_output","_attaches"];
 	
 	_id = switch (toLower(_type)) do {
 		case "primary": { 1 };
@@ -83,28 +85,39 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 	};
 	_output = "";
 	
-	if ( (_kit select _id select 1) != "" ) then {
-		{
-			if (_x != "") then {
-				_output = if (_output == "") then { "(" + DNAME(_x) + ")" } else { _output + ", " + DNAME(_x) };
-			};
-		} forEach (_kit select _id select 3);	
-		
+	if ( (_kit select _id select 1) != "" ) then {		
 		if ( toLower(_mode) == "personal" ) then {
-			_output = format ["<br /> - %1%2", _kit select _id select 1, _output];
+			_attaches = "";
+			{
+				if (_x != "") then {
+					_attaches = if (_attaches == "") then { format ["%1", DNAME(_x)] } else { format["%1, %2", _attaches, DNAME(_x)] };					
+				};				
+			} forEach (_kit select _id select 3);
+			_attaches = if (_attaches == "") then { "" } else { format["(%1)", _attaches] };
+			
+			_output = format ["<br />1x %1 %2", DNAME(_kit select _id select 1), _attaches];
 		} else {
-			_output = format [", %1%2", _kit select _id select 1, _output];
+			_output = format [
+				"%2%1"
+				, DNAME(_kit select _id select 1)
+				, if (_id == 1) then { "" } else { ", " }
+			];
 		};
 	};
 
 	_output
 };
 
-dzn_fnc_gear_gnotes_getAssignedItems = {
-	params["_kit"];
-	private["_output"];
+dzn_fnc_gear_gnotes_getAssignedItems = {	
+	private["_kit","_items","_output"];	
+	_kit = _this;
+	// ["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","NVGoggles_OPFOR","Binocular"]
+
+	if (count (_kit select 4) == 1) exitWith { "" };
+	_items = (_kit select 4);
+	_items deleteAt 0;
 	
-	_output	= "";
+	_output = "";
 	{		
 		_output = format [
 			"%1<br />%2x %3"
@@ -112,21 +125,33 @@ dzn_fnc_gear_gnotes_getAssignedItems = {
 			, _x select 1
 			, DNAME(_x select 0)
 		];
-	} forEach ((_kit select 4) call BIS_fnc_consolidateArray);
-	_output = "<br />" + _output;
-	
+	} forEach ((_items) call BIS_fnc_consolidateArray);
+		
 	_output
 };
 
-dzn_fnc_gear_gnotes_getItems = {
-	params["_kit"];
-	private["_allItems","_items","_output","_i"];
+dzn_fnc_gear_gnotes_getItems = {	
+	private["_kit","_allItems","_items","_output","_i","_j","_item"];	
+	_kit = _this;
 	
-	#define LINEITEMS(ID)	(_kit select ID select 1)
-	_allItems = ( LINEITEMS(5) + LINEITEMS(6) + LINEITEMS(7) );
+	_allItems = [];
+	for "_j" from 5 to 7 do {
+		if (count (_kit select _j) > 1) then {
+			_allItems = _allItems + (_kit select _j select 1);
+		};
+	};
+	
 	_items = [];
 	{
-		for "_i" from 1 to (_x select 1) do { _items pushBack (_x select 0); };
+		for "_i" from 1 to (_x select 1) do {
+			_item = _x select 0;
+			switch (_item) do {
+				case "PRIMARY MAG": { _item = _kit select 1 select 2; };
+				case "SECONDARY MAG": { _item = _kit select 2 select 2; };
+				case "HANDGUN MAG": { _item = _kit select 3 select 2; };
+			};
+			_items pushBack (_item); 
+		};
 	} forEach _allItems;
 	_allItems = _items call BIS_fnc_consolidateArray;
 	
@@ -138,8 +163,7 @@ dzn_fnc_gear_gnotes_getItems = {
 			, _x select 1
 			, DNAME(_x select 0)
 		];
-	} forEach _allItems;	
-	_output = "<br />" + _output;
+	} forEach _allItems;
 	
 	_output
 };
@@ -148,32 +172,31 @@ dzn_fnc_gear_gnotes_addMyGearSubject = {
 	private["_kit","_output"];
 	_kit = player call dzn_fnc_gear_getGear;
 	_output = format [
-		dzn_gear_gnotes_myUnitTemplate
+		dzn_gear_gnotes_myGearTemplate
 		, roleDescription player
 		, [_kit, "primary", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit, "secondary", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit, "handgun", "personal"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		, "<br /> - " + DNAME(_kit select 0 select 3)
+		, if (_kit select 0 select 3 != "") then { format ["<br /> - %1", DNAME(_kit select 0 select 3)] } else { "" }		
 		, _kit call dzn_fnc_gear_gnotes_getItems
 		, _kit call dzn_fnc_gear_gnotes_getAssignedItems
-	]
+	];
 
 	player createDiaryRecord ["Diary", ["Personal Equipment", _output]];
 };
 
 dzn_fnc_gear_gnotes_addSuqadGearSubject = {
 	private["_kit","_output"];
-
+	_output = "";
 	{
 		_kit = _x call dzn_fnc_gear_getGear;
-		_output = format [
+		_output = _output + format [
 			dzn_gear_gnotes_mySquadTemplate
 			, roleDescription _x
 			, [_kit, "primary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
 			, [_kit, "secondary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
 			, [_kit, "handgun", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
-		];
-	
+		];	
 	} forEach (units group player);
 	
 	player createDiaryRecord ["Diary", ["Squad Equipment", _output]];
@@ -182,6 +205,8 @@ dzn_fnc_gear_gnotes_addSuqadGearSubject = {
 // ******************** Init **************************
 waitUntil { !isNil "dzn_gear_initialized" && { dzn_gear_initialized } };
 waitUntil { call dzn_gear_gnotes_waitUntilEvent };
+
+kit = player call dzn_fnc_gear_getGear;
 
 if (dzn_gear_gnotes_showSquadGear) then { call dzn_fnc_gear_gnotes_addSuqadGearSubject };
 if (dzn_gear_gnotes_showMyGear) then { call dzn_fnc_gear_gnotes_addMyGearSubject; };
