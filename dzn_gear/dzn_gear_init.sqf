@@ -36,4 +36,7 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 	waitUntil { time > _this select 1 };
 };
 
+if (dzn_gear_enableGearAssignementTable) then { call compile preProcessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf"; };
+if (dzn_gear_enableGearNotes) then { call compile preProcessFileLineNumbers "dzn_gear\plugins\GearNotes.sqf"; };
+
 [] spawn dzn_fnc_gear_initialize;
