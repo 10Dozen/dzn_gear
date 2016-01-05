@@ -1,7 +1,13 @@
 // **************************
 // 	DZN GEAR
 //
+//	Initialized when:
+//	{ !isNil "dzn_gear_initDone" }
 //
+//	Server-side initialized when:
+//	{ !isNil "dzn_gear_serverInitDone" }
+//
+// *************************
 //	SETTINGS
 // **************************
 
@@ -14,7 +20,6 @@ dzn_gear_enableGearNotes			= true;
 // **************************
 dzn_gear_defaultBackpack = "B_Carryall_khk";
 dzn_gear_editModeEnabled = _this select 0;
-if (isServer) then { dzn_gear_initialized = false; };
 
 #include "fn\dzn_gear_functions.sqf"
 
