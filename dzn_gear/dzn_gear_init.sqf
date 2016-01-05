@@ -9,14 +9,13 @@
 dzn_gear_enableGearAssignementTable		= true;
 dzn_gear_enableGearNotes			= true;
 
-
+// **************************
+// FUNCTIONS
+// **************************
 dzn_gear_defaultBackpack = "B_Carryall_khk";
 dzn_gear_editModeEnabled = _this select 0;
 if (isServer) then { dzn_gear_initialized = false; };
 
-// **************************
-// FUNCTIONS
-// **************************
 #include "fn\dzn_gear_functions.sqf"
 
 // **************************
@@ -38,32 +37,3 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 };
 
 [] spawn dzn_fnc_gear_initialize;
-waitUntil { !isNil "dzn_gear_initialized" && { dzn_gear_initialized } };
-
-if (hasInterface) then {
-	waitUntil { !isNull player };
-	if (dzn_gear_enableGearAssignementTable) then {
-		call compile preProcessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf";
-		[] spawn {
-			waitUntil { !isNil "dzn_gear_initialized" && !isNil "dzn_gear_gat_enabled" && !isNil "dzn_fnc_gear_plugin_assignByTable"};	
-			player call dzn_fnc_gear_plugin_assignByTable;
-		};
-	};
-	
-	[] spawn {
-		if (didJIP) then {
-			if !(dzn_gear_enableGearAssignementTable) then {
-				if (time > 0 ) then {
-					waitUntil { sleep 1; !isNil { player getVariable "dzn_gear" } };
-				} else {
-					waitUntil { !isNil { player getVariable "dzn_gear" } };
-				};
-				[player, player getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
-			};
-		};
-	};
-	
-	if (dzn_gear_enableGearNotes) then {
-		[] execVM "dzn_gear\plugins\GearNotes.sqf";
-	};
-};
