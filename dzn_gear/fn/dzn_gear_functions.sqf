@@ -132,8 +132,19 @@ dzn_fnc_gear_assignGear = {
 	} forEach ["addItemToUniform","addItemToVest","addItemToBackpack"];
 	
 	if (dzn_gear_enableGearNotes) then {
-		_unit setVariable ["dzn_gear_shortNote", "", true];
-		_unit setVariable ["dzn_gear_fullNote", "", true];
+		private["_noteKit"];
+		_noteKit = _unit call dzn_fnc_gear_getGear;
+		
+		_unit setVariable [
+			"dzn_gear_shortNote" 
+			, [_unit, _noteKit] call dzn_fnc_gear_gnotes_getShortGearNote
+			, true
+		];
+		_unit setVariable [
+			"dzn_gear_fullNote"
+			, [_unit, _noteKit] call dzn_fnc_gear_gnotes_getFullGearNote
+			, true
+		];
 	};
 	_unit setVariable ["dzn_gear_done", true, true];
 	
@@ -420,12 +431,12 @@ dzn_fnc_gear_initialize = {
 			// Cargo Kit
 			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
 				// From Variable
-				[_x, _x getVariable "dzn_gear_cargo", true] spawn dzn_fnc_gear_assignKit;
+				[_x, _x getVariable "dzn_gear_cargo", true] call dzn_fnc_gear_assignKit;
 			} else {
 				// From Synchronized Logic
 				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
 				if (_synKit != "") then {
-					[_x, _synKit, true] spawn dzn_fnc_gear_assignKit;
+					[_x, _synKit, true] call dzn_fnc_gear_assignKit;
 				};
 			};
 		};
@@ -436,12 +447,12 @@ dzn_fnc_gear_initialize = {
 		if (local _x && { _x getVariable ["dzn_gear_done", false] }) then {
 			if (!isNil { _x getVariable "dzn_gear" }) then {
 				// From Variable
-				[_x, _x getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
+				[_x, _x getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
 			} else {
 				// From Synchronized Logic
 				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
 				if (_synKit != "") then {
-					[_x, _synKit] spawn dzn_fnc_gear_assignKit;
+					[_x, _synKit] call dzn_fnc_gear_assignKit;
 				} else {
 					// From GAT Plugin
 					if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
