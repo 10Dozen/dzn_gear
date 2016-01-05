@@ -55,7 +55,7 @@ dzn_fnc_gear_initialize = {
 		waitUntil { !isNull player && { local player} };
 	};
 	
-	dzn_fnc_gear_checkSynchroObject = {
+	_checkSyncObject = {
 		// [@unit, @Par ("dzn_gear_cargo"/"dzn_gear")] call dzn_fnc_gear_checkSynchroObject
 		params ["_unit","_par"];
 		private ["_kit","_id"];
@@ -73,29 +73,45 @@ dzn_fnc_gear_initialize = {
 		_kit
 	}
 	
-	private["_crewKit"];
+	private["_crewKit","_synKit"];
 	
+	// Vehicles
 	{
 		if (local _x && { _x getVariable ["dzn_gear_done", false] }) then {
 			// Crew Kit
 			if (!isNil { _x getVariable "dzn_gear" }) then {
 				_crewKit = _x getVariable "dzn_gear";
 				{_x setVariable ["dzn_gear", _crewKit, true];} forEach (crew _x);
+			} else {
+				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
+				if (_synKit != "") then { { _x setVariable ["dzn_gear", _synKit, true]; } forEach (crew _x); };
 			};
 			
 			// Cargo Kit
 			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
+				// From Variable
 				[_x, _x getVariable "dzn_gear_cargo", true] spawn dzn_fnc_gear_assignKit;
 			} else {
-				_sObj = synchronizedObjects
-			
+				// From Synchronized Logic
+				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
+				if (_synKit != "") then {
+					[_x, _synKit, true] spawn dzn_fnc_gear_assignKit;
+				};
 			};
 		};
 	} forEach (vehicles);
 
+	// Units
 	{
 		if (local _x && { _x getVariable ["dzn_gear_done", false] }) then {
-		
+			if (!isNil { _x getVariable "dzn_gear" }) then {
+				// From Variable
+				[_x, _x getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
+			} else {
+				// From Synchronized Logic
+				
+				// From GAT Plugin
+			};
 		};
 	} forEach (allUnits);
 
