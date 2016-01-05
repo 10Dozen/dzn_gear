@@ -109,10 +109,17 @@ dzn_fnc_gear_initialize = {
 				[_x, _x getVariable "dzn_gear"] spawn dzn_fnc_gear_assignKit;
 			} else {
 				// From Synchronized Logic
-				
-				// From GAT Plugin
+				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
+				if (_synKit != "") then {
+					[_x, _synKit] spawn dzn_fnc_gear_assignKit;
+				} else {
+					// From GAT Plugin
+					if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
+				};
 			};
 		};
 	} forEach (allUnits);
-
+	
+	dzn_gear_initDone = true;
+	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
 };
