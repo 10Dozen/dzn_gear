@@ -29,11 +29,42 @@ dzn_fnc_gear_assignKit = {
 	};
 };
 
+dzn_fnc_gear_assignGear = {
+	...
 
-dzn_fnc_gear_assignGear = {};
-dzn_fnc_gear_assignCargoGear = {};
+	//_unit setVariable ["dzn_gear_kit", _unit call dzn_fnc_gear_getGear, true];
+	if (dzn_gear_enableGearNotes) then {
+		_unit setVariable ["dzn_gear_shortNote", "", true];
+		_unit setVariable ["dzn_gear_fullNote", "", true];
+	};
+	_unit setVariable ["dzn_gear_done", true, true];
+};
+
+dzn_fnc_gear_assignCargoGear = {
+	
+	//_unit setVariable ["dzn_gear_kit", _unit call dzn_fnc_gear_getCargoGear, true];
+	_unit setVariable ["dzn_gear_done", true, true];
+};
 
 dzn_fnc_gear_getGear = {};
 dzn_fnc_gear_getCargoGear = {};
 
-dzn_fnc_gear_initialize = {};
+dzn_fnc_gear_initialize = {
+	// Wait until player initialized in multiplayer
+	if (isMultiplayer && hasInterface) then {
+		waitUntil { !isNull player && { local player} };
+	};
+	
+	{
+		if (local _x) then {
+		
+		};
+	} forEach (vehicles);
+
+	{
+		if (local _x) then {
+		
+		};
+	} forEach (allUnits);
+
+};
