@@ -75,6 +75,7 @@ if (isNil "dzn_fnc_getItemDisplayName") then {
 
 dzn_fnc_gear_gnotes_getWeaponInfo = {
 	/*
+		@WeponInfo(STRING) = [@Kit, @Type, @Mode] call dzn_fnc_gear_gnotes_getWeaponInfo
 		type: "Primary", "Secondary", "Handgun"
 		_mode: "personal", "squad"
 	*/
@@ -111,11 +112,13 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 	_output
 };
 
-dzn_fnc_gear_gnotes_getAssignedItems = {	
+dzn_fnc_gear_gnotes_getAssignedItems = {
+	/*
+		@AssignedItemsInfo(STRING) = @Kit call dzn_fnc_gear_gnotes_getWeaponInfo
+	*/
 	private["_kit","_items","_output"];	
 	_kit = _this;
-	// ["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio","ItemGPS","NVGoggles_OPFOR","Binocular"]
-
+	
 	if (count (_kit select 4) == 1) exitWith { "" };
 	_items = (_kit select 4);
 	_items deleteAt 0;
@@ -133,7 +136,10 @@ dzn_fnc_gear_gnotes_getAssignedItems = {
 	_output
 };
 
-dzn_fnc_gear_gnotes_getItems = {	
+dzn_fnc_gear_gnotes_getItems = {
+	/*
+		@ItemsInfo(STRING) = @Kit call dzn_fnc_gear_gnotes_getWeaponInfo
+	*/
 	private["_kit","_allItems","_items","_output","_i","_j","_item"];	
 	_kit = _this;
 	
@@ -172,6 +178,9 @@ dzn_fnc_gear_gnotes_getItems = {
 };
 
 dzn_fnc_gear_gnotes_getFullGearNote = {
+	/*
+		@FullGearNote(STRING) = [@Unit, @Kit(Optional] call dzn_fnc_gear_gnotes_getWeaponInfo
+	*/
 	private["_unit","_kit","_output"];
 	_unit = _this select 0;
 	_kit = if (isNil { _this select 1 }) then { _unit call dzn_fnc_gear_getGear } else { _this select 1 };
@@ -190,6 +199,9 @@ dzn_fnc_gear_gnotes_getFullGearNote = {
 };
 
 dzn_fnc_gear_gnotes_getShortGearNote = {
+	/*
+		@ShortGearNote(STRING) = [@Unit, @Kit(Optional] call dzn_fnc_gear_gnotes_getWeaponInfo
+	*/
 	private["_unit","_kit","_output"];
 	_unit = _this select 0;
 	_kit = if (isNil { _this select 1 }) then { _unit call dzn_fnc_gear_getGear } else { _this select 1 };
