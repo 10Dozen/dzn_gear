@@ -4,7 +4,7 @@
 dzn_fnc_gear_assignKit = {
 	/*
 		Resolve given kit and call function to assign existing kit to unit.	
-		EXAMPLE:	[ unit, gearSetName, isBox ] spawn dzn_gearSetup;
+		EXAMPLE:	[ unit, gearSetName, isBox ] spawn dzn_fnc_gear_assignKit;
 		INPUT:
 			0: OBJECT		- Unit for which gear will be set
 			1: ARRAY or STRING	- List of Kits or single kit for assignment: ["kit_r","kit_ar"] or "kit_ar"
@@ -55,14 +55,46 @@ dzn_fnc_gear_initialize = {
 		waitUntil { !isNull player && { local player} };
 	};
 	
-	{
-		if (local _x) then {
+	dzn_fnc_gear_checkSynchroObject = {
+		// [@unit, @Par ("dzn_gear_cargo"/"dzn_gear")] call dzn_fnc_gear_checkSynchroObject
+		params ["_unit","_par"];
+		private ["_kit","_id"];
+		_kit = "";
+		_id = if (toLower(_par) == "dzn_gear_cargo") then { 14 } else { 9 }; 
 		
+		{
+			if (typeOf _x == "Logic") then {
+				if ( !isNil { _x getVariable _par } || [_par, str(_x), false] call BIS_fnc_inString ) exitWith {
+					_kit = if (!isNil {_x getVariable _par}) then {_x getVariable _par} else {str(_x) select [_id]};
+				};
+			};
+		} forEach (synchronizedObjects _this);
+		
+		_kit
+	}
+	
+	private["_crewKit"];
+	
+	{
+		if (local _x && { _x getVariable ["dzn_gear_done", false] }) then {
+			// Crew Kit
+			if (!isNil { _x getVariable "dzn_gear" }) then {
+				_crewKit = _x getVariable "dzn_gear";
+				{_x setVariable ["dzn_gear", _crewKit, true];} forEach (crew _x);
+			};
+			
+			// Cargo Kit
+			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
+				[_x, _x getVariable "dzn_gear_cargo", true] spawn dzn_fnc_gear_assignKit;
+			} else {
+				_sObj = synchronizedObjects
+			
+			};
 		};
 	} forEach (vehicles);
 
 	{
-		if (local _x) then {
+		if (local _x && { _x getVariable ["dzn_gear_done", false] }) then {
 		
 		};
 	} forEach (allUnits);
