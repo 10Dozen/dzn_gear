@@ -14,9 +14,6 @@ dzn_fnc_gear_assignKit = {
 	params ["_unit","_kits",["_isCargo", false]];
 	private ["_kit","_randomKit"];
 	
-	#define checkKitIsArray(PAR)		(typename (PAR) == "ARRAY")
-	#define convertKitnameToAKit(PAR)		call compile (PAR)
-	
 	_kit = if (typename _kits == "ARRAY") then { _kits call BIS_fnc_selectRandom } else { _kits };
 	if (isNil {call compile _kit}) exitWith {
 		diag_log format ["There is no kit with name %1", (_kit)];
@@ -24,6 +21,7 @@ dzn_fnc_gear_assignKit = {
 	};
 	
 	_unit setVariable ["dzn_gear", _kit];
+	
 	if (_isCargo) then {
 		[_unit, call compile _kit] call dzn_fnc_gear_assignGear;
 	} else {
