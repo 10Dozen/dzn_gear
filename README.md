@@ -7,6 +7,7 @@
 - Randomized infanty kit (random weapon, equipement, uniforms, etc.)
 - Allows to create cargo gear kits for vehicles and ammoboxes
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
+- Allows to assign gear by unit's name or role description
 
 <h3>Plugins</h4>
 <h4>Gear Assignement Table</h4>
