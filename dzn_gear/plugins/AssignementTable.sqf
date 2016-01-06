@@ -32,10 +32,7 @@ dzn_fnc_gear_plugin_assignByTable = {
 	if (!isNil {_unit getVariable "dzn_gear"}) exitWith {};
 	
 	_kit = _unit call dzn_fnc_gear_plugin_resolveKit;
-	if !(_kit isEqualTo "") then {
-		[_unit, _kit] spawn dzn_fnc_gear_assignKit;	
-		_unit setVariable ["dzn_gear", _kit, true];
-	};
+	if !(_kit isEqualTo "") then { [_unit, _kit] call dzn_fnc_gear_assignKit; };
 };
 
 dzn_gear_gat_enabled = true;
