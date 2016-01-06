@@ -12,19 +12,22 @@ dzn_fnc_gear_assignKit = {
 		OUTPUT: NULL
 	*/
 	params ["_unit","_kits",["_isCargo", false]];
-	private ["_kit","_randomKit"];
+	private ["_kitName","_kit"];
 	
-	_kit = if (typename _kits == "ARRAY") then { _kits call BIS_fnc_selectRandom } else { _kits };
+	_kitName = if (typename _kits == "ARRAY") then { _kits call BIS_fnc_selectRandom } else { _kits };
 	
-	if (isNil {call compile _kit}) exitWith {
-		diag_log format ["There is no kit with name %1", (_kit)];
-		player sideChat format ["There is no kit with name %1", (_kit)];
+	if (isNil {call compile _kitName}) exitWith {
+		diag_log format ["There is no kit with name %1", (_kitName)];
+		player sideChat format ["There is no kit with name %1", (_kitName)];
 	};
 	
-	_kit = call compile _kit;
-	if (typename (_kit select 0) != "ARRAY") then { _kit = call compile (_kit call BIS_fnc_selectRandom); };	
+	_kit = call compile _kitName;
+	if (typename (_kit select 0) != "ARRAY") then { 
+		_kitName = _kit call BIS_fnc_selectRandom;		
+		_kit = call compile (_kitName); 	
+	};
 	
-	_unit setVariable ["dzn_gear", _kit, true];
+	_unit setVariable ["dzn_gear", _kitName, true];	
 	
 	if (_isCargo) then {
 		[_unit, _kit] call dzn_fnc_gear_assignCargoGear;
@@ -396,104 +399,55 @@ dzn_fnc_gear_setPreciseGear = {
 
 dzn_fnc_gear_initialize = {
 	// Wait until player initialized in multiplayer
-	diag_log "dzn_fnc_gear_initialize :: Start";
-	
 	if (isMultiplayer && hasInterface) then {
 		waitUntil { !isNull player && { local player} };
-		diag_log "dzn_fnc_gear_initialize :: !isNull player && { local player}";
 	};
 	
-	_checkSyncObject = {
-		// [@unit, @Par ("dzn_gear_cargo"/"dzn_gear")] call dzn_fnc_gear_checkSynchroObject
-		params ["_unit","_par"];
-		private ["_kit","_id"];
-		
-		diag_log "dzn_fnc_gear_initialize :: _checkSyncObject :: Start";
-		
-		_kit = "";
-		_id = if (toLower(_par) == "dzn_gear_cargo") then { 14 } else { 9 }; 
-		
+	private["_crewKit","_synKit","_logic","_par","_id","_kit"];
+	{
+		_logic = _x;
 		{
-			if (typeOf _x == "Logic") then {
-				if ( !isNil { _x getVariable _par } || [_par, str(_x), false] call BIS_fnc_inString ) exitWith {
-					_kit = if (!isNil {_x getVariable _par}) then {_x getVariable _par} else {str(_x) select [_id]};
-				};
+			_par 		= _x select 0;
+			_id 		= _x select 1;
+			_kit 		= "";
+			
+			if (!isNil { _logic getVariable _par } || [_par, str(_logic), false] call BIS_fnc_inString) then {
+				_kit = if (!isNil {_logic getVariable _par}) then {_logic getVariable _par} else {str(_logic) select [_id]};	
+				{
+					if (local _x) then { 
+						if (isNil {_x getVariable _par}) then {
+							_x setVariable [ _par, _kit, true ]; 
+						};
+					};
+				} forEach (synchronizedObjects _logic);				
 			};
-		} forEach (synchronizedObjects _unit);
-		
-		diag_log format ["dzn_fnc_gear_initialize :: _checkSyncObject :: %1", _kit];
-		
-		_kit
-	};
-	
-	private["_crewKit","_synKit"];
+		} forEach [ ["dzn_gear", 9], ["dzn_gear_cargo", 15] ];
+	} forEach (entities "Logic");
 	
 	// Vehicles
 	{
-		diag_log format["dzn_fnc_gear_initialize :: Vehicles :: %1 :: %2", _forEachIndex, str(_x)];
 		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {
-			diag_log format["dzn_fnc_gear_initialize :: Vehicles :: %1 :: %2 :: LOCAL", _forEachIndex, str(_x)];
 			// Crew Kit
-			if (!isNil { _x getVariable "dzn_gear" }) then {
-				_crewKit = _x getVariable "dzn_gear";
+			if (!isNil { _x getVariable "dzn_gear" }) then {			
+			_crewKit = _x getVariable "dzn_gear";
 				{_x setVariable ["dzn_gear", _crewKit, true];} forEach (crew _x);
-			} else {
-				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
-				if (_synKit != "") then { { _x setVariable ["dzn_gear", _synKit, true]; } forEach (crew _x); };
 			};
 			
 			// Cargo Kit
 			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
 				// From Variable
 				[_x, _x getVariable "dzn_gear_cargo", true] call dzn_fnc_gear_assignKit;
-			} else {
-				// From Synchronized Logic
-				_synKit = [_x, "dzn_gear_cargo"] call _checkSyncObject;
-				if (_synKit != "") then {
-					[_x, _synKit, true] call dzn_fnc_gear_assignKit;
-				};
 			};
 		};
 	} forEach (vehicles);
 
 	// Units
 	{
-		diag_log format["dzn_fnc_gear_initialize :: Units :: %1 :: %2", _forEachIndex, str(_x)];
-		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {
-		
-			diag_log format["dzn_fnc_gear_initialize :: Units :: %1 :: %2 :: LOCAL", _forEachIndex, str(_x)];
-			diag_log format["dzn_fnc_gear_initialize :: Units :: %1 :: %2 :: !isNil { _x getVariable 'dzn_gear' } = %3", _forEachIndex, str(_x), !isNil { _x getVariable "dzn_gear" }];
-			
-			
-			if (!isNil { _x getVariable "dzn_gear" }) then {
-				diag_log format[
-					"dzn_fnc_gear_initialize :: Units :: %1 :: %2 :: dzn_gear = %3"
-					, _forEachIndex
-					, str(_x)
-					, _x getVariable "dzn_gear"
-				];			
-			
-				// From Variable
+		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {			
+			if (!isNil { _x getVariable "dzn_gear" }) then {// From Variable
 				[_x, _x getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
 			} else {
-				// From Synchronized Logic
-				_synKit = [_x, "dzn_gear"] call _checkSyncObject;
-				
-				diag_log format[
-					"dzn_fnc_gear_initialize :: Units :: %1 :: %2 :: _synKit = %3"
-					, _forEachIndex
-					, str(_x)
-					, _synKit
-				];				
-				
-				if (_synKit != "") then {
-					[_x, _synKit] call dzn_fnc_gear_assignKit;
-				} else {
-					diag_log format["dzn_fnc_gear_initialize :: Units :: %1 :: %2 :: GATed", _forEachIndex, str(_x)];
-					
-					// From GAT Plugin
-					if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
-				};
+				if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
 			};
 		};
 	} forEach (allUnits);
