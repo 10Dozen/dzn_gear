@@ -1,5 +1,5 @@
 # dzn_gear
-##### Version: 2.0
+##### Version: 2.1
 
 <i>Uses aeroson's get_loadout/set_loadout script (see https://github.com/aeroson/a3-loadout)</i>
 
