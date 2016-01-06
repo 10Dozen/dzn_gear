@@ -9,11 +9,11 @@
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 - Allows to assign gear by unit's name or role description
 
-<h3>Plugins</h4>
-<h4>Gear Assignement Table</h4>
+<h4>Plugins</h4>
+<h5>Gear Assignement Table</h5>
 Assign kits by RoleDescription or unit name (100% JIP compatible).
 
-<h4>Gear Notes</h4>
+<h5>Gear Notes</h5>
 Show your loadout and loadout of your squadmates at briefing screen.
 
 <h2>How To</h2>
