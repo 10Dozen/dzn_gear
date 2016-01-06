@@ -45,7 +45,7 @@ dzn_gear_gnotes_myGearTemplate = "<font size='18'>%1</font><br />---------------
 	%3 - Sec Wep if exist
 	%4 - Hand Gun if exist
 */
-dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'>%1%2 <font color='#9E9E9E'>(%3%4%5)</font></font>";
+dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'><font size='12' color='#9acd32'>%1</font>%2 <font color='#9E9E9E'>(%3%4%5)</font></font>";
 
 #define ALL_SQUAD_GEARED_UP	private "_r"; _r = true; {if !(_x getVariable ["dzn_gear_done", false]) exitWith { _r = false };} forEach (units group player); _r
 dzn_gear_gnotes_waitUntilGroupEvent = { true };
@@ -79,6 +79,7 @@ dzn_fnc_gear_gnotes_getWeaponInfo = {
 		type: "Primary", "Secondary", "Handgun"
 		_mode: "personal", "squad"
 	*/
+	
 	params["_kit","_type","_mode"];
 	private["_id","_output","_attaches"];
 	
@@ -181,6 +182,7 @@ dzn_fnc_gear_gnotes_getFullGearNote = {
 	/*
 		@FullGearNote(STRING) = [@Unit, @Kit(Optional] call dzn_fnc_gear_gnotes_getWeaponInfo
 	*/
+	
 	private["_unit","_kit","_output"];
 	_unit = _this select 0;
 	_kit = if (isNil { _this select 1 }) then { _unit call dzn_fnc_gear_getGear } else { _this select 1 };
@@ -207,7 +209,7 @@ dzn_fnc_gear_gnotes_getShortGearNote = {
 	_kit = if (isNil { _this select 1 }) then { _unit call dzn_fnc_gear_getGear } else { _this select 1 };
 	_output = format [
 		dzn_gear_gnotes_mySquadTemplate
-		, if (isPlayer _unit) then { format ["%1 - ", name _unit] } else { "" };
+		, if (isPlayer _unit) then { format ["%1 - ", name _unit] } else { "" }
 		, roleDescription _unit
 		, [_kit, "primary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
 		, [_kit, "secondary", "squad"] call dzn_fnc_gear_gnotes_getWeaponInfo
@@ -222,7 +224,7 @@ dzn_fnc_gear_gnotes_addMyGearSubject = {
 	_output = if (!isNil {player getVariable "dzn_gear_fullNote"}) then { 
 		player getVariable "dzn_gear_fullNote"
 	} else {
-		player call dzn_fnc_gear_gnotes_getFullGearNote
+		[player] call dzn_fnc_gear_gnotes_getFullGearNote
 	};
 
 	player createDiaryRecord ["Diary", ["Personal Equipment", _output]];
@@ -232,7 +234,7 @@ dzn_fnc_gear_gnotes_addSuqadGearSubject = {
 	private["_output","_note"];
 	_output = "";
 	{
-		_note = if (!isNil { _x getVariable "dzn_gear_shortNote" }) then { _x getVariable "dzn_gear_shortNote" } else { _x call dzn_fnc_gear_gnotes_getShortGearNote };
+		_note = if (!isNil { _x getVariable "dzn_gear_shortNote" }) then { _x getVariable "dzn_gear_shortNote" } else { [_x] call dzn_fnc_gear_gnotes_getShortGearNote };
 		_output = _output + _note; 
 	} forEach (units group player);
 	
