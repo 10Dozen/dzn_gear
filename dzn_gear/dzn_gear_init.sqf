@@ -13,7 +13,7 @@
 
 // Plugins
 dzn_gear_enableGearAssignementTable		= true;
-dzn_gear_enableGearNotes			= true;
+dzn_gear_enableGearNotes			= false;
 
 // **************************
 // FUNCTIONS
@@ -31,7 +31,7 @@ if (dzn_gear_editModeEnabled) then {call compile preProcessFileLineNumbers "dzn_
 // **************************
 // GEARS
 // **************************
-#include "dzn_gear_kits.sqf"
+#include "Kits.sqf"
 
 // **************************
 // INITIALIZATION
