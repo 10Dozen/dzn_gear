@@ -47,8 +47,8 @@ dzn_gear_gnotes_myGearTemplate = "<font size='18'>%1</font><br />---------------
 */
 dzn_gear_gnotes_mySquadTemplate = "<br /><font size='12'><font size='12' color='#9acd32'>%1</font>%2 <font color='#9E9E9E'>(%3%4%5)</font></font>";
 
-#define ALL_SQUAD_GEARED_UP	private "_r"; _r = true; {if !(_x getVariable ["dzn_gear_done", false]) exitWith { _r = false };} forEach (units group player); _r
-dzn_gear_gnotes_waitUntilGroupEvent = { true };
+#define ALL_SQUAD_GEARED_UP	private "_r"; _r = true; {if (isNil {_x getVariable "dzn_gear_shortNote"}) exitWith { _r = false };} forEach (units group player); _r
+dzn_gear_gnotes_waitUntilGroupEvent = { ALL_SQUAD_GEARED_UP };
 dzn_gear_gnotes_waitUntilMyEvent = { player getVariable ["dzn_gear_done", false] };
 
 
