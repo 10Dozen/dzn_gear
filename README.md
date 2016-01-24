@@ -34,9 +34,9 @@ Download files to your mission folder. If you already have "init.sqf", then upda
 <h3>Video HowTo</h3> 
 https://www.youtube.com/watch?v=rhsF5Jw3Vdo
 <br/>https://www.youtube.com/watch?v=rlCNkTFW2W8
-<!--
+
 <h3>Google Slides HowTo</h3> 
--->
+Google Slides (RU): https://docs.google.com/presentation/d/1TDAyE8xhFSAO9977mSDJ8B5OokprkgaBUE59KTb0fuc/present?slide=id.gfe3687196_0_0
 
 <h3>Kits</h3>
 There are several types of gear kits you can create:
