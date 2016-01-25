@@ -77,13 +77,12 @@ dzn_fnc_gear_gnote_trimSpaces = {
 	// @String = @String call dzn_fnc_gear_gnote_trimSpacesr
 	private ["_output", "_i"];
 	_output = "";
-	
 	for "_i" from 0 to (count (toArray _this)) do {
-		if !(_this select [_i] == " ") then {
-			_output = format ["%1%2", _output, _this select [_i]];
+		if !(_this select [_i,1] == " ") then {
+			_output = format ["%1%2", _output, _this select [_i,1]];
 		};
 	};
-
+	
 	_output
 };
 
