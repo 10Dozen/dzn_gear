@@ -1,5 +1,8 @@
 # dzn_gear
 ##### Version: 2.1
+* [How To](https://github.com/10Dozen/dzn_gear/blob/master/README.md#how-to)
+* [Edit mode](https://github.com/10Dozen/dzn_gear/blob/master/README.md#edit-mode)
+* [API](https://github.com/10Dozen/dzn_gear/blob/master/README.md#api)
 
 <i>Uses aeroson's get_loadout/set_loadout script (see https://github.com/aeroson/a3-loadout)</i>
 
@@ -8,8 +11,6 @@
 - Allows to create cargo gear kits for vehicles and ammoboxes
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 - Allows to assign gear by unit's name or role description
-
-* [Plugins](https://github.com/10Dozen/dzn_gear/blob/master/README.md#Plugins)
 
 <h4>Plugins</h4>
 <h5>Gear Assignement Table</h5>
