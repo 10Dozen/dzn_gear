@@ -9,7 +9,7 @@
 - Allows to use created kits to assign gear via: Synchronization with GameLogic or setVariable for unit
 - Allows to assign gear by unit's name or role description
 
-* [Plugins](https://github.com/10Dozen/dzn_commonFunctions/wiki/API#Plugins)
+* [Plugins](https://github.com/10Dozen/dzn_gear/blob/master/README.md#Plugins)
 
 <h4>Plugins</h4>
 <h5>Gear Assignement Table</h5>
