@@ -1,5 +1,5 @@
 # dzn_gear
-##### Version: 2.1
+##### Version: 2.2
 * [How To](https://github.com/10Dozen/dzn_gear/blob/master/README.md#how-to)
 * [Edit mode](https://github.com/10Dozen/dzn_gear/blob/master/README.md#edit-mode)
 * [API](https://github.com/10Dozen/dzn_gear/blob/master/README.md#api)
