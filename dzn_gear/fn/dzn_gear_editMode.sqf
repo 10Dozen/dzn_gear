@@ -537,6 +537,7 @@ dzn_gear_editMode_arsenalOpened = false;
 dzn_gear_editMode_arsenalTimerPause = 2;
 dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;
 
+bis_fnc_arsenal_fullArsenal = true;
 ["Preload"] call BIS_fnc_arsenal; 
 hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 	<br /><br /><t size='1.35' color='#3793F0' underline='true'>EDIT MODE</t>	
