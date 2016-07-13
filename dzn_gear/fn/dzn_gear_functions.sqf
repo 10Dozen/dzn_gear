@@ -157,22 +157,37 @@ dzn_fnc_gear_assignGear = {
 	
 	// ADD IDENTITY
 	if (!isNil {_gear select 8}) then {
-		private _face = getItem( ((_gear select 8) select 1) );
-		private _voice = getItem( ((_gear select 8) select 2) );
-		private _name = getItem( ((_gear select 8) select 3) );
+		[_unit, _gear select 8, "init"] call dzn_fnc_gear_assignIdentity;
+	};
 	
-		_unit setFace _face;
-		_unit setSpeaker _voice;
+	[] spawn { sleep 3; enableSentences true; };
+};
+
+dzn_fnc_gear_assignIdentity = {
+	params["_unit","_identity", "_mode"];
+	
+	private _face = getItem( _identity select 1 );
+	if (_face != "") then { _unit setFace _face; };
+	
+	private _voice = getItem( _identity select 2 );
+	if (_voice != "") then { _unit setSpeaker _voice; };
+	
+	private _name = getItem( _identity select 3 );
+	if (_name != "") then {
+		if (count (_name splitString " ") < 2) then { _name = format ["%1 %1", _name]; };		
 		_unit setName [
 			_name splitString " " joinString " "
 			, (_name splitString " ") select 0
 			, (_name splitString " ") select 1
 		];
-		
-		_unit setVariable ["dzn_gear_identity", [_face, _voice, _name], true];		
 	};
 	
-	[] spawn { sleep 3; enableSentences true; };
+	if (toLower(_mode) == "init") then {
+		_unit setVariable ["dzn_gear_identity", [_face, _voice, _name], true];		
+	} else {
+		_unit setVariable ["dzn_gear_identitySet", true];
+	};
+	
 };
 
 dzn_fnc_gear_assignCargoGear = {
@@ -414,35 +429,29 @@ dzn_fnc_gear_setPreciseGear = {
 // INITIALIZING FUNCTIONS
 // **************************
 dzn_fnc_gear_startLocalIdentityLoop = {
-	dzn_gear_applyLocalIdentity = true;
+	// dzn_gear_applyLocalIdentity = true;
 
-	["dzn_gear_localIdentityLoop", "onEachFrame", {	
-		if !(dzn_gear_applyLocalIdentity) exitWith {};
+	// ["dzn_gear_localIdentityLoop", "onEachFrame", {	
+		// if !(dzn_gear_applyLocalIdentity) exitWith {};
 		
-		[] spawn {
+		// [] spawn {
 			{
-				if (!isNil {_x getVariable "dzn_gear_identity"} && _x getVariable ["dzn_gear_identitySet",false]) then {				
-					private _identity = _x getVariable "dzn_gear_identity";
-					_x setFace (_identity select 0);
-					_x setSpeaker (_identity select 1);
-					
-					private _name = _identity select 2;
-					_x setName [
-						_name splitString " " joinString " "
-						, (_name splitString " ") select 0
-						, (_name splitString " ") select 1
-					];
-					
-					_x setVariable ["dzn_gear_identitySet",true];									
-				};
-				sleep .1;
-			} forEach allUnits;	
+				// if (!isNil {_x getVariable "dzn_gear_identity"} && !(_x getVariable ["dzn_gear_identitySet",false])) then {				
+					// [
+						// _x
+						// , _x getVariable "dzn_gear_identity"
+						// , "apply"
+					// ] call dzn_fnc_gear_assignIdentity;							
+				// };
+				// sleep .1;
+			// } forEach allUnits;	
 			
-			dzn_gear_applyLocalIdentity = false;
-			sleep 10;
-			dzn_gear_applyLocalIdentity = true;
-		};
-	}] call BIS_fnc_addStackedEventHandler;
+			// dzn_gear_applyLocalIdentity = false;
+			// sleep 10;
+			// dzn_gear_applyLocalIdentity = true;
+			// player sideChat "Loop!";
+		// };
+	// }] call BIS_fnc_addStackedEventHandler;
 };
 
 
