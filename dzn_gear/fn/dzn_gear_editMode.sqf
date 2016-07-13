@@ -232,6 +232,16 @@ dzn_fnc_gear_editMode_getCurrentPrimaryWeapon = {
 	false
 };
 
+dzn_fnc_gear_editMode_getCurrentIdentity = {
+	private _unit = if (!isNull cursorTarget && {cursorTarget isKindOf "CAManBase"}) then { cursorTarget } else { player };
+	private _face = face _unit;
+	private _voice = speaker _unit;
+	private _name = name _unit;
+	
+	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", "%3"]', _face, _voice, _name]
+;
+};
+
 
 dzn_fnc_gear_editMode_createKit = {
 	// @Add action? call dzn_fnc_gear_editMode_createKit
@@ -524,6 +534,5 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 		};
 	}] call BIS_fnc_addStackedEventHandler;
 };
-
 
 
