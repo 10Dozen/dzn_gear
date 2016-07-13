@@ -236,10 +236,8 @@ dzn_fnc_gear_editMode_getCurrentIdentity = {
 	private _unit = if (!isNull cursorTarget && {cursorTarget isKindOf "CAManBase"}) then { cursorTarget } else { player };
 	private _face = face _unit;
 	private _voice = speaker _unit;
-	private _name = name _unit;
 	
-	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", "%3"]', _face, _voice, _name]
-;
+	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", ""]', _face, _voice];
 };
 
 
