@@ -409,6 +409,33 @@ dzn_fnc_gear_setPreciseGear = {
 // **************************
 // INITIALIZING FUNCTIONS
 // **************************
+dzn_fnc_gear_startLocalIdentityLoop = {
+	dzn_gear_applyLocalIdentity = true;
+
+	["dzn_gear_localIdentityLoop", "onEachFrame", {	
+		if !(dzn_gear_applyLocalIdentity) exitWith {};
+		
+		[] spawn {
+			{
+				if (_x getVariable ["dzn_gear_identity", false] && _x getVariable ["dzn_gear_identitySet",false]) then {				
+					private _identity = _x getVariable "dzn_gear_identity";
+					_x setFace (_identity select 0);
+					_x setSpeaker (_identity select 1);
+					_x setName [(_identity select 2), (_identity select 2)];
+					
+					_x setVariable ["dzn_gear_identitySet",true];
+					
+					sleep .1;					
+				};			
+			} forEach allUnits;	
+			
+			dzn_gear_applyLocalIdentity = false;
+			sleep 10;
+			dzn_gear_applyLocalIdentity = true;
+		};
+	}] call BIS_fnc_addStackedEventHandler;
+};
+
 
 dzn_fnc_gear_initialize = {
 	// Wait until player initialized in multiplayer
@@ -467,4 +494,11 @@ dzn_fnc_gear_initialize = {
 	
 	dzn_gear_initDone = true;
 	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
+	
+	if (hasInterface) then {
+		[] spawn {
+			waitUntil { time > 5 };
+			call dzn_fnc_gear_startLocalIdentityLoop;
+		};
+	}
 };
