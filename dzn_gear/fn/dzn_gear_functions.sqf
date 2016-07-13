@@ -155,6 +155,19 @@ dzn_fnc_gear_assignGear = {
 	};
 	_unit setVariable ["dzn_gear_done", true, true];
 	
+	// ADD IDENTITY
+	if (!isNil {_gear select 8}) then {
+		private _face = getItem( ((_gear select 8) select 1) );
+		private _voice = getItem( ((_gear select 8) select 2) );
+		private _name = getItem( ((_gear select 8) select 3) );
+	
+		_unit setFace _face;
+		_unit setSpeaker _voice;
+		_unit setName [_name,_name];
+		
+		_unit setVariable ["dzn_gear_identity", [_face, _voice, _name], true];		
+	};
+	
 	[] spawn { sleep 3; enableSentences true; };
 };
 
