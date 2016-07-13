@@ -163,7 +163,11 @@ dzn_fnc_gear_assignGear = {
 	
 		_unit setFace _face;
 		_unit setSpeaker _voice;
-		_unit setName [_name,_name];
+		_unit setName [
+			_name splitString " " joinString " "
+			, (_name splitString " ") select 0
+			, (_name splitString " ") select 1
+		];
 		
 		_unit setVariable ["dzn_gear_identity", [_face, _voice, _name], true];		
 	};
@@ -417,16 +421,21 @@ dzn_fnc_gear_startLocalIdentityLoop = {
 		
 		[] spawn {
 			{
-				if (_x getVariable ["dzn_gear_identity", false] && _x getVariable ["dzn_gear_identitySet",false]) then {				
+				if (!isNil {_x getVariable "dzn_gear_identity"} && _x getVariable ["dzn_gear_identitySet",false]) then {				
 					private _identity = _x getVariable "dzn_gear_identity";
 					_x setFace (_identity select 0);
 					_x setSpeaker (_identity select 1);
-					_x setName [(_identity select 2), (_identity select 2)];
 					
-					_x setVariable ["dzn_gear_identitySet",true];
+					private _name = _identity select 2;
+					_x setName [
+						_name splitString " " joinString " "
+						, (_name splitString " ") select 0
+						, (_name splitString " ") select 1
+					];
 					
-					sleep .1;					
-				};			
+					_x setVariable ["dzn_gear_identitySet",true];									
+				};
+				sleep .1;
 			} forEach allUnits;	
 			
 			dzn_gear_applyLocalIdentity = false;
