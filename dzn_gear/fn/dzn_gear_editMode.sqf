@@ -26,6 +26,7 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br />4 -- Goggles
 		<br />5 -- Vest
 		<br />6 -- Backpack
+		<br /><t %1>CTRL + I</t><t %2> - copy unit/player identity settings</t>
 		"
 		, "align='left' color='#3793F0' size='0.9'"
 		, "align='right' size='0.8'"
@@ -104,7 +105,15 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			SET_KEYDOWN;
 			GET_EQUIP_CALL("BACKPACK");
 			SET_HANDLED;
-		};		
+		};
+		// I
+		case 23: {
+			SET_KEYDOWN;
+			if (_ctrl) then { 
+				call dzn_fnc_gear_editMode_getCurrentIdentity;				
+			};
+			SET_HANDLED;
+		};
 	};
 	
 	[] spawn { sleep 1; dzn_gear_editMode_keyIsDown = false; };
@@ -233,11 +242,22 @@ dzn_fnc_gear_editMode_getCurrentPrimaryWeapon = {
 };
 
 dzn_fnc_gear_editMode_getCurrentIdentity = {
-	private _unit = if (!isNull cursorTarget && {cursorTarget isKindOf "CAManBase"}) then { cursorTarget } else { player };
+	private _owner = if (!isNull cursorTarget && {cursorTarget isKindOf "CAManBase"}) then { "Unit" } else { "Player" };
+
+	private _unit = if (_owner == "Unit") then { cursorTarget } else { player };
 	private _face = face _unit;
 	private _voice = speaker _unit;
+	private _name = name _unit;
 	
-	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", ""]', _face, _voice];
+	
+	hint parseText format [
+		"<t color='#6090EE' size='1.1'>%1 Identity was copied to clipboard</t><br />Face: %2<br />Speaker: %3<br />Name: %4"
+		, _owner
+		, _face
+		, _voice
+		, _name		
+	];
+	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", ""]', _face, _voice, _name];
 };
 
 
