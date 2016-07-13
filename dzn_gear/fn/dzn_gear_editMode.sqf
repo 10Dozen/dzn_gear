@@ -454,7 +454,13 @@ dzn_fnc_gear_editMode_showGearTotals = {
 			];		
 		};		
 	} forEach _items;	
+	
+	
 	hintSilent (composeText _stringsToShow);
+	[
+		composeText _stringsToShow
+		, dzn_gear_editMode_notif_pos, nil, 7, 0, 0
+	] spawn BIS_fnc_textTiles;
 };
 
 
@@ -534,8 +540,10 @@ dzn_gear_editMode_vestList = SET_GEAR_IF_EMPTY(vest);
 dzn_gear_editMode_backpackList = SET_GEAR_IF_EMPTY(backpack);
 
 dzn_gear_editMode_arsenalOpened = false;
-dzn_gear_editMode_arsenalTimerPause = 2;
+dzn_gear_editMode_arsenalTimerPause = 5;
 dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;
+dzn_gear_editMode_notif_pos = [.9,0,.4,1];
+dzn_gear_editMode_lastInventory = [];
 
 bis_fnc_arsenal_fullArsenal = true;
 ["Preload"] call BIS_fnc_arsenal; 
@@ -551,6 +559,9 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 ];
 
 [] spawn {
+	
+
+
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
 	["arsenal", "onEachFrame", {
 		private["_inv"];
@@ -560,9 +571,8 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 			};
 			
 			if (time > dzn_gear_editMode_arsenalTimer) then {
-				dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;
-				// call dzn_fnc_gear_editMode_showGearTotals;
-				//(((player call BIS_fnc_saveInventory) call dzn_fnc_convertInventoryToLine) call BIS_fnc_consolidateArray) call dzn_fnc_gear_editMode_showGearTotals;
+				dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;				
+				call dzn_fnc_gear_editMode_showGearTotals;
 			};
 		} else {
 			if (dzn_gear_editMode_arsenalOpened) then {
