@@ -39,6 +39,11 @@ dzn_fnc_gear_assignKit = {
 // ******************************
 //    SET GEAR functions 
 // ******************************
+	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
+	#define cItem(IDX)				(_ctg select IDX)
+	#define IsItem(ITEM)				(typename (ITEM) == "STRING")
+	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {ITEM call BIS_fnc_selectRandom}
+	
 dzn_fnc_gear_assignGear = {
 	// [@Unit, @GearSet] spawn dzn_fnc_gear_assignGear;
 	private["_ctg","_unit","_gear","_magClasses","_r","_act","_item"];
@@ -58,12 +63,7 @@ dzn_fnc_gear_assignGear = {
 	removeAllAssignedItems _unit;
 	removeAllWeapons _unit;
 	waitUntil { (items _unit) isEqualTo [] };	
-	
-	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
-	#define cItem(IDX)				(_ctg select IDX)
-	#define IsItem(ITEM)				(typename (ITEM) == "STRING")
-	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {ITEM call BIS_fnc_selectRandom}
-	
+
 	// ADD WEAPONS
 	// Backpack to add first mag for all weapons
 	_unit addBackpack dzn_gear_defaultBackpack;
@@ -183,11 +183,10 @@ dzn_fnc_gear_assignIdentity = {
 	};
 	
 	if (toLower(_mode) == "init") then {
-		_unit setVariable ["dzn_gear_identity", [_face, _voice, _name], true];		
+		_unit setVariable ["dzn_gear_identity", ["Identity", _face, _voice, _name], true];		
 	} else {
 		_unit setVariable ["dzn_gear_identitySet", true];
-	};
-	
+	};	
 };
 
 dzn_fnc_gear_assignCargoGear = {
@@ -512,12 +511,10 @@ dzn_fnc_gear_initialize = {
 	dzn_gear_initDone = true;
 	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
 	
-	/*
 	if (hasInterface) then {
 		[] spawn {
 			waitUntil { time > 5 };
 			call dzn_fnc_gear_startLocalIdentityLoop;
 		};
-	}
-	*/
+	};
 };
