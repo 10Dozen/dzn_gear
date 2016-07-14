@@ -1,5 +1,5 @@
 # dzn_gear
-##### Version: 2.1
+##### Version: 2.2
 * [How To](https://github.com/10Dozen/dzn_gear/blob/master/README.md#how-to)
 * [Edit mode](https://github.com/10Dozen/dzn_gear/blob/master/README.md#edit-mode)
 * [API](https://github.com/10Dozen/dzn_gear/blob/master/README.md#api)
@@ -13,6 +13,10 @@
 - Allows to assign gear by unit's name or role description
 
 <h4>Plugins</h4>
+<h5>Unit Identity</h5>
+Assign identity setting (face, voice, name) to AI-controlled unit via kit. Use `CTRL + I` to copy current identity settins and paste code as last paramater of the kit. 
+<br/>For multiplayer - set `dzn_gear_enableIdentitySync = true;` in `dzn_gear_init.sqf` to broadcast identity between clients.
+
 <h5>Gear Assignement Table</h5>
 Assign kits by RoleDescription or unit name (100% JIP compatible).
 
