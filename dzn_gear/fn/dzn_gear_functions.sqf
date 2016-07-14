@@ -164,7 +164,7 @@ dzn_fnc_gear_assignGear = {
 };
 
 dzn_fnc_gear_assignIdentity = {
-	params["_unit","_identity", "_mode"];
+	params["_unit","_identity",["_mode","apply"]];
 	
 	private _face = getItem( _identity select 1 );
 	if (_face != "") then { _unit setFace _face; };
@@ -439,7 +439,6 @@ dzn_fnc_gear_startLocalIdentityLoop = {
 					[
 						_x
 						, _x getVariable "dzn_gear_identity"
-						, "apply"
 					] call dzn_fnc_gear_assignIdentity;							
 				};
 				sleep .1;
