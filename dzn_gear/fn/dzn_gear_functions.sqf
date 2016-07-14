@@ -510,7 +510,7 @@ dzn_fnc_gear_initialize = {
 	dzn_gear_initDone = true;
 	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
 	
-	if (hasInterface) then {
+	if (hasInterface && dzn_gear_enableIdentitySync) then {
 		[] spawn {
 			waitUntil { time > 5 };
 			call dzn_fnc_gear_startLocalIdentityLoop;
