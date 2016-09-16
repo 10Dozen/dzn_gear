@@ -26,6 +26,7 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br />4 or G -- Goggles
 		<br />5 or V -- Vest
 		<br />6 or B -- Backpack
+		<br />7 or P -- Pistol and magazine
 		<br /><t %1>CTRL + I</t><t %2> - copy unit/player identity settings</t>
 		"
 		, "align='left' color='#3793F0' size='0.9'"
@@ -53,6 +54,7 @@ dzn_fnc_gear_editMode_onKeyPress = {
 	
 	
 	switch _key do {
+		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
 		// F1 button
 		case 59: {
 			SET_KEYDOWN;
@@ -80,6 +82,16 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			if (_ctrl) then {		"CTRL" call dzn_fnc_gear_editMode_getCurrentPrimaryWeapon;};
 			if (_shift) then {		"SHIFT" call dzn_fnc_gear_editMode_getCurrentPrimaryWeapon;};
 			if !(_ctrl || _alt || _shift) then {	"NONE" call dzn_fnc_gear_editMode_getCurrentPrimaryWeapon;};
+			SET_HANDLED;
+		};
+		// 7 or P button - Pistol
+		case 8;
+		case 25: {
+			SET_KEYDOWN;
+			if (_alt) then {			"ALT" call dzn_fnc_gear_editMode_getCurrentHandgun;};
+			if (_ctrl) then {		"CTRL" call dzn_fnc_gear_editMode_getCurrentHandgun;};
+			if (_shift) then {		"SHIFT" call dzn_fnc_gear_editMode_getCurrentHandgun;};
+			if !(_ctrl || _alt || _shift) then {	"NONE" call dzn_fnc_gear_editMode_getCurrentHandgun;};
 			SET_HANDLED;
 		};
 		// 2 or U button - Uniform
@@ -249,6 +261,59 @@ dzn_fnc_gear_editMode_getCurrentPrimaryWeapon = {
 		};
 	};
 	
+	false
+};
+
+dzn_fnc_gear_editMode_getCurrentHandgun = {
+	// @Option call dzn_fnc_gear_editMode_getCurrentHandgun
+	// @Option :: 	"NONE", "ALT", "CTRL", "SHIFT"
+
+	_getWeaponAndMags = {
+		if (count dzn_gear_editMode_handgunList > 1) then {
+			[ dzn_gear_editMode_handgunList , dzn_gear_editMode_handgunMagList];
+		} else {
+			[ dzn_gear_editMode_handgunList select 0 , dzn_gear_editMode_handgunMagList select 0];
+		};
+	};
+
+	_ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget };
+	_owner = if (isNull cursorTarget) then { "Player" } else { "Unit" };
+	_weapon = handgunWeapon _ownerUnit;
+	_magazine = (handgunMagazine _ownerUnit) select 0;
+
+	switch (_this) do {
+		case "SHIFT": {
+			// Set
+			hint parseText format ["<t color='#6090EE' size='1.1'>Handgun of %1 is COPIED</t><br />%2", _owner,_weapon];
+			dzn_gear_editMode_handgunList = [_weapon];
+			copyToClipboard str(call _getPrimaryWeaponAndMags);
+		};
+		case "CTRL": {
+			// Add
+			hint parseText format ["<t color='#6090EE' size='1.1'>Handgun of %1 is ADDED to list</t><br />%2", _owner, _weapon];
+			if !(_weapon in dzn_gear_editMode_handgunList) then {
+				dzn_gear_editMode_handgunList pushBack _weapon;
+				dzn_gear_editMode_handgunMagList pushBack _magazine;
+			};
+			copyToClipboard str(call _getPrimaryWeaponAndMags);
+		};
+		case "ALT": {
+			// Clear
+			hint parseText "<t color='#6090EE' size='1.1'>Handgun is CLEARED</t>";
+			dzn_gear_editMode_handgunList = [];
+			dzn_gear_editMode_handgunMagList = [];
+		};
+		default {
+			// Show
+			hint parseText format [
+				"<t color='#6090EE' size='1.1'>Handung list:</t><br /><t size='0.6' color='#FFD000'>Weapon</t><br />%1<br /><t size='0.6' color='#FFD000'>Magazines</t><br />%2"
+				, [((call _getWeaponAndMags) select 0), true] call dzn_fnc_gear_editMode_showAsStructuredList
+				, [((call _getWeaponAndMags) select 1), true]call dzn_fnc_gear_editMode_showAsStructuredList
+			];
+			copyToClipboard str(call _getWeaponAndMags);
+		};
+	};
+
 	false
 };
 
@@ -533,6 +598,9 @@ dzn_gear_editMode_keyIsDown = false;
 dzn_gear_editMode_primaryWeaponList = SET_GEAR_IF_EMPTY(primaryWeapon);
 dzn_gear_editMode_primaryWeaponMagList = primaryWeaponMagazine player;
 
+dzn_gear_editMode_handgunList  = SET_GEAR_IF_EMPTY(handgunWeapon);
+dzn_gear_editMode_handgunMagList = handgunMagazine player;
+
 dzn_gear_editMode_uniformList = SET_GEAR_IF_EMPTY(uniform);
 dzn_gear_editMode_headgearList = SET_GEAR_IF_EMPTY(headgear);
 dzn_gear_editMode_gogglesList = SET_GEAR_IF_EMPTY(goggles);
@@ -559,9 +627,6 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 ];
 
 [] spawn {
-	
-
-
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
 	["arsenal", "onEachFrame", {
 		private["_inv"];
