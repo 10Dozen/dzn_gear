@@ -267,6 +267,7 @@ dzn_fnc_gear_editMode_getCurrentPrimaryWeapon = {
 dzn_fnc_gear_editMode_getCurrentHandgun = {
 	// @Option call dzn_fnc_gear_editMode_getCurrentHandgun
 	// @Option :: 	"NONE", "ALT", "CTRL", "SHIFT"
+	private["_ownerUnit","_owner","_weapon","_magazine","_getWeaponAndMags"];
 
 	_getWeaponAndMags = {
 		if (count dzn_gear_editMode_handgunList > 1) then {
