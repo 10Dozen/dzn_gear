@@ -520,13 +520,21 @@ dzn_fnc_gear_editMode_showGearTotals = {
 			];		
 		};		
 	} forEach _items;	
-	
-	
-	hintSilent (composeText _stringsToShow);
-	[
-		composeText _stringsToShow
-		, dzn_gear_editMode_notif_pos, nil, 7, 0, 0
-	] spawn BIS_fnc_textTiles;
+
+	// hintSilent (composeText _stringsToShow);
+	if (!isNil "dzn_fnc_ShowMessage"}) then {
+		[
+			_stringsToShow
+			, "HINT"
+			, [.2, .2, .2, .8]
+			, dzn_gear_editMode_arsenalTimerPause
+		] call dzn_fnc_ShowMessage;
+	} else {
+		[
+			composeText _stringsToShow
+			, dzn_gear_editMode_notif_pos, nil, 7, 0, 0
+		] spawn BIS_fnc_textTiles;
+	};
 };
 
 
@@ -610,7 +618,13 @@ dzn_gear_editMode_backpackList = SET_GEAR_IF_EMPTY(backpack);
 
 dzn_gear_editMode_arsenalOpened = false;
 dzn_gear_editMode_arsenalTimerPause = 5;
-dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;
+dzn_gear_editMode_canCheck_ArsenalDiff = true;
+dzn_gear_editMode_waitToCheck_ArsenalDiff = {
+	dzn_gear_editMode_canCheck_ArsenalDiff = false;
+	sleep dzn_gear_editMode_waitToCheck_ArsenalDiff;
+	dzn_gear_editMode_canCheck_ArsenalDiff = true;
+};
+
 dzn_gear_editMode_notif_pos = [.9,0,.4,1];
 dzn_gear_editMode_lastInventory = [];
 
@@ -635,9 +649,9 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 			if !(dzn_gear_editMode_arsenalOpened) then {
 				dzn_gear_editMode_arsenalOpened = true;
 			};
-			
-			if (time > dzn_gear_editMode_arsenalTimer) then {
-				dzn_gear_editMode_arsenalTimer = time + dzn_gear_editMode_arsenalTimerPause;				
+
+			if (dzn_gear_editMode_canCheck_ArsenalDiff) then {
+				[] spawn dzn_gear_editMode_waitToCheck_ArsenalDiff;
 				call dzn_fnc_gear_editMode_showGearTotals;
 			};
 		} else {
