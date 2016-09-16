@@ -465,11 +465,12 @@ dzn_fnc_convertInventoryToLine = {
 dzn_fnc_gear_editMode_showGearTotals = {
 	// @ArrayOfTotals call dzn_fnc_gear_editMode_showGearTotals	
 	private["_inv","_items","_stringsToShow","_itemName","_headlineItems","_haedlines"];
+	
 	_inv = player call BIS_fnc_saveInventory;
 	_items = (_inv call dzn_fnc_convertInventoryToLine) call BIS_fnc_consolidateArray;
 	
 	_stringsToShow = [
-		parseText "<t color='#FFD000' size='1.4' align='center'>GEAR TOTALS</t>"
+		parseText "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
 	];
 	
 	_headlineItems = [
@@ -496,45 +497,35 @@ dzn_fnc_gear_editMode_showGearTotals = {
 	
 	{
 		_stringsToShow = _stringsToShow + [
-			lineBreak
-			,parseText (format [
-				"<t color='%2' align='left'>%1</t><t align='right' size='0.9'>%3</t>"
-				, _x select 0
+			parseText (format [
+				"<t color='%2' align='left' size='0.8'>%1</t><t align='right' size='0.8'>%3</t>"
+				, toUpper(_x select 0)
 				, _x select 1
 				, if ((_headlineItems select _forEachIndex) == "") then {"-no-"} else {_headlineItems select _forEachIndex}
 			])		
-		];
+		];		
 	} forEach _haedlines;	
-	_stringsToShow pushBack lineBreak;
+	
 	{
 		
 		_itemName = (_x select 0) call dzn_fnc_gear_editMode_getItemName;
 		if !(_itemName in _headlineItems) then {
 			_stringsToShow = _stringsToShow + [
-				lineBreak
-				, if (_x select 1 > 1) then {
-					parseText (format ["<t color='#AAAAAA' align='left' size='0.9'>x%1 %2</t>", _x select 1, _itemName])
+				if (_x select 1 > 1) then {
+					parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>x%1 %2</t>", _x select 1, _itemName])
 				} else {
-					parseText (format ["<t color='#AAAAAA' align='left' size='0.9'>%1</t>", _itemName])
+					parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>%1</t>", _itemName])
 				}
-			];		
+			];
 		};		
-	} forEach _items;	
+	} forEach _items;
 
-	// hintSilent (composeText _stringsToShow);
-	if (!isNil "dzn_fnc_ShowMessage"}) then {
-		[
-			_stringsToShow
-			, "HINT"
-			, [.2, .2, .2, .8]
-			, dzn_gear_editMode_arsenalTimerPause
-		] call dzn_fnc_ShowMessage;
-	} else {
-		[
-			composeText _stringsToShow
-			, dzn_gear_editMode_notif_pos, nil, 7, 0, 0
-		] spawn BIS_fnc_textTiles;
-	};
+	[
+		_stringsToShow
+		, [35.2,-7.1, 35, 0.03]
+		, dzn_gear_GearTotalsBG_RGBA
+		, dzn_gear_editMode_arsenalTimerPause
+	] call dzn_fnc_ShowMessage;
 };
 
 
@@ -621,7 +612,7 @@ dzn_gear_editMode_arsenalTimerPause = 5;
 dzn_gear_editMode_canCheck_ArsenalDiff = true;
 dzn_gear_editMode_waitToCheck_ArsenalDiff = {
 	dzn_gear_editMode_canCheck_ArsenalDiff = false;
-	sleep dzn_gear_editMode_waitToCheck_ArsenalDiff;
+	sleep dzn_gear_editMode_arsenalTimerPause;
 	dzn_gear_editMode_canCheck_ArsenalDiff = true;
 };
 
@@ -642,6 +633,8 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 ];
 
 [] spawn {
+	if (!dzn_gear_ShowGearTotals || isNil "dzn_fnc_ShowMessage") exitWith {};
+
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
 	["arsenal", "onEachFrame", {
 		private["_inv"];
