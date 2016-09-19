@@ -1,5 +1,5 @@
 # dzn_gear
-##### Version: 2.2
+##### Version: 2.3
 * [How To](https://github.com/10Dozen/dzn_gear/blob/master/README.md#how-to)
 * [Edit mode](https://github.com/10Dozen/dzn_gear/blob/master/README.md#edit-mode)
 * [API](https://github.com/10Dozen/dzn_gear/blob/master/README.md#api)
@@ -96,11 +96,12 @@ In 'EDIT' mode open mission in Editor and click "Preview": inside the mission yo
  <li><tt>[ALT + 1...6]</tt> --Clear item list</li>
  <br>where 1..6:
  <br><tt>1</tt> -- Primary weapon and magazine
- <br><tt>2</tt> -- Uniform 
- <br><tt>3</tt> -- Headgear
- <br><tt>4</tt> -- Goggles
- <br><tt>5</tt> -- Vest
- <br><tt>6</tt> -- Backpack
+ <br><tt>2 or U</tt> -- Uniform 
+ <br><tt>3 or H</tt> -- Headgear
+ <br><tt>4 or G</tt> -- Goggles
+ <br><tt>5 or V</tt> -- Vest
+ <br><tt>6 or B</tt> -- Backpack
+ <br><tt>7 or P</tt> -- Backpack
 </ul>
 
 When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
