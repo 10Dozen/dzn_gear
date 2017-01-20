@@ -66,5 +66,8 @@ dzn_fnc_gear_zc_showMenu = {
 	] call dzn_fnc_ShowChooseDialog;
 
 	waitUntil {!dialog};
+	if (count _result == 0) exitWith {};
+	
+	
 	
 };
