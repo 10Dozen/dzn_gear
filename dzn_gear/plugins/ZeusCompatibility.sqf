@@ -61,7 +61,7 @@ dzn_fnc_gear_zc_showMenu = {
 		"dzn_Gear Zeus Tool"
 		, [
 			["Kits", dzn_gear_zc_KitsList]
-			, ["Custom", ""]
+			, ["Custom", []]
 		]
 	] call dzn_fnc_ShowChooseDialog;
 
