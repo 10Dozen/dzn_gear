@@ -55,9 +55,11 @@ dzn_fnc_gear_zc_onKeyPress = {
 	_handled
 };
 
-dzn_fnc_gear_zc_showMenu = {
+dzn_fnc_gear_zc_processMenu = {
+	private _unit = curatorSelected; // [[Objects],[Groups],[Waypoints],[Markers]]
 	
-	private _result = [
+	
+	private _Result = [
 		"dzn_Gear Zeus Tool"
 		, [
 			["Kits", dzn_gear_zc_KitsList]
@@ -66,8 +68,28 @@ dzn_fnc_gear_zc_showMenu = {
 	] call dzn_fnc_ShowChooseDialog;
 
 	waitUntil {!dialog};
-	if (count _result == 0) exitWith {};
+	if (count _Result == 0) exitWith {};
 	
+	private _kitname = if ( typename (_Result select 1) != "STRING") then {
+		dzn_gear_zc_KitsList select (_Result select 0);
+	} else {
+		_Result select 1;		
+	};
+	
+	if (isNil {call compile _kitname}) exitWith {
+		hint parseText format [
+			"<t size='1' color='#FFD000' shadow='1'>GAT Tools:</t>
+			<br />There is no kit named '%1'"
+			, _kitname
+		];
+	};
+	
+	[_unit, _kitname] call dzn_fnc_gear_assignKit;
+	hint parseText format [
+		"<t size='1' color='#FFD000' shadow='1'>GAT Tools:</t>
+		<br /> Kit '%1' was assigned"
+		, _kitname
+	];
 	
 	
 };
