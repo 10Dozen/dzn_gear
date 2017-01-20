@@ -44,10 +44,8 @@ dzn_fnc_gear_zc_onKeyPress = {
 	switch _key do {
 		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
 		// G1 button
-		case 34: {
-			SET_KEYDOWN;
+		case 33: {
 			call dzn_fnc_gear_editMode_showKeybinding;
-			SET_HANDLED;
 		};
 	};
 
@@ -59,19 +57,20 @@ dzn_fnc_gear_zc_processMenu = {
 	private _unitsSelected = curatorSelected select 0; // [[Objects],[Groups],[Waypoints],[Markers]]
 	// private _groupsSelected = curatorSelected select 1; // [[Objects],[Groups],[Waypoints],[Markers]]
 	
-	if (_unitsSelected isEuqalTo []) exitWith { };
+	if (_unitsSelected isEqualTo []) exitWith { hint 'No Units'; };
 	
 	private _units = [];
 	{
 		if (_x isKindOf "CAManBase") then {
-			_unit pushBack _x
+			_units  pushBack _x
 		};
 	} forEach _unitsSelected;
 	
+	private _kitlist = if (dzn_gear_zc_KitsList isEqualTo []) then { [""] } else { dzn_gear_zc_KitsList };
 	private _Result = [
 		"dzn_Gear Zeus Tool"
 		, [
-			["Kits", dzn_gear_zc_KitsList]
+			["Kits", _kitlist]
 			, ["Custom", []]
 		]
 	] call dzn_fnc_ShowChooseDialog;
@@ -102,6 +101,4 @@ dzn_fnc_gear_zc_processMenu = {
 		<br /> Kit '%1' was assigned"
 		, _kitname
 	];
-	
-	
 };
