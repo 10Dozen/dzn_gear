@@ -56,8 +56,17 @@ dzn_fnc_gear_zc_onKeyPress = {
 };
 
 dzn_fnc_gear_zc_processMenu = {
-	private _unit = curatorSelected; // [[Objects],[Groups],[Waypoints],[Markers]]
+	private _unitsSelected = curatorSelected select 0; // [[Objects],[Groups],[Waypoints],[Markers]]
+	// private _groupsSelected = curatorSelected select 1; // [[Objects],[Groups],[Waypoints],[Markers]]
 	
+	if (_unitsSelected isEuqalTo []) exitWith { };
+	
+	private _units = [];
+	{
+		if (_x isKindOf "CAManBase") then {
+			_unit pushBack _x
+		};
+	} forEach _unitsSelected;
 	
 	private _Result = [
 		"dzn_Gear Zeus Tool"
@@ -78,15 +87,18 @@ dzn_fnc_gear_zc_processMenu = {
 	
 	if (isNil {call compile _kitname}) exitWith {
 		hint parseText format [
-			"<t size='1' color='#FFD000' shadow='1'>GAT Tools:</t>
+			"<t size='1' color='#FFD000' shadow='1'>Zeus Gear Tool:</t>
 			<br />There is no kit named '%1'"
 			, _kitname
 		];
 	};
 	
-	[_unit, _kitname] call dzn_fnc_gear_assignKit;
+	{
+		[_x, _kitname] call dzn_fnc_gear_assignKit;
+	} forEach _units;
+	
 	hint parseText format [
-		"<t size='1' color='#FFD000' shadow='1'>GAT Tools:</t>
+		"<t size='1' color='#FFD000' shadow='1'>Zeus Gear Tool:</t>
 		<br /> Kit '%1' was assigned"
 		, _kitname
 	];
