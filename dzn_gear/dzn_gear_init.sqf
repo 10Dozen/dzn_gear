@@ -40,5 +40,6 @@ if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then
 
 if (dzn_gear_enableGearAssignementTable) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf"; };
 if (dzn_gear_enableGearNotes) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\GearNotes.sqf"; };
+if (dzn_gear_enableZeusCompatibility) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\ZeusCompatibility.sqf"; };
 
 [] spawn dzn_fnc_gear_initialize;
