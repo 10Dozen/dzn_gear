@@ -13,7 +13,7 @@ dzn_fnc_gear_zc_initialize = {
 	dzn_gear_zc_KitsList = [];	
 	
 	dzn_gear_zc_canCollectKits = true;
-	dzn_gear_zc_waitAncCheck = { dzn_gear_zc_canCollectKits = false; sleep 30; dzn_gear_zc_canCollectKits = true; };
+	dzn_gear_zc_waitAncCheck = { dzn_gear_zc_canCollectKits = false; sleep count(allUnits); dzn_gear_zc_canCollectKits = true; };
 	["GearZeusCompatibility", "onEachFrame", {	
 		if (dzn_gear_zc_canCollectKits) then {
 			[] spawn dzn_gear_zc_waitAncCheck;
@@ -123,4 +123,5 @@ dzn_fnc_gear_zc_processMenu = {
 
 
 // ********************** Init ************************
+waitUntil { time > 30 };
 [] spawn dzn_fnc_gear_zc_initialize;
