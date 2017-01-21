@@ -73,7 +73,9 @@ dzn_fnc_gear_zc_processMenu = {
 	private _unitsSelected = curatorSelected select 0; // [[Objects],[Groups],[Waypoints],[Markers]]
 	// private _groupsSelected = curatorSelected select 1; // [[Objects],[Groups],[Waypoints],[Markers]]
 	
-	if (_unitsSelected isEqualTo []) exitWith { hint 'No Units'; };
+	if (_unitsSelected isEqualTo []) exitWith {
+		hint parseText "<t size='1' color='#FFD000' shadow='1'>Zeus Gear Tool:</t><br />No Unit Selected!";
+	};
 	
 	private _units = [];
 	{
