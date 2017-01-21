@@ -9,24 +9,38 @@
 // ********************** FNC ************************
 dzn_fnc_gear_zc_initialize = {
 	dzn_gear_zc_keyIsDown = false;
+	dzn_gear_zc_displayEH = nil;
+	dzn_gear_zc_KitsList = [];	
 	
-	dzn_gear_zc_KitsList = [];
-	[true] spawn dzn_fnc_gear_zc_collectKitNames;
-	
-	waitUntil { !(isNull (findDisplay 312)) };	
-	(findDisplay 312) displayAddEventHandler ["KeyDown", "_handled = _this call dzn_fnc_gear_zc_onKeyPress"];
+	dzn_gear_zc_canCollectKits = true;
+	dzn_gear_zc_waitAncCheck = { dzn_gear_zc_canCollectKits = false; sleep 30; dzn_gear_zc_canCollectKits = true; };
+	["GearZeusCompatibility", "onEachFrame", {	
+		if (dzn_gear_zc_canCollectKits) then {
+			[] spawn dzn_gear_zc_waitAncCheck;
+			[] spawn dzn_fnc_gear_zc_collectKitNames;
+		};
+		
+		if (!isNull (findDisplay 312) && isNil "dzn_gear_zc_displayEH") then {		
+			dzn_gear_zc_displayEH = (findDisplay 312) displayAddEventHandler [
+				"KeyDown"
+				, "_handled = _this call dzn_fnc_gear_zc_onKeyPress"
+			];
+		} else {
+			if (isNull (findDisplay 312) && !isNil "dzn_gear_zc_displayEH") then {
+				dzn_gear_zc_displayEH = nil;
+			};
+		};
+	}] call BIS_fnc_addStackedEventHandler;
 };
 
 dzn_fnc_gear_zc_collectKitNames = {
-	private _delay = if (!isNil {_this select 0} && {_this select 0}) then { 1 } else { 0 };
-	
 	{
 		private _kitname = _x getVariable ["dzn_gear", ""];
 		if ( (_kitname != "") && !(_kitname in dzn_gear_zc_KitsList) ) then {
 			dzn_gear_zc_KitsList pushBack _kitname;
 		};
 		
-		sleep _delay;
+		sleep 1;
 	} forEach allUnits;
 };
 
@@ -44,8 +58,10 @@ dzn_fnc_gear_zc_onKeyPress = {
 	switch _key do {
 		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
 		// G1 button
-		case 33: {
-			call dzn_fnc_gear_editMode_showKeybinding;
+		case 34: {
+			dzn_gear_zc_keyIsDown = true;
+			[] spawn dzn_fnc_gear_zc_processMenu;
+			_handled = true;
 		};
 	};
 
@@ -102,3 +118,7 @@ dzn_fnc_gear_zc_processMenu = {
 		, _kitname
 	];
 };
+
+
+// ********************** Init ************************
+[] spawn dzn_fnc_gear_zc_initialize;
