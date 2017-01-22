@@ -788,6 +788,7 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 
 [] spawn {
 	if (!dzn_gear_ShowGearTotals || isNil "dzn_fnc_ShowMessage") exitWith {};
+	nil call dzn_fnc_ShowMessage;
 
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
 	["arsenal", "onEachFrame", {
