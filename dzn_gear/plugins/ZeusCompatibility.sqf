@@ -59,7 +59,8 @@ dzn_fnc_gear_zc_onKeyPress = {
 			dzn_gear_zc_keyIsDown = true;
 			if (_ctrl) then { [] call dzn_fnc_gear_zc_copyKit; };
 			if (_alt) then { [] call dzn_fnc_gear_zc_applyKit; };
-			if !(_ctrl || _alt) then { [] spawn dzn_fnc_gear_zc_processMenu; };
+			if (_shift) then { [] call dzn_fnc_gear_zc_getKit; };
+			if !(_ctrl || _alt || _shift) then { [] spawn dzn_fnc_gear_zc_processMenu; };
 			
 			_handled = true;
 		};
@@ -92,7 +93,13 @@ dzn_fnc_gear_zc_processMenu = {
 	};	
 	if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
 	
-	{ [_x, _kitname] call dzn_fnc_gear_assignKit; } forEach _unitsSelected;	
+	{ 
+		if (isPlayer _x) then {
+			[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
+		} else {
+			[_x, _kitname] call dzn_fnc_gear_assignKit; 
+		};
+	} forEach _unitsSelected;	
 	[format ["Kit '%1' was assigned", _kitname], "success"] call dzn_fnc_gear_zc_showNotif;
 };
 
@@ -101,16 +108,26 @@ dzn_fnc_gear_zc_copyKit = {
 	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
 	if (count _unitsSelected > 1) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
 	
-	dzn_gear_zc_BufferedKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;
-	call compile format [
-		"kit_%1_%2_%3 = dzn_gear_zc_BufferedKit; 'kit_%1_%2_%3' call dzn_fnc_gear_zc_addToKitList;"
-		, uniform (_unitsSelected select 0)
-		, primaryWeapon (_unitsSelected select 0)
-		, round(time)
-	];
-	
+	dzn_gear_zc_BufferedKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;	
 	["Kit were copied!", "success"] call dzn_fnc_gear_zc_showNotif;
 };
+
+dzn_fnc_gear_zc_getKit = {
+	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
+	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	if (count _unitsSelected > 1) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	
+	dzn_gear_zc_GetKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;
+	private _kitname = format ["kit_%1_%2", uniform (_unitsSelected select 0), primaryWeapon (_unitsSelected select 0)];
+	if (_kitname in dzn_gear_zc_KitsList) then { _kitname = format ["%1_%2", _kitname, round(time)]; };
+	
+	call compile format [
+		"%1 = dzn_gear_zc_GetKit; '%1' call dzn_fnc_gear_zc_addToKitList;"
+		, _kitname
+	];
+	["Kit were added to list!", "success"] call dzn_fnc_gear_zc_showNotif;
+};
+
 
 dzn_fnc_gear_zc_applyKit = {
 	if (isNil "dzn_gear_zc_BufferedKit") exitWith { ["No kit has been copied!", "fail"] call dzn_fnc_gear_zc_showNotif; };
@@ -118,7 +135,11 @@ dzn_fnc_gear_zc_applyKit = {
 	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
 	
 	{
-		[_x, dzn_gear_zc_BufferedKit] call dzn_fnc_gear_assignGear;
+		if (isPlayer _x) then {
+			[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignGear", _x];
+		} else {
+			[_x, dzn_gear_zc_BufferedKit] call dzn_fnc_gear_assignGear; 
+		};
 	} forEach _unitsSelected;
 	
 	["Kit were applied!", "success"] call dzn_fnc_gear_zc_showNotif;
@@ -163,5 +184,7 @@ dzn_fnc_gear_zc_addToKitList = {
 		dzn_gear_zc_KitsList pushBack _this;
 	};
 };
+
+
 // ********************** Init ************************
 [] spawn dzn_fnc_gear_zc_initialize;
