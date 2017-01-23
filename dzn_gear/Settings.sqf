@@ -29,3 +29,10 @@ dzn_gear_enableGearAssignementTable		= true;
 dzn_gear_enableGearNotes			= true;
 dzn_gear_gnotes_showMyGear			= true; // Player's gear
 dzn_gear_gnotes_showSquadGear			= true; // Gear of player group members
+
+/*
+	dzn Gear Zeus Compatibility
+	Allows to assign gear kits to units via Zeus.
+	Select unit and press 'G' key to invoke menu
+*/
+dzn_gear_enableZeusCompatibility 		= true;

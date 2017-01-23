@@ -94,10 +94,10 @@ dzn_fnc_gear_zc_processMenu = {
 	if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
 	
 	{ 
-		if (isPlayer _x) then {
-			[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
-		} else {
+		if (local _x) then {
 			[_x, _kitname] call dzn_fnc_gear_assignKit; 
+		} else {
+			[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
 		};
 	} forEach _unitsSelected;	
 	[format ["Kit '%1' was assigned", _kitname], "success"] call dzn_fnc_gear_zc_showNotif;
@@ -134,10 +134,10 @@ dzn_fnc_gear_zc_applyKit = {
 	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
 	
 	{
-		if (isPlayer _x) then {
-			[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignGear", _x];
-		} else {
+		if (local _x) then {
 			[_x, dzn_gear_zc_BufferedKit] call dzn_fnc_gear_assignGear; 
+		} else {
+			[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignGear", _x];
 		};
 	} forEach _unitsSelected;
 	
