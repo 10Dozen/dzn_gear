@@ -23,6 +23,9 @@ Assign kits by RoleDescription or unit name (100% JIP compatible).
 <h5>Gear Notes</h5>
 Show your loadout and loadout of your squadmates at briefing screen.
 
+<h5>Gear Zeus Compatibility</h5>
+Allow Zeus to assign dzn_gear kits to selected units. Use 'G' key to open selection menu.
+
 <h2>How To</h2>
 Download files to your mission folder. If you already have "init.sqf", then update it with lines from downloaded "init.sqf".
 <br>Script should be ran with options<tt>[ editMode(BOOL), startDelay(NUMBER, Optional) ] execVM "dzn_gear_init.sqf";</tt>.
