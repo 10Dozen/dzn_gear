@@ -6,7 +6,7 @@ dzn_gear_UseStandardUniformItems		= false;
 dzn_gear_StandardUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
 
 dzn_gear_UseStandardAssignedItems		= false;
-dzn_gear_StandardAssignedItems		= ["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio"];
+dzn_gear_StandardAssignedItems		= ["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio",get_nvg,"Binocular"];
 
 
 
