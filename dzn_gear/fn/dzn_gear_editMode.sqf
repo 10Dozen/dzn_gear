@@ -540,10 +540,11 @@ dzn_fnc_gear_editMode_createKit = {
 		{
 			_formatedString = format [
 				"%1
-%2%3"
+%2%3%4"
 				, _formatedString
 				, if (_forEachIndex != _lastItemNo) then { "	" } else { "" }
 				, _x
+				, if (_forEachIndex < _lastItemNo - 1) then { "," } else { "" }
 			];
 		} forEach _this;
 		
