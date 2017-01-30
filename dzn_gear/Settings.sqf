@@ -2,11 +2,25 @@
 dzn_gear_ShowGearTotals				= true;
 dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
 
-dzn_gear_UseStandardUniformItems		= false;
-dzn_gear_StandardUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
+/*
+ *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
+ *		ARRAY -- for item classnames only
+ *		STRING - for both classnames and macrosses defined in Kits.sqf 
+ */
+dzn_gear_UseStandardUniformItems		= "no";
+dzn_gear_StandardUniformItems		= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
+dzn_gear_LeaderUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_MapTools",1],["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
+// dzn_gear_StandardUniformItems		= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS]]';
+// dzn_gear_LeaderUniformItems			= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS, ["ACE_MapTools",1]]]';
 
-dzn_gear_UseStandardAssignedItems		= false;
-dzn_gear_StandardAssignedItems		= ["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio"];
+
+dzn_gear_UseStandardAssignedItems		= "no";
+dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM]';
+dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM, "Binocular"]';
+// dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS]';
+// dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS, "Binocular"]';
+
+
 
 
 
