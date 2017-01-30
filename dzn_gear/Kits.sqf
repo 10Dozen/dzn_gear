@@ -11,4 +11,6 @@
 #define RANDOM_ITEM	["H_HelmetB_grass","H_HelmetB"]
 // Macros to give the item only if daytime is in given inerval (e.g. to give NVGoggles only at night)
 #define NIGHT_ITEM(X)	if (daytime < 9 || daytime > 18) then { X } else { "" }
+// Add default black nvgs
+#define get_nvg [NIGHT_ITEM("NVGoggles_OPFOR")]
 
