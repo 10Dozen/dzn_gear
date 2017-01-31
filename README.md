@@ -1,5 +1,5 @@
 # dzn_gear
-##### Version: 2.4
+##### Version: 2.5
 * [How To](https://github.com/10Dozen/dzn_gear/blob/master/README.md#how-to)
 * [Edit mode](https://github.com/10Dozen/dzn_gear/blob/master/README.md#edit-mode)
 * [API](https://github.com/10Dozen/dzn_gear/blob/master/README.md#api)
@@ -105,6 +105,10 @@ In 'EDIT' mode open mission in Editor and click "Preview": inside the mission yo
  <br><tt>5 or V</tt> -- Vest
  <br><tt>6 or B</tt> -- Backpack
  <br><tt>7 or P</tt> -- Backpack
+ <li></li>
+ <li><tt>Del</tt> -- removes all items of player/cursor target</li>
+ <li><tt>PgUp</tt> -- cycled switch of uniform items presets</li>
+ <li><tt>PgDown</tt> -- cycled switch of assigned items presets</li>
 </ul>
 
 When kit is created via <tt>[CTRL + SPACE]</tt> an actions will be added:
