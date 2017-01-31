@@ -1,27 +1,30 @@
-// Edit Mode Gear Totals dialog (enabled only when dzn_commonFunctions is used)
-dzn_gear_ShowGearTotals				= true;
-dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
-
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
  *		ARRAY -- for item classnames only
- *		STRING - for both classnames and macrosses defined in Kits.sqf 
+ *		STRING - for both classnames and macrosses defined in Kits.sqf
+ *
+ *	Available modes:	"no", "standard", "leader" 
  */
 dzn_gear_UseStandardUniformItems		= "no";
-dzn_gear_StandardUniformItems		= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
-dzn_gear_LeaderUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_MapTools",1],["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
-// dzn_gear_StandardUniformItems		= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS]]';
-// dzn_gear_LeaderUniformItems			= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS, ["ACE_MapTools",1]]]';
+// dzn_gear_StandardUniformItems		= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
+// dzn_gear_LeaderUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_MapTools",1],["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
+dzn_gear_StandardUniformItems		= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS]]';
+dzn_gear_LeaderUniformItems			= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS, ["ACE_MapTools",1]]]';
 
 
 dzn_gear_UseStandardAssignedItems		= "no";
-dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM]';
-dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM, "Binocular"]';
-// dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS]';
-// dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS, "Binocular"]';
+// dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM]';
+// dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM, "Binocular"]';
+dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS]';
+dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS, "Binocular"]';
 
 
+// Edit Mode Gear Totals dialog (enabled only when dzn_commonFunctions is used)
+dzn_gear_ShowGearTotals			= true;
+dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
 
+// Replace RHS's AR-15 default Mk317 STANAG magazines with Bohemia's STANAG (compatible with all modes)
+dzn_gear_ReplaceRHSStanagToDefault	= true;
 
 
 // Enable or disable a synchronization of unit's identity (face, voice)
