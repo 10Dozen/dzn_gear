@@ -29,8 +29,8 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br />7 or P -- Pistol and magazine
 		<br /><t %1>CTRL + I</t><t %2> - copy unit/player identity settings</t>
 		<br />
-		<br /><t %1>PGUP/PGDOWN</t><t %2> - use standard uniform/assigned items No/Standard/Leader</t>
-		<br /><t %1>DEL</t><t %2> - clear unit's/vehicle's gear</t>
+		<br /><t %1>PGUP/PGDOWN</t><t %2> - standard uniform/assigned items On/Off</t>
+		<br /><t %1>DEL</t><t %2> - clear current unit's gear</t>
 		"
 		, "align='left' color='#3793F0' size='0.9'"
 		, "align='right' size='0.8'"
@@ -463,7 +463,7 @@ dzn_fnc_gear_editMode_createKit = {
 			},
 			_this select 1,0
 		];	
-	};
+	};	
 	
 	private _addCargoKitAction = {
 		// @ColorString, @Kit call _addKitAction
@@ -487,9 +487,14 @@ dzn_fnc_gear_editMode_createKit = {
 		];
 	};	
 	
+	private _replaceDefaultMagazines = {
+		if !(dzn_gear_ReplaceRHSStanagToDefault) exitWith {};
+		
+		if ((_this select 1) select 2 == "rhs_mag_30Rnd_556x45_Mk318_Stanag") then {
+			(_this select 1) set [2, "30Rnd_556x45_Stanag"];
+		};
+	};
 	
-	
-
 	private _useStandardItems = {
 		// @Kit call _useStandardItems
 		#define	CONVERT_IF_STRING(PAR1)	if (typename PAR1 == "ARRAY") then { str(PAR1) } else { PAR1 }
@@ -553,6 +558,7 @@ dzn_fnc_gear_editMode_createKit = {
 	
 	private _copyUnitKit = {
 		// @Kit call _copyUnitKit
+		_this call _replaceDefaultMagazines;
 		_this call _useStandardItems;
 		_this call _formatAndCopyKit;
 	};
