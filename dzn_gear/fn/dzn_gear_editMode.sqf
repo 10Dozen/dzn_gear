@@ -29,8 +29,8 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br />7 or P -- Pistol and magazine
 		<br /><t %1>CTRL + I</t><t %2> - copy unit/player identity settings</t>
 		<br />
-		<br /><t %1>PGUP/PGDOWN</t><t %2> - standard uniform/assigned items On/Off</t>
-		<br /><t %1>DEL</t><t %2> - clear current unit's gear</t>
+		<br /><t %1>PGUP/PGDOWN</t><t %2> - use standard uniform/assigned items No/Standard/Leader</t>
+		<br /><t %1>DEL</t><t %2> - clear unit's/vehicle's gear</t>
 		"
 		, "align='left' color='#3793F0' size='0.9'"
 		, "align='right' size='0.8'"
