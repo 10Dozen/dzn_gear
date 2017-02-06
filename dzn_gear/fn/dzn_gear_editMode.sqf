@@ -204,22 +204,20 @@ dzn_fnc_gear_editMode_setOptions = {
 	 
 	 switch toLower(_this select 0) do {
 		case toLower("UseStandardUniformItems"): {
-			if (dzn_gear_UseStandardUniformItems) then {			
-				dzn_gear_UseStandardUniformItems = false;
-				["Use Standard Uniform Items", "OFF", "#990000"] call  _showNotif;
-			} else {
-				dzn_gear_UseStandardUniformItems = true;
-				["Use Standard Uniform Items", "ON", "#009900"] call  _showNotif;
+			dzn_gear_UseStandardUniformItems = switch (toLower(dzn_gear_UseStandardUniformItems)) do {
+				case "no": {"standard"};
+				case "standard": {"leader"};
+				case "leader": {"no"};
 			};
+			["Use Uniform Items ", toUpper(dzn_gear_UseStandardUniformItems), "#FFD000"] call  _showNotif;
 		};
 		case toLower("UseStandardAssignedItems"): {
-			if (dzn_gear_UseStandardAssignedItems) then {			
-				dzn_gear_UseStandardAssignedItems = false;
-				["Use Standard Assigned Items", "OFF", "#990000"] call _showNotif;
-			} else {
-				dzn_gear_UseStandardAssignedItems = true;
-				["Use Standard Assigned Items", "ON", "#009900"] call  _showNotif;
+			dzn_gear_UseStandardAssignedItems = switch (toLower(dzn_gear_UseStandardAssignedItems)) do {
+				case "no": {"standard"};
+				case "standard": {"leader"};
+				case "leader": {"no"};
 			};
+			["Use Assigned Items ", toUpper(dzn_gear_UseStandardAssignedItems), "#FFD000"] call  _showNotif;
 		};
 	 };
 };
@@ -465,7 +463,7 @@ dzn_fnc_gear_editMode_createKit = {
 			},
 			_this select 1,0
 		];	
-	};
+	};	
 	
 	private _addCargoKitAction = {
 		// @ColorString, @Kit call _addKitAction
@@ -489,70 +487,78 @@ dzn_fnc_gear_editMode_createKit = {
 		];
 	};	
 	
+	private _replaceDefaultMagazines = {
+		if !(dzn_gear_ReplaceRHSStanagToDefault) exitWith {};
+		
+		if ((_this select 1) select 2 == "rhs_mag_30Rnd_556x45_Mk318_Stanag") then {
+			(_this select 1) set [2, "30Rnd_556x45_Stanag"];
+		};
+	};
+	
 	private _useStandardItems = {
 		// @Kit call _useStandardItems
-		if (dzn_gear_UseStandardUniformItems) then {
-			_this set [5, dzn_gear_StandardUniformItems];				
+		#define	CONVERT_IF_STRING(PAR1)	if (typename PAR1 == "ARRAY") then { str(PAR1) } else { PAR1 }
+		
+		if (toLower(dzn_gear_UseStandardAssignedItems) != "no") then {
+			_this set [
+				4
+				, switch (toLower(dzn_gear_UseStandardAssignedItems)) do {
+					case "standard": { dzn_gear_StandardAssignedItems };
+					case "leader": { dzn_gear_LeaderAssignedItems };
+				}
+			];
 		};
 		
-		if (dzn_gear_UseStandardAssignedItems) then {
-			_this set [4, dzn_gear_StandardAssignedItems];
+		if (toLower(dzn_gear_UseStandardUniformItems) != "no") then {
+			_this set [
+				5
+				, switch (toLower(dzn_gear_UseStandardUniformItems)) do {
+					case "standard": { dzn_gear_StandardUniformItems };
+					case "leader": { dzn_gear_LeaderUniformItems };
+				}
+			];
 		};
-		
-		_this
-	};	
+	};
 	
 	private _formatAndCopyKit = {
 		/* @Kit call _formatAndCopyKit
 		 * Format of output
 		 */
 		 
-		private _str = str(_this);
-		private _formatedString = "%1 =";
-		private _lastId = 0;	
+		_this pushBack "];";		// closing bracket
+		private _lastItemNo = count(_this) - 1;
 		
-		private _name = "kit_NewKitName";
+		private _formatedString = "%1 = [";		
+		private _name = "";
 		private _exit = false;
+		
 		if (!isNil "dzn_fnc_ShowChooseDialog") then {
 			disableSerialization;
 			_name = ["dzn Gear", ["Kit name (w/o spaces)", []]] call dzn_fnc_ShowChooseDialog;
 			if (count _name == 0) exitWith { _exit = true; };
 		
-			if (_name select 0 != "") then { 
-				_name = _name select 0
-			};
+			_name = if (typename (_name select 0) == "STRING") then { _name select 0 } else { "kit_NewKitName" };
 		};		
 		if (_exit) exitWith {};
 		
-		_formatedString = format [_formatedString, _name];
+		_formatedString = format [_formatedString, _name];	
+		{
+			_formatedString = format [
+				"%1
+%2%3%4"
+				, _formatedString
+				, if (_forEachIndex != _lastItemNo) then { "	" } else { "" }
+				, _x
+				, if (_forEachIndex < _lastItemNo - 1) then { "," } else { "" }
+			];
+		} forEach _this;
 		
-		for "_i" from 0 to ((count _str) - 1) do {
-			if (_str select [_i,3] == "[""<") then {		
-				_formatedString = format[
-						"%1
-	%2"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-				_lastId = _i;
-			};
-
-			if (_i == ((count _str) - 1)) then {
-				_formatedString = format[
-					"%1
-	%2
-];"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-			};
-		};
-		
-		copyToClipboard _formatedString
+		copyToClipboard _formatedString		
 	};
 	
 	private _copyUnitKit = {
-		// @Kit call _copyUnitKit		
+		// @Kit call _copyUnitKit
+		_this call _replaceDefaultMagazines;
 		_this call _useStandardItems;
 		_this call _formatAndCopyKit;
 	};
@@ -788,6 +794,7 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 
 [] spawn {
 	if (!dzn_gear_ShowGearTotals || isNil "dzn_fnc_ShowMessage") exitWith {};
+	waitUntil { time > 0 };
 	nil call dzn_fnc_ShowMessage;
 
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
