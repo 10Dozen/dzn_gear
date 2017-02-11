@@ -4,7 +4,7 @@
 dzn_fnc_gear_assignKit = {
 	/*
 		Resolve given kit and call function to assign existing kit to unit.	
-		EXAMPLE:	[ unit, gearSetName, isBox ] spawn dzn_fnc_gear_assignKit;
+		EXAMPLE:	[ @unit, @gearSetName, @isBox ] spawn dzn_fnc_gear_assignKit;
 		INPUT:
 			0: OBJECT		- Unit for which gear will be set
 			1: ARRAY or STRING	- List of Kits or single kit for assignment: ["kit_r","kit_ar"] or "kit_ar"
@@ -14,17 +14,16 @@ dzn_fnc_gear_assignKit = {
 	params ["_unit","_kits",["_isCargo", false]];
 	private ["_kitName","_kit"];
 	
-	_kitName = if (typename _kits == "ARRAY") then { _kits call BIS_fnc_selectRandom } else { _kits };
+	_kitName = if (typename _kits == "ARRAY") then { selectRandom _kits } else { _kits };
 	
 	if (isNil {call compile _kitName}) exitWith {
 		diag_log format ["There is no kit with name %1", (_kitName)];
-		player sideChat format ["There is no kit with name %1", (_kitName)];
+		systemChat format ["There is no kit with name %1", (_kitName)];
 	};
 	
 	_kit = call compile _kitName;
-	if (typename (_kit select 0) != "ARRAY") then { 
-		_kitName = _kit call BIS_fnc_selectRandom;		
-		_kit = call compile (_kitName); 	
+	if (typename (_kit select 0) != "ARRAY") exitWith { 		
+		[_unit, _kit] call dzn_fnc_gear_assignKit;
 	};
 	
 	_unit setVariable ["dzn_gear", _kitName, true];	
@@ -42,7 +41,7 @@ dzn_fnc_gear_assignKit = {
 	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
 	#define cItem(IDX)				(_ctg select IDX)
 	#define IsItem(ITEM)				(typename (ITEM) == "STRING")
-	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {ITEM call BIS_fnc_selectRandom}
+	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {selectRandom ITEM}
 	
 dzn_fnc_gear_assignGear = {
 	// [@Unit, @GearSet] spawn dzn_fnc_gear_assignGear;
@@ -110,7 +109,7 @@ dzn_fnc_gear_assignGear = {
 	// ADD ASSIGNED ITEMS
 	SET_CAT(4);
 	for "_i" from 1 to ((count _ctg) - 1) do {
-		_unit addWeapon (if IsItem(cItem(_i)) then {cItem(_i)} else {cItem(_i) call BIS_fnc_selectRandom});	
+		_unit addWeapon (if IsItem(cItem(_i)) then {cItem(_i)} else { selectRandom cItem(_i) });	
 	};
 	
 	// ADD GEAR
