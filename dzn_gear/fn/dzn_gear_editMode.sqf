@@ -496,9 +496,7 @@ dzn_fnc_gear_editMode_createKit = {
 	};
 	
 	private _useStandardItems = {
-		// @Kit call _useStandardItems
-		#define	CONVERT_IF_STRING(PAR1)	if (typename PAR1 == "ARRAY") then { str(PAR1) } else { PAR1 }
-		
+		// @Kit call _useStandardItems		
 		if (toLower(dzn_gear_UseStandardAssignedItems) != "no") then {
 			_this set [
 				4
@@ -534,7 +532,20 @@ dzn_fnc_gear_editMode_createKit = {
 		
 		if (!isNil "dzn_fnc_ShowChooseDialog") then {
 			disableSerialization;
-			_name = ["dzn Gear", ["Kit name (w/o spaces)", []]] call dzn_fnc_ShowChooseDialog;
+			// dzn_gear_kitRoles 
+			
+			
+			_name = ["dzn Gear", [
+				["Kit key", []]
+				["Kit role", [
+				
+				
+				
+				]]
+				["or Kitname (w/o spaces)", []]
+			] call dzn_fnc_ShowChooseDialog;
+			
+			
 			if (count _name == 0) exitWith { _exit = true; };
 		
 			_name = if (typename (_name select 0) == "STRING") then { _name select 0 } else { "kit_NewKitName" };
@@ -705,6 +716,7 @@ dzn_fnc_gear_editMode_showAsStructuredList = {
 	
 	_result
 };
+
 dzn_fnc_gear_editMode_getItemName = {
 	// @Classname call dzn_fnc_gear_editMode_getItemName
 	private["_name"];
