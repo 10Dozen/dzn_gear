@@ -1,3 +1,4 @@
+//		EDIT Mode Settings
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
  *		ARRAY -- for item classnames only
@@ -26,7 +27,31 @@ dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
 // Replace RHS's AR-15 default Mk317 STANAG magazines with Bohemia's STANAG (compatible with all modes)
 dzn_gear_ReplaceRHSStanagToDefault	= true;
 
+dzn_gear_kitRoles = [
+	["Platoon Leader", "pl"]
+	,["Squad Leader", "sl"]
+	,["Fireteam Leader", "ftl"]
+	,["Automatic Rifleman", "ar"]
+	,["Grenadier", "gr"]
+	,["Rifleman", "r"]
+	,["Section Leader", "sl"]
+	,["2IC", "2ic"]
+	,["Командир Взвода", "pl"]
+	,["Командир отделения", "sl"]
+	,["Наводчик-оператор", "crew"]
+	,["Механик-водитель", "crew"]
+	,["Пулеметчик", "mg"]
+	,["Стрелок-Гранатометчик", "at"]
+	,["Стрелок, помощник гранатометчика", "aat"]
+	,["Старший стрелок", "ar"]
+	,["Стрелок (ГП)", "gr"]
+	,["Стрелок", "r"]
+	,["Снайпер", "mm"]
+];
 
+
+
+//	GEAR Settings
 // Enable or disable a synchronization of unit's identity (face, voice)
 // from applied kit (in multiplayer)
 dzn_gear_enableIdentitySync			= false;
