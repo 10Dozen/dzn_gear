@@ -530,13 +530,10 @@ dzn_fnc_gear_editMode_createKit = {
 		private _name = "";
 		private _exit = false;
 		
-		if (!isNil "dzn_fnc_ShowChooseDialog") then {
-		
-		
-		
+		if (!isNil "dzn_fnc_ShowChooseDialog") then {		
 			disableSerialization;
 			
-			private _kitKeyLabel = if (dzn_gear_kitKey != "") then { format ["Kit key (%1)",dzn_gear_kitKey] } else { "Kit key" };
+			private _kitKeyLabel = if (dzn_gear_kitKey != "") then { format ["Kit key [ %1 ]",dzn_gear_kitKey] } else { "Kit key" };
 			private _labels = [];
 			{ _labels pushBack (_x select 0) } forEach dzn_gear_kitRoles;
 			
@@ -548,25 +545,28 @@ dzn_fnc_gear_editMode_createKit = {
 				]
 			] call dzn_fnc_ShowChooseDialog;
 			
-			if (count _name == 0) exitWith { _exit = true; };
-			if (_answer select 2 == 0) then {
-				private _kitKey = _answer select 0 select 0;
-				private _kitRole = _answer select 1 select 0;
-				
-				if (typename _kitKey == "STRING") then { dzn_gear_kitKey = _kitKey };
-				_name = format [
-					"kit_%1_%2"
-					, dzn_gear_kitKey
-					, (dzn_gear_kitRoles select _kitRole) select 1
-				];
+			/*
+				["usmc",5,-1]			// usmc, rifleman, <none>
+				[-1,3,-1]			// <none>, rifleman, <none>
+				["usmc",5,"RIFFFL"]		// usmc, rifleman, MyROLEMotherfucker
+				[-1,5,"KitNameFucker"]		// <none>, rifleman, MyROLEMotherfucker
+				[]				// Canceled
+			*/
+			
+			if (_answer isEqualTo []) exitWith { _exit = true; XC = "exit"; };
+			
+			if (typename (_answer select 2) == "STRING") then {
+				// Custom kit name
+				_name = format ["kit_%1", _answer select 2];				
 			} else {
-				_name = if (typename (_name select 0) == "STRING") then { _name select 0 } else { "kit_NewKitName" };
-			};
-			
-		
-			
+				if (typename (_answer select 0) == "STRING") then {
+					dzn_gear_kitKey = _answer select 0;
+				};
+				
+				_name = format ["kit_%1_%2", dzn_gear_kitKey, (dzn_gear_kitRoles select (_answer select 1)) select 1]				
+			};			
 		};		
-		if (_exit) exitWith {};
+		if (_exit) exitWith { false };
 		
 		_formatedString = format [_formatedString, _name];	
 		{
@@ -580,29 +580,34 @@ dzn_fnc_gear_editMode_createKit = {
 			];
 		} forEach _this;
 		
-		copyToClipboard _formatedString		
+		copyToClipboard _formatedString;
+		true
 	};
 	
 	private _copyUnitKit = {
 		// @Kit call _copyUnitKit
 		_this call _replaceDefaultMagazines;
 		_this call _useStandardItems;
-		_this call _formatAndCopyKit;
+		private _copyDone = _this call _formatAndCopyKit;
+		
+		_copyDone
 	};
 
 	if (isNull cursorTarget) then {
 		// Player
 		private _kit = player call dzn_fnc_gear_getGear;
-		_kit call _copyUnitKit;
+		private _copyDone = _kit call _copyUnitKit;
 		
+		if !(_copyDone) exitWith {};
 		if (_this) then { [_colorString, _kit] call _addKitAction; };
 		["Player's", _colorString] call _showHint;
 	} else {
 		if (cursorTarget isKindOf "CAManBase") then {
 			// Unit
 			private _kit = cursorTarget call dzn_fnc_gear_getGear;
-			_kit call _copyUnitKit;
+			private _copyDone = _kit call _copyUnitKit;
 			
+			if !(_copyDone) exitWith {};
 			if (_this) then { [_colorString, _kit] call _addKitAction; };
 			["Unit's", _colorString] call _showHint;
 		} else {
