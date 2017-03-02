@@ -531,24 +531,40 @@ dzn_fnc_gear_editMode_createKit = {
 		private _exit = false;
 		
 		if (!isNil "dzn_fnc_ShowChooseDialog") then {
+		
+		
+		
 			disableSerialization;
-			// dzn_gear_kitRoles 
 			
+			private _kitKeyLabel = if (dzn_gear_kitKey != "") then { format ["Kit key (%1)",dzn_gear_kitKey] } else { "Kit key" };
+			private _labels = [];
+			{ _labels pushBack (_x select 0) } forEach dzn_gear_kitRoles;
 			
-			_name = ["dzn Gear", [
-				["Kit key", []]
-				["Kit role", [
-				
-				
-				
-				]]
-				["or Kitname (w/o spaces)", []]
+			private _answer = ["dzn Gear"
+				, [
+					[_kitKeyLabel, []]
+					,["Kit role", _labels]
+					,["or Kitname (w/o spaces)", []]
+				]
 			] call dzn_fnc_ShowChooseDialog;
 			
-			
 			if (count _name == 0) exitWith { _exit = true; };
+			if (_answer select 2 == 0) then {
+				private _kitKey = _answer select 0 select 0;
+				private _kitRole = _answer select 1 select 0;
+				
+				if (typename _kitKey == "STRING") then { dzn_gear_kitKey = _kitKey };
+				_name = format [
+					"kit_%1_%2"
+					, dzn_gear_kitKey
+					, (dzn_gear_kitRoles select _kitRole) select 1
+				];
+			} else {
+				_name = if (typename (_name select 0) == "STRING") then { _name select 0 } else { "kit_NewKitName" };
+			};
+			
 		
-			_name = if (typename (_name select 0) == "STRING") then { _name select 0 } else { "kit_NewKitName" };
+			
 		};		
 		if (_exit) exitWith {};
 		
