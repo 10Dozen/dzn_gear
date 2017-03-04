@@ -553,7 +553,7 @@ dzn_fnc_gear_editMode_createKit = {
 				[]				// Canceled
 			*/
 			
-			if (_answer isEqualTo []) exitWith { _exit = true; XC = "exit"; };
+			if (_answer isEqualTo []) exitWith { _exit = true; };
 			
 			if (typename (_answer select 2) == "STRING") then {
 				// Custom kit name
