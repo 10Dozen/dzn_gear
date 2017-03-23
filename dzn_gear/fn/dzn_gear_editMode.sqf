@@ -466,8 +466,6 @@ dzn_fnc_gear_editMode_createKit = {
 				,((_this select 1) select 1 select 1) call dzn_fnc_gear_editMode_getItemName
 			],
 			{
-				
-				XXX = _this select 3;
 				if (isNull cursorTarget) then {
 					[player, _this select 3] call dzn_fnc_gear_assignGear;
 				} else {
