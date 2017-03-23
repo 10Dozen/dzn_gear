@@ -250,16 +250,17 @@ dzn_fnc_gear_editMode_getEquipItems = {
 	_ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget }; 
 	_owner = if (isNull cursorTarget) then { "Player" } else { "Unit" };
 	_item = call compile format ["%1 _ownerUnit", toLower(_mode)];
+	private _text = "";
 	
 	switch (_this select 1) do {
 		case "SHIFT": {
-			// Set
-			hint parseText format ["<t color='#6090EE' size='1.1'>%3 of %1 is COPIED</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
+			// Set			
+			_text = format ["<t color='#6090EE' size='1.1'>%3 of %1 is COPIED</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
 			copyToClipboard str(_mode call _getEquipType);		
 		};
 		case "CTRL": {
 			// Add
-			hint parseText format ["<t color='#6090EE' size='1.1'>%3 of %1 is ADDED to list</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
+			_text = format ["<t color='#6090EE' size='1.1'>%3 of %1 is ADDED to list</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
 			call compile format [
 				"if !(_item in dzn_gear_editMode_%1List) then {
 					dzn_gear_editMode_%1List pushBack _item;				
@@ -270,7 +271,7 @@ dzn_fnc_gear_editMode_getEquipItems = {
 		};
 		case "ALT": {
 			// Clear
-			hint parseText format ["<t color='#6090EE' size='1.1'>%1 is CLEARED</t>", TEXT_FROM_UPPER(_mode)];
+			_text = format ["<t color='#6090EE' size='1.1'>%1 is CLEARED</t>", TEXT_FROM_UPPER(_mode)];
 			call compile format [
 				"dzn_gear_editMode_%1List = [];"
 				, toLower(_mode)
@@ -278,13 +279,24 @@ dzn_fnc_gear_editMode_getEquipItems = {
 		};		
 		default {
 			// Show	
-			hint parseText format [
+			_text = format [
 				"<t color='#6090EE' size='1.1'>%2 list:</t><br /><t size='0.6' color='#FFD000'>Item</t><br />%1" 
 				, [(_mode call _getEquipType), true] call dzn_fnc_gear_editMode_showAsStructuredList
 				, TEXT_FROM_UPPER(_mode)
 			];
 			copyToClipboard str(_mode call _getEquipType);
 		};
+	};
+	
+	if (isNil {uinamespace getvariable "RSCDisplayArsenal"}) then {
+		hint parseText  _text;
+	} else {		
+		[
+			_text
+			, "TOP"
+			, [0,0,0,.8]
+			, 5
+		] call dzn_fnc_ShowMessage;
 	};
 	
 	false	
@@ -446,6 +458,7 @@ dzn_fnc_gear_editMode_createKit = {
 	private _addKitAction = {
 		// @ColorString, @Kit call _addKitAction
 		player addAction [
+			
 			format [
 				"<t color='%1'>Kit with %3 at %2</t>"
 				,_this select 0
@@ -595,21 +608,16 @@ dzn_fnc_gear_editMode_createKit = {
 
 	if (isNull cursorTarget) then {
 		// Player
-		private _kit = player call dzn_fnc_gear_getGear;
-		private _copyDone = _kit call _copyUnitKit;
-		
-		if !(_copyDone) exitWith {};
-		if (_this) then { [_colorString, _kit] call _addKitAction; };
-		["Player's", _colorString] call _showHint;
+		if (_this) then { [_colorString, (player call dzn_fnc_gear_getGear)] call _addKitAction; };
+		["Player's", _colorString] call _showHint;		
+		private _copyDone = (player call dzn_fnc_gear_getGear) call _copyUnitKit;		
 	} else {
 		if (cursorTarget isKindOf "CAManBase") then {
 			// Unit
-			private _kit = cursorTarget call dzn_fnc_gear_getGear;
-			private _copyDone = _kit call _copyUnitKit;
-			
-			if !(_copyDone) exitWith {};
-			if (_this) then { [_colorString, _kit] call _addKitAction; };
+			if (_this) then { [_colorString, (cursorTarget call dzn_fnc_gear_getGear)] call _addKitAction; };
 			["Unit's", _colorString] call _showHint;
+			
+			private _copyDone = (cursorTarget call dzn_fnc_gear_getGear) call _copyUnitKit;		
 		} else {
 			// Vehicle
 			private _kit = cursorTarget call dzn_fnc_gear_getCargoGear;
@@ -808,6 +816,7 @@ dzn_gear_editMode_waitToCheck_ArsenalDiff = {
 	dzn_gear_editMode_canCheck_ArsenalDiff = true;
 };
 
+dzn_gear_editMode_controlsOverArsenalEH = -1;
 dzn_gear_editMode_notif_pos = [.9,0,.4,1];
 dzn_gear_editMode_lastInventory = [];
 
@@ -842,9 +851,17 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 				[] spawn dzn_gear_editMode_waitToCheck_ArsenalDiff;
 				call dzn_fnc_gear_editMode_showGearTotals;
 			};
+			
+			if (dzn_gear_editMode_controlsOverArsenalEH < 0) then {
+				dzn_gear_editMode_controlsOverArsenalEH = (uinamespace getvariable "RSCDisplayArsenal") displayAddEventHandler [
+					"KeyDown"
+					, "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"
+				];
+			};
 		} else {
 			if (dzn_gear_editMode_arsenalOpened) then {
-				dzn_gear_editMode_arsenalOpened = false;					
+				dzn_gear_editMode_arsenalOpened = false;
+				dzn_gear_editMode_controlsOverArsenalEH = -1;
 			};
 		};
 	}] call BIS_fnc_addStackedEventHandler;
