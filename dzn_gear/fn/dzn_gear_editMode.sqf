@@ -458,6 +458,7 @@ dzn_fnc_gear_editMode_createKit = {
 	private _addKitAction = {
 		// @ColorString, @Kit call _addKitAction
 		player addAction [
+			
 			format [
 				"<t color='%1'>Kit with %3 at %2</t>"
 				,_this select 0
@@ -465,6 +466,8 @@ dzn_fnc_gear_editMode_createKit = {
 				,((_this select 1) select 1 select 1) call dzn_fnc_gear_editMode_getItemName
 			],
 			{
+				
+				XXX = _this select 3;
 				if (isNull cursorTarget) then {
 					[player, _this select 3] call dzn_fnc_gear_assignGear;
 				} else {
@@ -607,21 +610,16 @@ dzn_fnc_gear_editMode_createKit = {
 
 	if (isNull cursorTarget) then {
 		// Player
-		private _kit = player call dzn_fnc_gear_getGear;
-		private _copyDone = _kit call _copyUnitKit;
-		
-		if !(_copyDone) exitWith {};
-		if (_this) then { [_colorString, _kit] call _addKitAction; };
-		["Player's", _colorString] call _showHint;
+		if (_this) then { [_colorString, (player call dzn_fnc_gear_getGear)] call _addKitAction; };
+		["Player's", _colorString] call _showHint;		
+		private _copyDone = (player call dzn_fnc_gear_getGear) call _copyUnitKit;		
 	} else {
 		if (cursorTarget isKindOf "CAManBase") then {
 			// Unit
-			private _kit = cursorTarget call dzn_fnc_gear_getGear;
-			private _copyDone = _kit call _copyUnitKit;
-			
-			if !(_copyDone) exitWith {};
-			if (_this) then { [_colorString, _kit] call _addKitAction; };
+			if (_this) then { [_colorString, (cursorTarget call dzn_fnc_gear_getGear)] call _addKitAction; };
 			["Unit's", _colorString] call _showHint;
+			
+			private _copyDone = (cursorTarget call dzn_fnc_gear_getGear) call _copyUnitKit;		
 		} else {
 			// Vehicle
 			private _kit = cursorTarget call dzn_fnc_gear_getCargoGear;
