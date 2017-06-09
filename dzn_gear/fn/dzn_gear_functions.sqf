@@ -401,6 +401,10 @@ dzn_fnc_gear_nullifyUnusedVars = {
 		removeMissionEventHandler ["EachFrame", dzn_gear_arsenalEventHandlerID];
 	};
 
+	if (!isNil "dzn_gear_editMode_controlsOverArsenalEH") then {
+		(uinamespace getvariable "RSCDisplayArsenal") displayRemoveEventHandler ["KeyDown", dzn_gear_editMode_controlsOverArsenalEH];
+	};
+
 	{
 		call (compile "%1 = nil;");
 	} forEach [
