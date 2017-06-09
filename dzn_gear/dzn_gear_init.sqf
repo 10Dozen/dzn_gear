@@ -42,4 +42,11 @@ if (dzn_gear_enableGearAssignementTable) then { call compile preprocessFileLineN
 if (dzn_gear_enableGearNotes) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\GearNotes.sqf"; };
 if (dzn_gear_enableZeusCompatibility) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\ZeusCompatibility.sqf"; };
 
+if (
+	!dzn_gear_editModeEnabled
+	|| (isMultiplayer && count (call BIS_fnc_listPlayers) > 3)
+) then {
+	call dzn_fnc_gear_nullifyUnusedVars;
+};
+
 [] spawn dzn_fnc_gear_initialize;

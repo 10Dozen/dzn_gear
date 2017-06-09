@@ -1,4 +1,6 @@
-//		EDIT Mode Settings
+/*
+ *		EDIT Mode Settings
+ */
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
  *		ARRAY -- for item classnames only
@@ -52,8 +54,9 @@ dzn_gear_kitRoles = [
 ];
 
 
-
-//	GEAR Settings
+/*
+ *	GEAR Settings
+ */
 // Enable or disable a synchronization of unit's identity (face, voice)
 // from applied kit (in multiplayer)
 dzn_gear_enableIdentitySync			= false;

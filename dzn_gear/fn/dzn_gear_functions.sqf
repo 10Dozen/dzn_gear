@@ -396,6 +396,62 @@ dzn_fnc_gear_setPreciseGear = {
 // **************************
 // INITIALIZING FUNCTIONS
 // **************************
+dzn_fnc_gear_nullifyUnusedVars = {
+	if (!isNil "dzn_gear_arsenalEventHandlerID") then {
+		removeMissionEventHandler ["EachFrame", dzn_gear_arsenalEventHandlerID];
+	};
+
+	{
+		call (compile "%1 = nil;");
+	} forEach [
+		"dzn_gear_UseStandardUniformItems"
+		, "dzn_gear_StandardUniformItems"
+		, "dzn_gear_LeaderUniformItems"
+		, "dzn_gear_UseStandardAssignedItems"
+		, "dzn_gear_StandardAssignedItems"
+		, "dzn_gear_LeaderAssignedItems"
+		, "dzn_gear_ShowGearTotals"
+		, "dzn_gear_GearTotalsBG_RGBA"
+		, "dzn_gear_ReplaceRHSStanagToDefault"
+		, "dzn_gear_kitKey"
+		, "dzn_gear_kitRoles"
+		, "dzn_fnc_gear_editMode_showKeybinding"
+		, "dzn_fnc_gear_editMode_onKeyPress"
+		, "dzn_fnc_gear_editMode_setOptions"
+		, "dzn_fnc_gear_editMode_getEquipItems"
+		, "dzn_fnc_gear_editMode_getCurrentPrimaryWeapon"
+		, "dzn_fnc_gear_editMode_getCurrentHandgun"
+		, "dzn_fnc_gear_editMode_getCurrentIdentity"
+		, "dzn_fnc_gear_editMode_createKit"
+		, "dzn_fnc_gear_editMode_showGearTotals"
+		, "dzn_fnc_gear_editMode_showAsStructuredList"
+		, "dzn_fnc_gear_editMode_getItemName"
+		, "dzn_fnc_gear_editMode_getMagazineDisplayName"
+		, "dzn_fnc_gear_editMode_getEquipDisplayName"
+		, "dzn_fnc_gear_editMode_getBackpackDisplayName"
+		, "dzn_fnc_gear_editMode_getVehicleName"
+		, "dzn_gear_editMode_keyIsDown"
+		, "dzn_gear_editMode_primaryWeaponList"
+		, "dzn_gear_editMode_primaryWeaponMagList"
+		, "dzn_gear_editMode_handgunList"
+		, "dzn_gear_editMode_handgunMagList"
+		, "dzn_gear_editMode_uniformList"
+		, "dzn_gear_editMode_headgearList"
+		, "dzn_gear_editMode_gogglesList"
+		, "dzn_gear_editMode_vestList"
+		, "dzn_gear_editMode_backpackList"
+		, "dzn_gear_editMode_arsenalOpened"
+		, "dzn_gear_editMode_arsenalTimerPause"
+		, "dzn_gear_editMode_canCheck_ArsenalDiff"
+		, "dzn_gear_editMode_waitToCheck_ArsenalDiff"
+		, "dzn_gear_editMode_controlsOverArsenalEH"
+		, "dzn_gear_editMode_notif_pos"
+		, "dzn_gear_editMode_lastInventory"
+		, "dzn_gear_arsenalEventHandlerID"
+	];
+	diag_log "dzn Gear : Edit mode variables cleared";
+};
+
 dzn_fnc_gear_startLocalIdentityLoop = {
 	dzn_gear_applyLocalIdentity = true;
 
@@ -419,7 +475,6 @@ dzn_fnc_gear_startLocalIdentityLoop = {
 		};
 	}] call BIS_fnc_addStackedEventHandler;
 };
-
 
 dzn_fnc_gear_initialize = {
 	// Wait until player initialized in multiplayer

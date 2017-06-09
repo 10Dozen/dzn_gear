@@ -230,7 +230,6 @@ dzn_fnc_gear_editMode_setOptions = {
 	 };
 };
 
-
 dzn_fnc_gear_editMode_getEquipItems = {
 	// [@ItemType,@Option] call dzn_fnc_gear_editMode_getEquipItems	
 	// 0	@ItemType :		"UNIFORM","HEADGEAR","GOGGLES","VEST","BACKPACK"
@@ -436,8 +435,8 @@ dzn_fnc_gear_editMode_getCurrentIdentity = {
 	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", ""]', _face, _voice, _name];
 };
 
-
 dzn_fnc_gear_editMode_createKit = {
+
 	// @Add action? call dzn_fnc_gear_editMode_createKit
 	// RETURN: 	Copy kit to clipboard, Add action in actin menu, Show notification
 	private["_colorString","_kit"];
@@ -584,7 +583,7 @@ dzn_fnc_gear_editMode_createKit = {
 					dzn_gear_kitKey = _answer select 0;
 				};
 				
-				_name = format ["kit_%1_%2", dzn_gear_kitKey, (dzn_gear_kitRoles select (_answer select 1)) select 1]				
+				_name = format ["kit_%1_%2", dzn_gear_kitKey, (dzn_gear_kitRoles select (_answer select 1)) select 1];
 			};			
 		};		
 		if (_exit) exitWith { false };
@@ -634,9 +633,6 @@ dzn_fnc_gear_editMode_createKit = {
 		};	
 	};
 };
-
-
-
 
 
 // *****************************
@@ -848,7 +844,8 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 	nil call dzn_fnc_ShowMessage;
 
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
-	["arsenal", "onEachFrame", {
+
+	dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
 		private["_inv"];
 		if !(isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
 			if !(dzn_gear_editMode_arsenalOpened) then {
@@ -872,5 +869,5 @@ hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
 				dzn_gear_editMode_controlsOverArsenalEH = -1;
 			};
 		};
-	}] call BIS_fnc_addStackedEventHandler;
+	}];
 };
