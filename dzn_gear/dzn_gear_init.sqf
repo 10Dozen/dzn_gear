@@ -1,5 +1,5 @@
 // **************************
-// 	DZN GEAR v2.6
+// 	DZN GEAR v2.7
 //
 //	Initialized when:
 //	{ !isNil "dzn_gear_initDone" }
@@ -23,7 +23,10 @@ call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_functions.sqf";
 // **************************
 // EDIT MODE
 // **************************
-if (dzn_gear_editModeEnabled) then {call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";};
+if (dzn_gear_editModeEnabled) then {
+	call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";
+	[] spawn dzn_fnc_gear_editMode_initialize;
+};
 
 // **************************
 // GEARS

@@ -406,7 +406,7 @@ dzn_fnc_gear_nullifyUnusedVars = {
 	};
 
 	{
-		call (compile "%1 = nil;");
+		call compile format ["if (!isNil ""%1"") then { %1 = nil; };", _x];
 	} forEach [
 		"dzn_gear_UseStandardUniformItems"
 		, "dzn_gear_StandardUniformItems"
@@ -418,27 +418,14 @@ dzn_fnc_gear_nullifyUnusedVars = {
 		, "dzn_gear_GearTotalsBG_RGBA"
 		, "dzn_gear_ReplaceRHSStanagToDefault"
 		, "dzn_gear_kitKey"
-		, "dzn_gear_kitRoles"
-		, "dzn_fnc_gear_editMode_showKeybinding"
-		, "dzn_fnc_gear_editMode_onKeyPress"
-		, "dzn_fnc_gear_editMode_setOptions"
-		, "dzn_fnc_gear_editMode_getEquipItems"
-		, "dzn_fnc_gear_editMode_getCurrentPrimaryWeapon"
-		, "dzn_fnc_gear_editMode_getCurrentHandgun"
-		, "dzn_fnc_gear_editMode_getCurrentIdentity"
-		, "dzn_fnc_gear_editMode_createKit"
-		, "dzn_fnc_gear_editMode_showGearTotals"
-		, "dzn_fnc_gear_editMode_showAsStructuredList"
-		, "dzn_fnc_gear_editMode_getItemName"
-		, "dzn_fnc_gear_editMode_getMagazineDisplayName"
-		, "dzn_fnc_gear_editMode_getEquipDisplayName"
-		, "dzn_fnc_gear_editMode_getBackpackDisplayName"
-		, "dzn_fnc_gear_editMode_getVehicleName"
+		, "dzn_gear_kitRoles"		
 		, "dzn_gear_editMode_keyIsDown"
 		, "dzn_gear_editMode_primaryWeaponList"
 		, "dzn_gear_editMode_primaryWeaponMagList"
-		, "dzn_gear_editMode_handgunList"
-		, "dzn_gear_editMode_handgunMagList"
+		, "dzn_gear_editMode_handgunWeaponList"
+		, "dzn_gear_editMode_handgunWeaponMagList"
+		, "dzn_gear_editMode_secondaryWeaponList"
+		, "dzn_gear_editMode_secondaryWeaponMagList"
 		, "dzn_gear_editMode_uniformList"
 		, "dzn_gear_editMode_headgearList"
 		, "dzn_gear_editMode_gogglesList"
@@ -452,6 +439,29 @@ dzn_fnc_gear_nullifyUnusedVars = {
 		, "dzn_gear_editMode_notif_pos"
 		, "dzn_gear_editMode_lastInventory"
 		, "dzn_gear_arsenalEventHandlerID"
+		
+		, "dzn_fnc_gear_editMode_showKeybinding"
+		, "dzn_fnc_gear_editMode_onKeyPress"
+		, "dzn_fnc_gear_editMode_getEquipItems"
+		, "dzn_fnc_gear_editMode_getCurrentWeapon"
+		, "dzn_fnc_gear_editMode_getCurrentIdentity"
+		
+		, "dzn_fnc_gear_editMode_showKitGetter"
+		, "dzn_fnc_gear_editMode_createKit"		
+		, "dzn_fnc_gear_editMode_setOptions"
+		, "dzn_fnc_gear_editMode_showAmmoBearerGetterMenu"
+		, "dzn_fnc_gear_editMode_showAmmoBearerSetterMenu"
+		
+		, "dzn_fnc_gear_editMode_showAsStructuredList"
+		, "dzn_fnc_gear_editMode_getItemName"
+		, "dzn_fnc_gear_editMode_getMagazineDisplayName"
+		, "dzn_fnc_gear_editMode_getEquipDisplayName"
+		, "dzn_fnc_gear_editMode_getBackpackDisplayName"
+		, "dzn_fnc_gear_editMode_getVehicleName"
+		, "dzn_fnc_gear_editMode_convertInventoryToLine"
+		, "dzn_fnc_gear_editMode_showGearTotals"
+		, "dzn_fnc_gear_editMode_showNotif"
+		, "dzn_fnc_gear_editMode_initialize"		
 	];
 	diag_log "dzn Gear : Edit mode variables cleared";
 };

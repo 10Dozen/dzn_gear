@@ -1,5 +1,40 @@
 /*
- *		EDIT Mode Settings
+ *	GEAR 
+ *	SETTINGS
+ */
+// Enable or disable a synchronization of unit's identity (face, voice)
+// from applied kit (in multiplayer)
+dzn_gear_enableIdentitySync			= false;
+
+// Plugins
+/*
+	Gear Assignment according to units/slot Role Description.
+	Use it to apply gear on players in multiplayer, 100% JIP compatible
+*/
+dzn_gear_enableGearAssignementTable		= true;
+
+/*
+	Gear information displayed in Briefing topic.
+	Includes full list of player's equipmenr
+	and short description of equipment of other players in group
+*/
+dzn_gear_enableGearNotes			= true;
+dzn_gear_gnotes_showMyGear			= true; // Player's gear
+dzn_gear_gnotes_showSquadGear			= true; // Gear of player group members
+
+/*
+	dzn Gear Zeus Compatibility
+	Allows to assign gear kits to units via Zeus.
+	Select unit and press 'G' key to invoke menu
+*/
+dzn_gear_enableZeusCompatibility 		= true;
+
+
+
+
+/*
+ *		EDIT MODE
+ *		SETTINGS
  */
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
@@ -52,34 +87,3 @@ dzn_gear_kitRoles = [
 	,["Снайпер", "mm"]
 	,["", ""]
 ];
-
-
-/*
- *	GEAR Settings
- */
-// Enable or disable a synchronization of unit's identity (face, voice)
-// from applied kit (in multiplayer)
-dzn_gear_enableIdentitySync			= false;
-
-// Plugins
-/*
-	Gear Assignment according to units/slot Role Description.
-	Use it to apply gear on players in multiplayer, 100% JIP compatible
-*/
-dzn_gear_enableGearAssignementTable		= true;
-
-/*
-	Gear information displayed in Briefing topic.
-	Includes full list of player's equipmenr
-	and short description of equipment of other players in group
-*/
-dzn_gear_enableGearNotes			= true;
-dzn_gear_gnotes_showMyGear			= true; // Player's gear
-dzn_gear_gnotes_showSquadGear			= true; // Gear of player group members
-
-/*
-	dzn Gear Zeus Compatibility
-	Allows to assign gear kits to units via Zeus.
-	Select unit and press 'G' key to invoke menu
-*/
-dzn_gear_enableZeusCompatibility 		= true;
