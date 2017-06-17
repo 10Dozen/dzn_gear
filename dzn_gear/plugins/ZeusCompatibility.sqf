@@ -4,6 +4,31 @@
 //
 // ******************** Settings **********************
 
+[
+	[0, "HEADER", "dzn_GEAR ZEUS TOOL"]
+	, [1, "LABEL", ""]
+	
+	, [2, "LABEL", "KITS"]
+	, [2, "DROPDOWN", ["kit_usmc_sl"]]
+	, [2, "INPUT"]
+
+	, [3, "BUTTON", "COPY GEAR"]
+	, [3, "BUTTON", "APPLY GEAR"]
+	, [3, "BUTTON", "ASSIGN KIT"]
+	
+	, [4, "HEADER", ""]
+	, [5, "LABEL", "ITEMS"]
+	, [5, "DROPDOWN", ["NVG","Gun Flashlight", "BLUFOR LR Radio", "OPFOR LR Radio", "Weapon Optics"]]
+	, [5, "BUTTON", "ADD ITEM"]
+	, [6, "LABEL", ""]
+	, [6, "LABEL", ""]
+	, [6, "BUTTON", "REMOVE"]
+	
+	, [7, "BUTTON", "ARSENAL"]
+	, [7, "LABEL", ""]
+	, [7, "BUTTON", "CLEAR ITEMS"]
+] call dzn_fnc_ShowAdvDialog;
+
 
 
 // ********************** FNC ************************
@@ -71,36 +96,70 @@ dzn_fnc_gear_zc_onKeyPress = {
 };
 
 dzn_fnc_gear_zc_processMenu = {
-	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
+	dzn_gear_zc_unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
+	if (dzn_gear_zc_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
 	
 	private _kitlist = if (dzn_gear_zc_KitsList isEqualTo []) then { [""] } else { dzn_gear_zc_KitsList };
-	private _Result = [
-		"dzn_Gear Zeus Tool"
-		, [
-			["Kits", _kitlist]
-			, ["Custom", []]
-		]
-	] call dzn_fnc_ShowChooseDialog;
+	[
+		[0, "HEADER", "dzn_GEAR ZEUS TOOL"]
+		, [0, "LABEL", ""]
+		, [0, "LABEL", ""]
+		, [0, "LABEL", ""]
+		, [0, "BUTTON", "CLOSE", { closeDialog 2; }]
+		
+		, [1, "LABEL", "<t align='right'>Units selected:</t>"]
+		, [1, "LABEL", format ["<t align='left'>%1</t>", count dzn_gear_zc_unitsSelected]]
+		
+		, [2, "LABEL", "KITS"]
+		, [2, "DROPDOWN", _kitlist, _kitlist]
+		, [2, "INPUT"]
 
-	waitUntil {!dialog};
-	if (count _Result == 0) exitWith {};
+		, [3, "BUTTON", "COPY GEAR", { call dzn_fnc_gear_zc_copyKit; }]
+		, [3, "BUTTON", "APPLY COPIED GEAR", { call dzn_fnc_gear_zc_applyKit; }]
+		, [3, "BUTTON", "ASSIGN KIT", {
+			params["_kitDropdown","_kitInput",""];
+			closeDialog 2;
+		
+			private _kitname = if ((_kitInput select 0) == "") then {
+				dzn_gear_zc_KitsList select (_kitDropdown select 0)
+			} else {
+				_kitInput select 0				
+			};
+			
+			XC = [_kitname, _kitDropdown, _kitInput];
+			
+			if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
+			
+			{ 
+				if (local _x) then {
+					[_x, _kitname] call dzn_fnc_gear_assignKit; 
+				} else {
+					[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
+				};
+			} forEach dzn_gear_zc_unitsSelected;
+			[format ["Kit '%1' was assigned", _kitname], "success"] call dzn_fnc_gear_zc_showNotif;
+		}]
+		
+		, [4, "HEADER", ""]
+		, [5, "LABEL", "ITEMS"]
+		, [5, "DROPDOWN", ["NVG","Gun Flashlight", "BLUFOR LR Radio", "OPFOR LR Radio", "Weapon Optics"]]
+		, [5, "BUTTON", "ADD ITEM"]
+		, [6, "LABEL", ""]
+		, [6, "LABEL", ""]
+		, [6, "BUTTON", "REMOVE"]
+		
+		, [7, "BUTTON", "ARSENAL", { 
+			if (count dzn_gear_zc_unitsSelected == 1) then {
+				closeDialog 2;
+				["Open",[true,objnull, dzn_gear_zc_unitsSelected select 0]] call bis_fnc_arsenal;
+			} else {
+				["Select single unit to open Arsenal", "fail"] call dzn_fnc_gear_zc_showNotif;
+			};
+		}]
+		, [7, "LABEL", ""]
+		, [7, "BUTTON", "CLEAR ITEMS"]
+	] call dzn_fnc_ShowAdvDialog;
 	
-	private _kitname = if ( typename (_Result select 1) != "STRING") then {
-		dzn_gear_zc_KitsList select (_Result select 0);
-	} else {
-		_Result select 1;		
-	};	
-	if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
-	
-	{ 
-		if (local _x) then {
-			[_x, _kitname] call dzn_fnc_gear_assignKit; 
-		} else {
-			[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
-		};
-	} forEach _unitsSelected;	
-	[format ["Kit '%1' was assigned", _kitname], "success"] call dzn_fnc_gear_zc_showNotif;
 };
 
 dzn_fnc_gear_zc_copyKit = {
