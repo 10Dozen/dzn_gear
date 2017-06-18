@@ -57,6 +57,7 @@ dzn_fnc_gear_zc_initialize = {
 	dzn_gear_zc_keyIsDown = false;
 	dzn_gear_zc_displayEH = nil;
 	dzn_gear_zc_KitsList = [];	
+	dzn_gear_zc_isKitsCollecting = false;
 	
 	dzn_gear_zc_canCollectKits = true;
 	dzn_gear_zc_waitAncCheck = { dzn_gear_zc_canCollectKits = false; sleep count(allUnits); dzn_gear_zc_canCollectKits = true; };
@@ -80,11 +81,21 @@ dzn_fnc_gear_zc_initialize = {
 };
 
 dzn_fnc_gear_zc_collectKitNames = {
+	if (dzn_gear_zc_isKitsCollecting) exitWith {};
+	
+	dzn_gear_zc_isKitsCollecting = true;
+	
 	{
-		private _kitname = _x getVariable ["dzn_gear", ""];
-		_kitname call dzn_fnc_gear_zc_addToKitList;		
-		sleep 1;
+		sleep 0.0001;
+		if ( toLower(_x select [0,4]) == "kit_" ) then { _x call dzn_fnc_gear_zc_addToKitList; };
+	} forEach (allVariables missionNamespace);
+	
+	{
+		sleep 0.001;
+		(_x getVariable ["dzn_gear", ""]) call dzn_fnc_gear_zc_addToKitList;	
 	} forEach allUnits;
+	
+	dzn_gear_zc_isKitsCollecting = false;
 };
 
 dzn_fnc_gear_zc_onKeyPress = {
@@ -334,11 +345,9 @@ dzn_fnc_gear_zc_showNotif = {
 dzn_fnc_gear_zc_addToKitList = {
 	// @Kit call dzn_fnc_gear_zc_addToKitList
 	if ( 
-		(_this != "") 
-		&& !isNil {call compile _this} 
-		&& !(_this in dzn_gear_zc_KitsList)
+		(_this != "") && !isNil {call compile _this} 
 	) then {
-		dzn_gear_zc_KitsList pushBack _this;
+		dzn_gear_zc_KitsList pushBackUnique _this;
 	};
 };
 
