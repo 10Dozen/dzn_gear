@@ -3,32 +3,53 @@
 //
 //
 // ******************** Settings **********************
-
-[
-	[0, "HEADER", "dzn_GEAR ZEUS TOOL"]
-	, [1, "LABEL", ""]
-	
-	, [2, "LABEL", "KITS"]
-	, [2, "DROPDOWN", ["kit_usmc_sl"]]
-	, [2, "INPUT"]
-
-	, [3, "BUTTON", "COPY GEAR"]
-	, [3, "BUTTON", "APPLY GEAR"]
-	, [3, "BUTTON", "ASSIGN KIT"]
-	
-	, [4, "HEADER", ""]
-	, [5, "LABEL", "ITEMS"]
-	, [5, "DROPDOWN", ["NVG","Gun Flashlight", "BLUFOR LR Radio", "OPFOR LR Radio", "Weapon Optics"]]
-	, [5, "BUTTON", "ADD ITEM"]
-	, [6, "LABEL", ""]
-	, [6, "LABEL", ""]
-	, [6, "BUTTON", "REMOVE"]
-	
-	, [7, "BUTTON", "ARSENAL"]
-	, [7, "LABEL", ""]
-	, [7, "BUTTON", "CLEAR ITEMS"]
-] call dzn_fnc_ShowAdvDialog;
-
+#define 	SEL(X,A,B)	if (X) then { A } else { B }
+dzn_gear_zc_Items = [
+	[
+		"NVG"
+		, { 
+			params ["_units", "_add"];			
+			{
+				[_x, format ["_this %1 'NVGoggles_OPFOR'", SEL(_add, "linkItem", "unlinkItem")]] call dzn_fnc_gear_zc_addItemsToUnits;
+			} forEach _units;			
+			[format ["NVG %1 units", SEL(_add, "added to","removed from")], "success"] call dzn_fnc_gear_zc_showNotif;	
+		}
+	]	
+	, [
+		"BLUFOR LR Radio"
+		, {
+			params ["_units", "_add"];			
+			{
+				[_x, SEL(_add, "_this addBackpack 'tf_rt1523g'", "removeBackpack _this")] call dzn_fnc_gear_zc_addItemsToUnits;
+			} forEach _units;			
+			[format ["LR radio %1 units", SEL(_add, "added to","removed from")], "success"] call dzn_fnc_gear_zc_showNotif;
+		}
+	]
+	, [
+		"OPFOR LR Radio"
+		, {
+			params ["_units", "_add"];			
+			{
+				[_x, SEL(_add, "_this addBackpack 'tf_mr3000_rhs'", "removeBackpack _this")] call dzn_fnc_gear_zc_addItemsToUnits;
+			} forEach _units;			
+			[format ["LR radio %1 units", SEL(_add, "added to","removed from")], "success"] call dzn_fnc_gear_zc_showNotif;
+		}
+	]
+	, [
+		"INDEP LR Radio"
+		, {
+			params ["_units", "_add"];			
+			{
+				[_x, SEL(_add, "_this addBackpack 'tf_anprc155_coyote'", "removeBackpack _this")] call dzn_fnc_gear_zc_addItemsToUnits;
+			} forEach _units;			
+			[format ["LR radio %1 units", SEL(_add, "added to","removed from")], "success"] call dzn_fnc_gear_zc_showNotif;
+		}
+	]
+	, [
+		"Weapon Accessories"
+		, { params ["_units", "_add"]; closeDialog 2; [_units, _add] spawn dzn_fnc_gear_zc_showWeaponAccSetter; }
+	]	
+];
 
 
 // ********************** FNC ************************
@@ -79,7 +100,7 @@ dzn_fnc_gear_zc_onKeyPress = {
 	
 	switch _key do {
 		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
-		// G1 button
+		// G button
 		case 34: {
 			dzn_gear_zc_keyIsDown = true;
 			if (_ctrl) then { [] call dzn_fnc_gear_zc_copyKit; };
@@ -96,6 +117,7 @@ dzn_fnc_gear_zc_onKeyPress = {
 };
 
 dzn_fnc_gear_zc_processMenu = {
+	closeDialog 2;
 	dzn_gear_zc_unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
 	if (dzn_gear_zc_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
 	
@@ -126,8 +148,6 @@ dzn_fnc_gear_zc_processMenu = {
 				_kitInput select 0				
 			};
 			
-			XC = [_kitname, _kitDropdown, _kitInput];
-			
 			if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
 			
 			{ 
@@ -142,11 +162,17 @@ dzn_fnc_gear_zc_processMenu = {
 		
 		, [4, "HEADER", ""]
 		, [5, "LABEL", "ITEMS"]
-		, [5, "DROPDOWN", ["NVG","Gun Flashlight", "BLUFOR LR Radio", "OPFOR LR Radio", "Weapon Optics"]]
-		, [5, "BUTTON", "ADD ITEM"]
+		, [5, "DROPDOWN", dzn_gear_zc_Items apply { _x select 0 }, []]
+		, [5, "BUTTON", "ADD ITEM", {
+			params ["", "", "_itemsDropdown"];	
+			[dzn_gear_zc_unitsSelected, true] call ( (dzn_gear_zc_Items select (_itemsDropdown select 0)) select 1 );
+		}]
 		, [6, "LABEL", ""]
 		, [6, "LABEL", ""]
-		, [6, "BUTTON", "REMOVE"]
+		, [6, "BUTTON", "REMOVE ITEM", {
+			params ["", "", "_itemsDropdown"];			
+			[dzn_gear_zc_unitsSelected, false] call ( (dzn_gear_zc_Items select (_itemsDropdown select 0)) select 1 );
+		}]
 		
 		, [7, "BUTTON", "ARSENAL", { 
 			if (count dzn_gear_zc_unitsSelected == 1) then {
@@ -157,9 +183,82 @@ dzn_fnc_gear_zc_processMenu = {
 			};
 		}]
 		, [7, "LABEL", ""]
-		, [7, "BUTTON", "CLEAR ITEMS"]
+		, [7, "BUTTON", "CLEAR ALL ITEMS", {
+			{ _x call dzn_fnc_gear_zc_removeItemsFromUnit; } forEach dzn_gear_zc_unitsSelected;
+			["All inventory items were removed for selected units", "success"] call dzn_fnc_gear_zc_showNotif;
+		}]
 	] call dzn_fnc_ShowAdvDialog;
+};
+
+dzn_fnc_gear_zc_addItemsToUnits = {
+	params ["_unit", "_code"];
+	if !(local _unit) exitWith { _this remoteExec ["dzn_fnc_gear_zc_addItemsToUnits", _unit]; };
 	
+	_unit call compile _code;
+};
+
+dzn_fnc_gear_zc_removeItemsFromUnit = {
+	if !(local _this) exitWith { _this remoteExec ["dzn_fnc_gear_zc_removeItemsFromUnit", _this]; };
+
+	clearAllItemsFromBackpack _this;
+	{_this removeItemFromVest _x;} forEach (vestItems _this);
+	{_this removeItemFromUniform _x;} forEach (uniformItems _this);
+};
+
+dzn_fnc_gear_zc_showWeaponAccSetter = {
+	private _items = if (_this) then {
+		(primaryWeapon (dzn_gear_zc_unitsSelected select 0)) call bis_fnc_compatibleItems
+	} else {
+		primaryWeaponItems (dzn_gear_zc_unitsSelected select 0)
+	};
+
+	private _menu = [
+		[0, "HEADER", format ["dzn_GEAR ZEUS TOOL :: %1 Weapon Accessories", if (_this) then { "Add" } else { "Remove" }]]
+		, [1, "LABEL", "Select weapon accessories"]
+		, [2, "LABEL", ""]
+		, [2, "DROPDOWN", _items apply { _x call dzn_fnc_getItemDisplayName }, _items]
+		, [2, "LABEL", ""]
+		, [3, "LABEL", ""]
+		, [4, "BUTTON", "CLOSE", { closeDialog 2; }]
+		, [4, "LABEL", ""]
+	];
+	
+	if (_this) then {
+		_menu pushBack [4, "BUTTON", "ADD", {
+			if (count (_this select 0) > 1) then {
+				{
+					[_x, (_this select 0 select 2) select (_this select 0 select 0), true] call dzn_fnc_gear_zc_addWeaponAccessories;
+				} forEach dzn_gear_zc_unitsSelected;
+				
+				["Weapon accessorie was added to untis", "success"] call dzn_fnc_gear_zc_showNotif;
+			};
+		}];
+	} else {
+		_menu pushBack [4, "BUTTON", "REMOVE", {		
+			if (count (_this select 0) > 1) then {
+				{
+					[_x, (_this select 0 select 2) select (_this select 0 select 0), false] call dzn_fnc_gear_zc_addWeaponAccessories;
+				} forEach dzn_gear_zc_unitsSelected;
+				
+				["Weapon accessorie was removed from untis", "success"] call dzn_fnc_gear_zc_showNotif;
+			};
+		}];
+	};
+	
+	_menu call dzn_fnc_ShowAdvDialog;
+};
+
+dzn_fnc_gear_zc_addWeaponAccessories = {
+	params ["_u", ["_item", ""], "_add"];
+	if !(local _u) exitWith { _this remoteExec ["dzn_fnc_gear_zc_addWeaponAccessorie", _u]; };
+
+	if (_item == "") exitWith {};
+	
+	if (_add) then {
+		_u addPrimaryWeaponItem _item;
+	} else {
+		_u removePrimaryWeaponItem _item;
+	};
 };
 
 dzn_fnc_gear_zc_copyKit = {
