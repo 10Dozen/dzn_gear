@@ -102,6 +102,7 @@ dzn_fnc_gear_zc_onKeyPress = {
 	[] spawn dzn_fnc_gear_zc_collectKitNames;
 	if (dzn_gear_zc_keyIsDown) exitWith {};
 	
+	
 	private["_key","_shift","_crtl","_alt","_handled"];	
 	_key = _this select 1; 
 	_shift = _this select 2; 
@@ -117,7 +118,10 @@ dzn_fnc_gear_zc_onKeyPress = {
 			if (_ctrl) then { [] call dzn_fnc_gear_zc_copyKit; };
 			if (_alt) then { [] call dzn_fnc_gear_zc_applyKit; };
 			if (_shift) then { [] call dzn_fnc_gear_zc_getKit; };
-			if !(_ctrl || _alt || _shift) then { [] spawn dzn_fnc_gear_zc_processMenu; };
+			if !(_ctrl || _alt || _shift) then {
+				closeDialog 1;
+				[] spawn dzn_fnc_gear_zc_processMenu;
+			};
 			
 			_handled = true;
 		};
@@ -128,7 +132,6 @@ dzn_fnc_gear_zc_onKeyPress = {
 };
 
 dzn_fnc_gear_zc_processMenu = {
-	closeDialog 2;
 	dzn_gear_zc_unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
 	if (dzn_gear_zc_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
 	
