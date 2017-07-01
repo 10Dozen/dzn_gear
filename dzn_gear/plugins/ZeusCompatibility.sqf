@@ -217,14 +217,15 @@ dzn_fnc_gear_zc_removeItemsFromUnit = {
 };
 
 dzn_fnc_gear_zc_showWeaponAccSetter = {
-	private _items = if (_this) then {
-		(primaryWeapon (dzn_gear_zc_unitsSelected select 0)) call bis_fnc_compatibleItems
+	params ["_units","_add"];
+	private _items = if (_add) then {
+		(primaryWeapon (_units select 0)) call bis_fnc_compatibleItems
 	} else {
-		primaryWeaponItems (dzn_gear_zc_unitsSelected select 0)
+		primaryWeaponItems (_units select 0)
 	};
 
 	private _menu = [
-		[0, "HEADER", format ["dzn_GEAR ZEUS TOOL :: %1 Weapon Accessories", if (_this) then { "Add" } else { "Remove" }]]
+		[0, "HEADER", format ["dzn_GEAR ZEUS TOOL :: %1 Weapon Accessories", if (_add) then { "Add" } else { "Remove" }]]
 		, [1, "LABEL", "Select weapon accessories"]
 		, [2, "LABEL", ""]
 		, [2, "DROPDOWN", _items apply { _x call dzn_fnc_getItemDisplayName }, _items]
@@ -234,9 +235,11 @@ dzn_fnc_gear_zc_showWeaponAccSetter = {
 		, [4, "LABEL", ""]
 	];
 	
-	if (_this) then {
+	dzn_gear_zc_unitsSelected = _units;
+	
+	if (_add) then {
 		_menu pushBack [4, "BUTTON", "ADD", {
-			if (count (_this select 0) > 1) then {
+			if !(dzn_gear_zc_unitsSelected isEqualTo []) then {
 				{
 					[_x, (_this select 0 select 2) select (_this select 0 select 0), true] call dzn_fnc_gear_zc_addWeaponAccessories;
 				} forEach dzn_gear_zc_unitsSelected;
@@ -246,7 +249,7 @@ dzn_fnc_gear_zc_showWeaponAccSetter = {
 		}];
 	} else {
 		_menu pushBack [4, "BUTTON", "REMOVE", {		
-			if (count (_this select 0) > 1) then {
+			if !(dzn_gear_zc_unitsSelected isEqualTo []) then {
 				{
 					[_x, (_this select 0 select 2) select (_this select 0 select 0), false] call dzn_fnc_gear_zc_addWeaponAccessories;
 				} forEach dzn_gear_zc_unitsSelected;
