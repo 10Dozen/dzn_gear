@@ -465,8 +465,7 @@ dzn_fnc_gear_editMode_createKit = {
 	
 	private _addKitAction = {
 		// @ColorString, @Kit call _addKitAction
-		player addAction [
-			
+		player addAction [		
 			format [
 				"<t color='%1'>Kit with %3 at %2</t>"
 				,_this select 0
@@ -564,7 +563,7 @@ dzn_fnc_gear_editMode_createKit = {
 	private _copyUnitKit = {
 		params ["_title", "_kit", "_name", "_colorString"];
 		
-		[_colorString, _kit] call _addKitAction; 
+		[_colorString, _kit + []] call _addKitAction; 
 		
 		_kit call _replaceDefaultMagazines;
 		_kit call _useStandardItems;
@@ -1004,5 +1003,3 @@ dzn_fnc_gear_editMode_initialize = {
 		};
 	}];
 };
-
-
