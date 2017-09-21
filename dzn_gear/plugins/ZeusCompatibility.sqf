@@ -317,8 +317,15 @@ dzn_fnc_gear_zc_getKit = {
 
 dzn_fnc_gear_zc_applyKit = {
 	if (isNil "dzn_gear_zc_BufferedKit") exitWith { ["No kit has been copied!", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
+	private _unitsSelected = "Units" call dzn_fnc_gear_zc_getSelectedObjects;
+	private _vehiclesSelected = "Vehicles" call dzn_fnc_gear_zc_getSelectedObjects;
+	if (_unitsSelected isEqualTo [] && _vehiclesSelected isEqualTo []) exitWith { ["No units/vehicles selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	
+	if (
+		(count _unitsSelected > 0 && _vehiclesSelected isEqualTo [] && dzn_gear_zc_isBufferedKitCargo)
+		
+	) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	
 	
 	{
 		if (local _x) then {
