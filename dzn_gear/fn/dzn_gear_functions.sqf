@@ -344,36 +344,6 @@ dzn_fnc_gear_getCargoGear = {
 		_kit pushBack _categoryKit;
 	} forEach _cargo;
 	
-	if (dzn_gear_editModeEnabled) then {
-		// Format of output
-		_str = str(_kit);
-		_formatedString = ""; 
-		_lastId = 0;
-		for "_i" from 0 to ((count _str) - 1) do {
-			if (_str select [_i,2] in ["[[","[]"]) then {		
-				_formatedString = format[
-						"%1
-	%2"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-				_lastId = _i;
-			};
-
-			if (_i == ((count _str) - 1)) then {
-				_formatedString = format[
-					"%1
-	%2
-];"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-			};
-		};
-		_formatedString = format ["kit_NewCargoKitName = %1", [_formatedString,4] call BIS_fnc_trimString];
-		copyToClipboard _formatedString;
-	};
-	
 	_kit
 };
 

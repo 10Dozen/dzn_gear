@@ -570,6 +570,42 @@ dzn_fnc_gear_editMode_createKit = {
 		_kit call _formatAndCopyKit;
 		["KIT_COPIED", [_title, _colorString]] call dzn_fnc_gear_editMode_showNotif;
 	};
+	
+	private _copyCargoKit = {
+		params ["_title", "_kit", "_name", "_colorString"];
+		
+		// Format of output
+		private _str = str(_kit);
+		private _formatedString = ""; 
+		private _lastId = 0;
+		for "_i" from 0 to ((count _str) - 1) do {
+			if (_str select [_i,2] in ["[[","[]"]) then {		
+				_formatedString = format[
+						"%1
+	%2"
+					, _formatedString
+					, _str select [_lastId, _i - _lastId]
+				];
+				_lastId = _i;
+			};
+
+			if (_i == ((count _str) - 1)) then {
+				_formatedString = format[
+					"%1
+	%2
+];"
+					, _formatedString
+					, _str select [_lastId, _i - _lastId]
+				];
+			};
+		};
+		
+		_formatedString = format ["cargo_%1 = %2", _name, [_formatedString,4] call BIS_fnc_trimString];
+		copyToClipboard _formatedString;
+		
+		[_colorString, _kit] call _addCargoKitAction;
+		["KIT_COPIED", ["Cargo", _colorString]] call dzn_fnc_gear_editMode_showNotif;
+	};
 
 	if (isNull cursorTarget) then {
 		// Player
@@ -581,10 +617,8 @@ dzn_fnc_gear_editMode_createKit = {
 			["Unit's", cursorTarget call dzn_fnc_gear_getGear, _name, _colorString] call _copyUnitKit;
 			// [_colorString, (cursorTarget call dzn_fnc_gear_getGear)] call _addKitAction;
 		} else {
-			// Vehicle			
-			private _kit = cursorTarget call dzn_fnc_gear_getCargoGear;
-			[_colorString, _kit] call _addCargoKitAction;
-			["KIT_COPIED", ["Cargo", _colorString]] call dzn_fnc_gear_editMode_showNotif;
+			// Vehicle	
+			["Vehicle's", cursorTarget call dzn_fnc_gear_getCargoGear, _name, _colorString] call _copyCargoKit;
 		};	
 	};
 };

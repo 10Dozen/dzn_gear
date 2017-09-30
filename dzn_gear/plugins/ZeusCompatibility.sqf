@@ -70,7 +70,7 @@ dzn_fnc_gear_zc_initialize = {
 		if (!isNull (findDisplay 312) && isNil "dzn_gear_zc_displayEH") then {		
 			dzn_gear_zc_displayEH = (findDisplay 312) displayAddEventHandler [
 				"KeyDown"
-				, "_handled = _this call dzn_fnc_gear_zc_onKeyPress"
+				, "_this call dzn_fnc_gear_zc_onKeyPress"
 			];
 		} else {
 			if (isNull (findDisplay 312) && !isNil "dzn_gear_zc_displayEH") then {
@@ -95,13 +95,17 @@ dzn_fnc_gear_zc_collectKitNames = {
 		(_x getVariable ["dzn_gear", ""]) call dzn_fnc_gear_zc_addToKitList;	
 	} forEach allUnits;
 	
+	{
+		sleep 0.001;
+		(_x getVariable ["dzn_gear_cargo", ""]) call dzn_fnc_gear_zc_addToKitList;
+	} forEach vehicles;
+	
 	dzn_gear_zc_isKitsCollecting = false;
 };
 
 dzn_fnc_gear_zc_onKeyPress = {
 	[] spawn dzn_fnc_gear_zc_collectKitNames;
 	if (dzn_gear_zc_keyIsDown) exitWith {};
-	
 	
 	private["_key","_shift","_crtl","_alt","_handled"];	
 	_key = _this select 1; 
@@ -114,6 +118,8 @@ dzn_fnc_gear_zc_onKeyPress = {
 		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
 		// G button
 		case 34: {
+			_handled = true;
+			
 			dzn_gear_zc_keyIsDown = true;
 			if (_ctrl) then { [] call dzn_fnc_gear_zc_copyKit; };
 			if (_alt) then { [] call dzn_fnc_gear_zc_applyKit; };
@@ -122,18 +128,18 @@ dzn_fnc_gear_zc_onKeyPress = {
 				closeDialog 1;
 				[] spawn dzn_fnc_gear_zc_processMenu;
 			};
-			
-			_handled = true;
 		};
 	};
 
 	[] spawn { sleep 1; dzn_gear_zc_keyIsDown = false; };
+	
 	_handled
 };
 
 dzn_fnc_gear_zc_processMenu = {
-	dzn_gear_zc_unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (dzn_gear_zc_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
+	dzn_gear_zc_unitsSelected = "Units" call dzn_fnc_gear_zc_getSelectedObjects;
+	dzn_gear_zc_vehiclesSelected = "Vehicles" call dzn_fnc_gear_zc_getSelectedObjects;
+	if (dzn_gear_zc_unitsSelected isEqualTo [] && dzn_gear_zc_vehiclesSelected isEqualTo []) exitWith { ["No units/vehicles selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
 	
 	private _kitlist = if (dzn_gear_zc_KitsList isEqualTo []) then { [""] } else { dzn_gear_zc_KitsList };
 	[
@@ -143,9 +149,8 @@ dzn_fnc_gear_zc_processMenu = {
 		, [0, "LABEL", ""]
 		, [0, "BUTTON", "CLOSE", { closeDialog 2; }]
 		
-		, [1, "LABEL", "<t align='right'>Units selected:</t>"]
-		, [1, "LABEL", format ["<t align='left'>%1</t>", count dzn_gear_zc_unitsSelected]]
-		
+		, [1, "LABEL", format ["<t align='center'>Units: %1 / Vehicles: %2</t>", count dzn_gear_zc_unitsSelected, count dzn_gear_zc_vehiclesSelected]]
+	
 		, [2, "LABEL", "KITS"]
 		, [2, "DROPDOWN", _kitlist, _kitlist]
 		, [2, "INPUT"]
@@ -164,13 +169,17 @@ dzn_fnc_gear_zc_processMenu = {
 			
 			if (isNil {call compile _kitname}) exitWith { [format["There is no kit named '%1'", _kitname], "fail"] call dzn_fnc_gear_zc_showNotif; };
 			
-			{ 
+			private _kit = call compile _kitname;
+			private _isCargo = count _kit == 4;
+			private _objects = if (_isCargo) then { dzn_gear_zc_vehiclesSelected } else { dzn_gear_zc_unitsSelected };
+			
+			{
 				if (local _x) then {
-					[_x, _kitname] call dzn_fnc_gear_assignKit; 
+					[_x, _kitname, _isCargo] call dzn_fnc_gear_assignKit; 
 				} else {
-					[_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
+					[_x, _kitname, _isCargo] remoteExec ["dzn_fnc_gear_assignKit", _x];
 				};
-			} forEach dzn_gear_zc_unitsSelected;
+			} forEach _objects;
 			[format ["Kit '%1' was assigned", _kitname], "success"] call dzn_fnc_gear_zc_showNotif;
 		}]
 		
@@ -203,6 +212,107 @@ dzn_fnc_gear_zc_processMenu = {
 		}]
 	] call dzn_fnc_ShowAdvDialog;
 };
+
+
+dzn_fnc_gear_zc_copyKit = {
+	private _unitsSelected = "Units" call dzn_fnc_gear_zc_getSelectedObjects;
+	private _vehiclesSelected = "Vehicles" call dzn_fnc_gear_zc_getSelectedObjects;
+	if (_unitsSelected isEqualTo [] && _vehiclesSelected isEqualTo []) exitWith { ["No units/vehicles selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	if (
+		(count _unitsSelected > 1 || count _vehiclesSelected > 1)
+	) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	
+	if (count _unitsSelected > 0) then {
+		dzn_gear_zc_BufferedKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;
+		dzn_gear_zc_isBufferedKitCargo = false;
+		["Infantry Kit was copied!", "success"] call dzn_fnc_gear_zc_showNotif;
+	} else {
+		dzn_gear_zc_BufferedKit = (_vehiclesSelected select 0) call dzn_fnc_gear_getCargoGear;
+		dzn_gear_zc_isBufferedKitCargo = true;
+		["Cargo Kit was copied!", "success"] call dzn_fnc_gear_zc_showNotif;
+	}
+};
+
+dzn_fnc_gear_zc_getKit = {
+	private _unitsSelected = "Units" call dzn_fnc_gear_zc_getSelectedObjects;
+	private _vehiclesSelected = "Vehicles" call dzn_fnc_gear_zc_getSelectedObjects;
+	
+	if (_unitsSelected isEqualTo [] && _vehiclesSelected isEqualTo []) exitWith { ["No units/vehicles selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	if (
+		(count _unitsSelected > 1 || count _vehiclesSelected > 1)
+	) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	
+	dzn_gear_zc_GetKit = [];
+	private _kitname = "";
+	
+	if (count _unitsSelected > 0) then {
+		dzn_gear_zc_GetKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;
+		_kitname = format [
+			"kit_%1_%2"
+			, [uniform (_unitsSelected select 0), "item"] call dzn_fnc_gear_zc_getDisplayName 
+			, [primaryWeapon (_unitsSelected select 0), "item"] call dzn_fnc_gear_zc_getDisplayName
+		];
+	} else {
+		dzn_gear_zc_GetKit = (_vehiclesSelected select 0) call dzn_fnc_gear_getCargoGear;
+		_kitname = format [
+			"cargo_%1"
+			, [typeOf (_vehiclesSelected select 0) , "vehicle"] call dzn_fnc_gear_zc_getDisplayName
+		];
+	};
+	
+	if (toLower(_kitname) in dzn_gear_zc_KitsList) then { _kitname = format ["%1_%2", _kitname, round(time)]; };
+	call compile format [
+		"%1 = dzn_gear_zc_GetKit; '%1' call dzn_fnc_gear_zc_addToKitList;"
+		, toLower(_kitname)
+	];
+	
+	["Kit were added to list!", "success"] call dzn_fnc_gear_zc_showNotif;
+};
+
+dzn_fnc_gear_zc_applyKit = {
+	if (isNil "dzn_gear_zc_BufferedKit") exitWith { ["No kit has been copied!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	private _unitsSelected = "Units" call dzn_fnc_gear_zc_getSelectedObjects;
+	private _vehiclesSelected = "Vehicles" call dzn_fnc_gear_zc_getSelectedObjects;
+	
+	if (_unitsSelected isEqualTo [] && _vehiclesSelected isEqualTo []) exitWith { ["No units/vehicles selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
+	if ( dzn_gear_zc_isBufferedKitCargo && _vehiclesSelected isEqualTo [] ) exitWith {
+		["Select Vehicle to apply Cargo kit", "fail"] call dzn_fnc_gear_zc_showNotif; 
+	};
+	if ( !dzn_gear_zc_isBufferedKitCargo && _unitsSelected isEqualTo [] ) exitWith {
+		["Select Units to apply kit", "fail"] call dzn_fnc_gear_zc_showNotif; 
+	};
+	
+	if (!dzn_gear_zc_isBufferedKitCargo && !(_unitsSelected isEqualTo [])) then {
+		{
+			if (local _x) then {
+				[_x, dzn_gear_zc_BufferedKit] call dzn_fnc_gear_assignGear; 
+			} else {
+				[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignGear", _x];
+			};
+			["Kit was applied!", "success"] call dzn_fnc_gear_zc_showNotif;
+		} forEach _unitsSelected;	
+	} else {
+		{
+			if (local _x) then {
+				[_x, dzn_gear_zc_BufferedKit] spawn dzn_fnc_gear_assignCargoGear;
+			} else {
+				[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignCargoGear", _x];
+			};		
+		} forEach _vehiclesSelected;
+		["Cargo Kit was applied!", "success"] call dzn_fnc_gear_zc_showNotif;
+	};
+};
+
+dzn_fnc_gear_zc_getSelectedObjects = {
+	private _selected = curatorSelected select 0;
+	
+	if (toLower(_this) == "units") then {
+		_selected select { _x iSkindOf "CAManBase" }
+	} else {
+		_selected select { !(_x iSkindOf "CAManBase") }
+	}	
+};
+
 
 dzn_fnc_gear_zc_addItemsToUnits = {
 	params ["_unit", "_code"];
@@ -278,58 +388,7 @@ dzn_fnc_gear_zc_addWeaponAccessories = {
 	};
 };
 
-dzn_fnc_gear_zc_copyKit = {
-	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	if (count _unitsSelected > 1) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	
-	dzn_gear_zc_BufferedKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;	
-	["Kit were copied!", "success"] call dzn_fnc_gear_zc_showNotif;
-};
 
-dzn_fnc_gear_zc_getKit = {
-	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	if (count _unitsSelected > 1) exitWith { ["Select single unit to copy kit", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	
-	dzn_gear_zc_GetKit = (_unitsSelected select 0) call dzn_fnc_gear_getGear;
-	private _kitname = format ["kit_%1_%2", uniform (_unitsSelected select 0), primaryWeapon (_unitsSelected select 0)];
-	if (_kitname in dzn_gear_zc_KitsList) then { _kitname = format ["%1_%2", _kitname, round(time)]; };
-	
-	call compile format [
-		"%1 = dzn_gear_zc_GetKit; '%1' call dzn_fnc_gear_zc_addToKitList;"
-		, _kitname
-	];
-	["Kit were added to list!", "success"] call dzn_fnc_gear_zc_showNotif;
-};
-
-dzn_fnc_gear_zc_applyKit = {
-	if (isNil "dzn_gear_zc_BufferedKit") exitWith { ["No kit has been copied!", "fail"] call dzn_fnc_gear_zc_showNotif; };
-	private _unitsSelected = call dzn_fnc_gear_zc_getSelectedUnits;
-	if (_unitsSelected isEqualTo []) exitWith { ["No units selected!", "fail"] call dzn_fnc_gear_zc_showNotif; };	
-	
-	{
-		if (local _x) then {
-			[_x, dzn_gear_zc_BufferedKit] call dzn_fnc_gear_assignGear; 
-		} else {
-			[_x, dzn_gear_zc_BufferedKit] remoteExec ["dzn_fnc_gear_assignGear", _x];
-		};
-	} forEach _unitsSelected;
-	
-	["Kit were applied!", "success"] call dzn_fnc_gear_zc_showNotif;
-};
-
-dzn_fnc_gear_zc_getSelectedUnits = {
-	private _unitsSelected = curatorSelected select 0;
-	private _units = [];
-	{
-		if (_x isKindOf "CAManBase") then {
-			_units pushBack _x
-		};
-	} forEach _unitsSelected;
-	
-	_units
-};
 
 dzn_fnc_gear_zc_showNotif = {
 	// [@Text, @Success/Fail/Info] call dzn_fnc_gear_zc_showNotif
@@ -357,6 +416,34 @@ dzn_fnc_gear_zc_addToKitList = {
 	};
 };
 
+dzn_fnc_gear_zc_getDisplayName = {
+	params ["_class", "_type"];
+	
+	private _line = if (toLower(_type) == "item") then {
+		_class call dzn_fnc_getItemDisplayName
+	} else {
+		_class call dzn_fnc_getVehicleDisplayName
+	};
+	
+	{
+		_line = _line splitString (_x select 0) joinString (_x select 1);
+	} forEach [
+		["-", ""]
+		, ["(", ""]
+		, [")", ""]
+		, ["[", ""]
+		, ["]", ""]
+		, [".", ""]
+		, [",", ""]
+		, ["/", ""]
+		, ["""", ""]
+		, ["'", ""]
+		, ["+", "_"]
+		, [" ", "_"]
+	];
+	
+	_line
+};
 
 // ********************** Init ************************
 [] spawn dzn_fnc_gear_zc_initialize;
