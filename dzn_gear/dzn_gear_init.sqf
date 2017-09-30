@@ -1,5 +1,5 @@
 // **************************
-// 	DZN GEAR v2.7
+// 	DZN GEAR v2.8
 //
 //	Initialized when:
 //	{ !isNil "dzn_gear_initDone" }
