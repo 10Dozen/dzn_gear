@@ -200,7 +200,11 @@ dzn_fnc_gear_zc_processMenu = {
 		, [7, "BUTTON", "ARSENAL", { 
 			if (count dzn_gear_zc_unitsSelected == 1) then {
 				closeDialog 2;
-				["Open",[true,objnull, dzn_gear_zc_unitsSelected select 0]] call bis_fnc_arsenal;
+				if !(dzn_gear_useACEArsenal) then {
+					["Open",[true,objnull, dzn_gear_zc_unitsSelected select 0]] call bis_fnc_arsenal;
+				} else {
+					[dzn_gear_zc_unitsSelected select 0,dzn_gear_zc_unitsSelected select 0,true] call ace_arsenal_fnc_openBox;
+				};
 			} else {
 				["Select single unit to open Arsenal", "fail"] call dzn_fnc_gear_zc_showNotif;
 			};
