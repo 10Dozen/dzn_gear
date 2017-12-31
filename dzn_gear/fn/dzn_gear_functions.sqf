@@ -424,11 +424,7 @@ dzn_fnc_gear_nullifyUnusedVars = {
 		
 		, "dzn_fnc_gear_editMode_showAsStructuredList"
 		, "dzn_fnc_gear_editMode_getItemName"
-		, "dzn_fnc_gear_editMode_getMagazineDisplayName"
-		, "dzn_fnc_gear_editMode_getEquipDisplayName"
-		, "dzn_fnc_gear_editMode_getBackpackDisplayName"
 		, "dzn_fnc_gear_editMode_getVehicleName"
-		, "dzn_fnc_gear_editMode_convertInventoryToLine"
 		, "dzn_fnc_gear_editMode_showGearTotals"
 		, "dzn_fnc_gear_editMode_showNotif"
 		, "dzn_fnc_gear_editMode_initialize"		
