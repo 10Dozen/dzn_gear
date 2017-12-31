@@ -28,7 +28,7 @@ dzn_gear_gnotes_showSquadGear			= true; // Gear of player group members
 	Select unit and press 'G' key to invoke menu
 */
 dzn_gear_enableZeusCompatibility 		= true;
-
+dzn_gear_useACEArsenal			= true;
 
 
 
@@ -36,6 +36,10 @@ dzn_gear_enableZeusCompatibility 		= true;
  *		EDIT MODE
  *		SETTINGS
  */
+ 
+// Use ACE_Arsenal in edit mode
+dzn_gear_UseACEArsenalOnEdit = true;
+ 
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
  *		ARRAY -- for item classnames only

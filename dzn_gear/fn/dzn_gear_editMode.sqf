@@ -84,7 +84,11 @@ dzn_fnc_gear_editMode_onKeyPress = {
 				[] spawn {
 					["#(argb,8,8,3)color(0,0,0,1)",false,nil,0.1,[0,0.5]] spawn bis_fnc_textTiles;
 					sleep 0.3; 
-					["Open", true] call BIS_fnc_arsenal;
+					if (dzn_gear_UseACEArsenalOnEdit) then {
+						[player, player, true] call ace_arsenal_fnc_openBox;
+					} else {
+						["Open", true] call BIS_fnc_arsenal;
+					};
 				}; 
 			};
 			SET_HANDLED;
@@ -208,7 +212,7 @@ dzn_fnc_gear_editMode_onKeyPress = {
 		};
 	};
 	
-	[] spawn { sleep 1; dzn_gear_editMode_keyIsDown = false; };
+	[] spawn { uisleep 0.05; dzn_gear_editMode_keyIsDown = false; };
 	_handled
 };
 
@@ -281,6 +285,10 @@ dzn_fnc_gear_editMode_getEquipItems = {
 			copyToClipboard str(_mode call _getEquipType);
 		};
 	};
+	
+	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
+		[_text, "TOP", [0,0,0,.8], 5] call dzn_fnc_ShowMessage;
+	};	
 	
 	if (isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
 		hint parseText  _text;
@@ -370,6 +378,11 @@ dzn_fnc_gear_editMode_getCurrentWeapon = {
 		};
 	};
 	
+	
+	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
+		[_text, "TOP", [0,0,0,.8], 5] call dzn_fnc_ShowMessage;
+	};	
+	
 	if (isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
 		hint parseText _text;
 	} else {		
@@ -404,7 +417,6 @@ dzn_fnc_gear_editMode_getCurrentIdentity = {
 
 
 dzn_fnc_gear_editMode_showKitGetter = {
-
 	[
 		[0,"HEADER","CREATE KIT"]		
 		, [1, "LABEL", "<t size='0.8'>Kit name should be in format: kit_usmc_ar, where ""usmc"" is a key to faction and ""ar"" is a role."]		
@@ -794,36 +806,23 @@ dzn_fnc_gear_editMode_showAsStructuredList = {
 
 dzn_fnc_gear_editMode_getItemName = {
 	// @Classname call dzn_fnc_gear_editMode_getItemName
-	private["_name"];
-	
-	_name = _this call dzn_fnc_gear_editMode_getEquipDisplayName;
-	if (_name == "") then {
-		_name = _this call dzn_fnc_gear_editMode_getMagazineDisplayName;
-		if (_name == "") then {
-			_name = _this call dzn_fnc_gear_editMode_getBackpackDisplayName;
+	switch (true) do {
+		case ( isText (configFile >> "CfgWeapons" >> _this >> "displayName") ): {
+			getText(configFile >> "CfgWeapons" >> _this >> "displayName")
 		};
-	};
-
-	_name	
-};
-
-dzn_fnc_gear_editMode_getMagazineDisplayName = {
-	// @Name = @Classname call dzn_fnc_gear_editMode_getMagazineDisplayName
-	getText(configFile >>  "cfgMagazines" >> _this >> "displayName")
-};
-
-dzn_fnc_gear_editMode_getEquipDisplayName = {
-	// @Name = @Classname call dzn_fnc_gear_editMode_getEquipDisplayName
-	if (isText (configFile >> "cfgWeapons" >> _this >> "displayName")) then {
-		getText(configFile >> "cfgWeapons" >> _this >> "displayName")
-	} else {
-		getText(configfile >> "CfgGlasses" >> _this >> "displayName")
+		case ( isText (configFile >> "CfgMagazines" >> _this >> "displayName") ): {
+			getText(configFile >> "CfgMagazines" >> _this >> "displayName")
+		};
+		case ( isText (configFile >> "CfgVehicles" >> _this >> "displayName") ): {
+			getText(configFile >> "CfgVehicles" >> _this >> "displayName")
+		};
+		case ( isText (configFile >> "CfgGlasses" >> _this >> "displayName") ): {
+			getText(configFile >> "CfgGlasses" >> _this >> "displayName")
+		};
+		default {
+			""
+		};
 	}
-};
-
-dzn_fnc_gear_editMode_getBackpackDisplayName = {
-	// @Name = @Classname call dzn_fnc_gear_editMode_getBackpackDisplayName
-	getText(configFile >> "cfgVehicles" >> _this >> "displayName");
 };
 
 dzn_fnc_gear_editMode_getVehicleName = {
@@ -831,101 +830,77 @@ dzn_fnc_gear_editMode_getVehicleName = {
 	getText(configFile >>  "CfgVehicles" >> _this >> "displayName")
 };
 
-
-
-
-
-dzn_fnc_gear_editMode_convertInventoryToLine = {
-	// @InventoryArray call dzn_fnc_gear_editMode_convertInventoryToLine
-	private["_line","_cat","_subCat"];
-	#define	linePush(X)		if (_x != "") then {_line pushBack X;};
-	_line = [];
-	{
-		_cat = _x;
-		if (typename _cat == "ARRAY") then {
-			{
-				_subCat = _x;
-				if (typename _subCat == "ARRAY") then {
-					{
-						linePush(_x)
-					} forEach _subCat;
-				} else {
-					linePush(_x)
-				};
-			} forEach _cat;
-		} else {
-			linePush(_x)
-		};
-	} forEach _this;
-	
-	_line
-};
-
 dzn_fnc_gear_editMode_showGearTotals = {
-	// @ArrayOfTotals call dzn_fnc_gear_editMode_showGearTotals	
-	private["_inv","_items","_stringsToShow","_itemName","_headlineItems","_haedlines"];
+	// @ArrayOfTotals call dzn_fnc_gear_editMode_showGearTotals
+	private _headlineItems = [
+		uniform player
+		, vest player
+		, backpack player
+		, headgear player
+		, goggles player
+		, primaryWeapon player
+		, secondaryWeapon player
+		, handgunWeapon player
+	] apply { _x call dzn_fnc_gear_editMode_getItemName };
 	
-	_inv = player call BIS_fnc_saveInventory;
-	_items = (_inv call dzn_fnc_gear_editMode_convertInventoryToLine) call BIS_fnc_consolidateArray;
-	
-	_stringsToShow = [
-		parseText "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
-	];
-	
-	_headlineItems = [
-		(_inv select 0 select 0) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 1 select 0) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 2 select 0) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 3) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 4) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 6 select 0) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 7 select 0) call dzn_fnc_gear_editMode_getItemName
-		, (_inv select 8 select 0) call dzn_fnc_gear_editMode_getItemName		
-	];
-	
-	_haedlines = [
-		["Uniform:", 	'#3F738F']
-		,["Vest:", 		'#3F738F']
-		,["Backpack:", 	'#3F738F']
-		,["Headgear:", 	'#3F738F']
-		,["Goggles:", 	'#3F738F']
-		,["Primary:", 	'#059CED']
-		,["Secondary:", 	'#059CED']
-		,["Handgun:", 	'#059CED']
-	];	
-	
+	private _wpnItems = [];
+	private _wpnItemTemplate = "<t color='#AAAAAA' align='left' size='0.8'>[%1] %2</t>";
 	{
-		_stringsToShow = _stringsToShow + [
-			parseText (format [
-				"<t color='%2' align='left' size='0.8'>%1</t><t align='right' size='0.8'>%3</t>"
-				, toUpper(_x select 0)
-				, _x select 1
-				, if ((_headlineItems select _forEachIndex) == "") then {"-no-"} else {_headlineItems select _forEachIndex}
-			])		
-		];		
-	} forEach _haedlines;	
-	
-	{
+		private _arr = _x select 0;
+		private _label = _x select 1;
 		
-		_itemName = (_x select 0) call dzn_fnc_gear_editMode_getItemName;
-		if !(_itemName in _headlineItems) then {
-			_stringsToShow = _stringsToShow + [
-				if (_x select 1 > 1) then {
-					parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>x%1 %2</t>", _x select 1, _itemName])
-				} else {
-					parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>%1</t>", _itemName])
-				}
-			];
-		};		
-	} forEach _items;
-
+		_wpnItems = _wpnItems + (
+			_arr apply {
+				private _name = _x call dzn_fnc_gear_editMode_getItemName;
+				if (_name != "") then {
+					parseText (format [_wpnItemTemplate, _label, _name])
+				} else { "" }
+			}
+		);	
+	} forEach [
+		[ (primaryWeaponItems player), "Primary" ]
+		,[ (secondaryWeaponItems player), "Secondary" ]
+		,[ (handgunItems player), "Handgun" ]
+	];
+	
+	private _itemsAndMagazines = (((
+		(assignedItems player)
+		+ (itemsWithMagazines player) 
+	) call bis_fnc_consolidateArray) apply {
+		private _name = (_x select 0) call dzn_fnc_gear_editMode_getItemName;
+		private _line = "";
+		if ((_x select 0) != "") then {
+			_line = if (_x select 1 > 1) then {
+				parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>x%1 %2</t>", _x select 1, _name])
+			} else {
+				parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>%1</t>", _name])
+			}
+		};
+		
+		_line
+	});
+	
+	#define	IFNAME(X)	if ((_headlineItems select X) == "") then { "-no-" } else { _headlineItems select X }	
+	private _stringsToShow = [
+		parseText "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
+		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Uniform:</t><t align='right' size='0.8'>%1</t>", IFNAME(0) ]
+		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Vest:</t><t align='right' size='0.8'>%1</t>", IFNAME(1)]
+		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Backpack:</t><t align='right' size='0.8'>%1</t>", IFNAME(2)]
+		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Headgear:</t><t align='right' size='0.8'>%1</t>", IFNAME(3)]
+		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Goggles:</t><t align='right' size='0.8'>%1</t>", IFNAME(4)]
+		, parseText format ["<t color='#059CED' align='left' size='0.8'>Primary:</t><t align='right' size='0.8'>%1</t>", IFNAME(5)]
+		, parseText format ["<t color='#059CED' align='left' size='0.8'>Secondary:</t><t align='right' size='0.8'>%1</t>", IFNAME(6)]
+		, parseText format ["<t color='#059CED' align='left' size='0.8'>Handgun:</t><t align='right' size='0.8'>%1</t>", IFNAME(7)]
+	];
+	
 	[
-		_stringsToShow
+		_stringsToShow + _wpnItems + _itemsAndMagazines - [""]
 		, [35.2,-7.1, 35, 0.03]
 		, dzn_gear_GearTotalsBG_RGBA
 		, dzn_gear_editMode_arsenalTimerPause
 	] call dzn_fnc_ShowMessage;
 };
+
 
 // *****************************
 //	Utilities
@@ -1010,10 +985,37 @@ dzn_fnc_gear_editMode_initialize = {
 	waitUntil { time > 0 };
 	nil call dzn_fnc_ShowMessage;
 	
-	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
+	// if (dzn_gear_UseACEArsenalOnEdit) exitWith {};
+	
+	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
+		
+	Y = 0; Z = 0;
+		dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
+			if !(isNil "ace_arsenal_currentAction") then {
+				// ACE arsenal opened				
+				if (dzn_gear_editMode_canCheck_ArsenalDiff) then {
+					dzn_gear_editMode_canCheck_ArsenalDiff = false;
+					[] spawn dzn_gear_editMode_waitToCheck_ArsenalDiff;
+					[] spawn dzn_fnc_gear_editMode_showGearTotals;
+				};
+				
+				if (dzn_gear_editMode_controlsOverArsenalEH < 0) then {
+					with uiNamespace do {
+						(findDisplay 1127001) displayAddEventHandler [
+							"KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"						
+						];
+					};
+				};
+			} else {
+				// ACE arsenal closed				
+			};
+		}];
+	};
+	
+	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };	
 	
 	dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
-		if !(isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
+		if !(isNull ( uinamespace getvariable "RSCDisplayArsenal")) then {
 			if !(dzn_gear_editMode_arsenalOpened) then {
 				dzn_gear_editMode_arsenalOpened = true;
 			};
