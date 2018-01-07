@@ -984,12 +984,8 @@ dzn_fnc_gear_editMode_initialize = {
 	if (!dzn_gear_ShowGearTotals || isNil "dzn_fnc_ShowMessage") exitWith {};
 	waitUntil { time > 0 };
 	nil call dzn_fnc_ShowMessage;
-	
-	// if (dzn_gear_UseACEArsenalOnEdit) exitWith {};
-	
+
 	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
-		
-	Y = 0; Z = 0;
 		dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
 			if !(isNil "ace_arsenal_currentAction") then {
 				// ACE arsenal opened				
@@ -1005,6 +1001,7 @@ dzn_fnc_gear_editMode_initialize = {
 							"KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"						
 						];
 					};
+					
 				};
 			} else {
 				// ACE arsenal closed				
