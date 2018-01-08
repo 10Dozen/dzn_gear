@@ -7,6 +7,8 @@
 //	Server-side initialized when:
 //	{ !isNil "dzn_gear_serverInitDone" }
 //
+dzn_gear_version = "v2.8ace";
+
 // *************************
 //	SETTINGS
 // **************************
