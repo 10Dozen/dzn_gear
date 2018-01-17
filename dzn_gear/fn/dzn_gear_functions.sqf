@@ -165,13 +165,13 @@ dzn_fnc_gear_assignGear = {
 dzn_fnc_gear_assignIdentity = {
 	params["_unit","_identity",["_mode","apply"]];
 	
-	private _face = getItem( _identity select 1 );
+	private _face = getItem( (_identity select 1) );
 	if (_face != "") then { _unit setFace _face; };
 	
-	private _voice = getItem( _identity select 2 );
+	private _voice = getItem( (_identity select 2) );
 	if (_voice != "") then { _unit setSpeaker _voice; };
 	
-	private _name = getItem( _identity select 3 );
+	private _name = getItem( (_identity select 3) );
 	if (_name != "") then {
 		if (count (_name splitString " ") < 2) then { _name = format ["%1 %1", _name]; };		
 		_unit setName [
