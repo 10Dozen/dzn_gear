@@ -997,11 +997,12 @@ dzn_fnc_gear_editMode_initialize = {
 				
 				if (dzn_gear_editMode_controlsOverArsenalEH < 0) then {
 					with uiNamespace do {
-						(findDisplay 1127001) displayAddEventHandler [
+						private _handlerId = (findDisplay 1127001) displayAddEventHandler [
 							"KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"						
 						];
+						
+						missionNamespace setVariable ["dzn_gear_editMode_controlsOverArsenalEH", _handlerId];
 					};
-					
 				};
 			} else {
 				// ACE arsenal closed				
