@@ -62,7 +62,7 @@ dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS_L]';
 
 
 // Edit Mode Gear Totals dialog (enabled only when dzn_commonFunctions is used)
-dzn_gear_ShowGearTotals			= false;
+dzn_gear_ShowGearTotals			= true;
 dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
 
 // Replace RHS's AR-15 default Mk317 STANAG magazines with Bohemia's STANAG (compatible with all modes)
