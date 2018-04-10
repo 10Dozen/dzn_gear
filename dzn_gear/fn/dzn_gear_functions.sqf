@@ -1,523 +1,222 @@
-// **************************
-// FUNCTIONS
-// **************************
-dzn_fnc_gear_assignKit = {
-	/*
-		Resolve given kit and call function to assign existing kit to unit.	
-		EXAMPLE:	[ @unit, @gearSetName, @isBox ] spawn dzn_fnc_gear_assignKit;
-		INPUT:
-			0: OBJECT		- Unit for which gear will be set
-			1: ARRAY or STRING	- List of Kits or single kit for assignment: ["kit_r","kit_ar"] or "kit_ar"
-			2: BOOLEAN		- Is given unit a box?
-		OUTPUT: NULL
-	*/
-	params ["_unit","_kits",["_isCargo", false]];
-	private ["_kitName","_kit"];
+/*
+	magazinesAmmo player 
 	
-	_kitName = if (typename _kits == "ARRAY") then { selectRandom _kits } else { _kits };
+[["hlc_20rnd_762x51_T_G3",20]
+,["CUP_20Rnd_762x51_B_SCAR",20]
+,["CUP_20Rnd_762x51_B_SCAR",20]
+,["hlc_20rnd_762x51_T_G3",20]
+,["hlc_20rnd_762x51_T_G3",20]
+,["hlc_20rnd_762x51_T_G3",20]
+,["CUP_20Rnd_762x51_B_SCAR",20]
+,["CUP_20Rnd_762x51_B_SCAR",20]]
+
+
+
+	magazinesAmmoFull player  
+
+0: Magazine class name 
+1: Magazine current ammo count 
+2: Magazine state (true - loaded, false - not loaded) 
+3: Magazine type (-1 - n/a, 0 - grenade, 1 - primary weapon mag, 2 - handgun mag, 4 - secondary weapon mag, 65536 - vehicle mag) 
+4: Magazine location ("Vest", "Uniform", "Backpack", "") or corresponding currentMuzzle
+
+
+[["hlc_20rnd_762x51_T_G3",20,false,-1,"Vest"]
+,["CUP_20Rnd_762x51_B_SCAR",20,false,-1,"Vest"]
+,["CUP_20Rnd_762x51_B_SCAR",20,false,-1,"Vest"]
+,["hlc_20rnd_762x51_T_G3",20,false,-1,"Vest"]
+,["hlc_20rnd_762x51_T_G3",20,false,-1,"Backpack"]
+,["hlc_20rnd_762x51_T_G3",20,false,-1,"Backpack"]
+,["CUP_20Rnd_762x51_B_SCAR",20,false,-1,"Backpack"]
+,["CUP_20Rnd_762x51_B_SCAR",20,false,-1,"Backpack"]
+,["CUP_20Rnd_762x51_B_SCAR",20,true,1,"CUP_arifle_Mk17_STD_SFG"]
+,["16Rnd_9x21_Mag",17,true,2,"hgun_P07_F"]]
+
+
+
+	getArray (configFile >> "CfgWeapons" >> primaryWeapon player >> "magazines")
+
+["CUP_20Rnd_762x51_B_SCAR"
+,"CUP_20Rnd_TE1_Yellow_Tracer_762x51_SCAR"
+,"CUP_20Rnd_TE1_Red_Tracer_762x51_SCAR"
+,"CUP_20Rnd_TE1_Green_Tracer_762x51_SCAR"
+,"CUP_20Rnd_TE1_White_Tracer_762x51_SCAR"]
+
+
+	unitName removeMagazines magazineName
+
+	unitName addMagazine [magazineName, ammoCount]
+
+	reload player
+*/
+
+player addAction ["Mixed Repack (Primary Weapon)", { call dzn_MMR_fnc_Action }];
+player addAction ["Test case: G3", {
+	removeAllWeapons player;
+	(magazines player) apply { player removeMagazines (_x) };
 	
-	if (isNil {call compile _kitName}) exitWith {
-		diag_log format ["There is no kit with name %1", (_kitName)];
-		systemChat format ["There is no kit with name %1", (_kitName)];
-	};
+	player addWeapon "hlc_rifle_g3a3";
+	player addMagazines ["hlc_20rnd_762x51_b_G3", 2];
+	player addMagazines ["CUP_20Rnd_TE1_Green_Tracer_762x51_SCAR", 3];
+	player addMagazines ["CUP_20Rnd_762x51_B_SCAR", 3];
 	
-	_kit = call compile _kitName;
-	if (typename (_kit select 0) != "ARRAY") exitWith { 		
-		[_unit, _kit] call dzn_fnc_gear_assignKit;
-	};
+	hint "G3 ADDED";
+}];
+player addAction ["Test case: Mk17", {
+	removeAllWeapons player;
+	(magazines player) apply { player removeMagazines (_x) };
 	
-	_unit setVariable ["dzn_gear", _kitName, true];	
+	player addWeapon "CUP_arifle_Mk17_STD_SFG";
+	player addMagazines ["CUP_20Rnd_762x51_B_SCAR", 2];
+	player addMagazines ["hlc_20rnd_762x51_T_G3", 3];
+	player addMagazines ["hlc_20rnd_762x51_b_G3", 3];
 	
-	if (_isCargo) then {
-		[_unit, _kit] call dzn_fnc_gear_assignCargoGear;
+	hint "Mk17 ADDED";
+}];
+
+/*
+[["hlc_rifle_g3a3","CUP_arifle_Mk17_STD_SFG"],[1,1]]
+[["hlc_20rnd_762x51_b_G3","hlc_20rnd_762x51_T_G3","CUP_20Rnd_TE1_Green_Tracer_762x51_SCAR","CUP_20Rnd_762x51_B_SCAR"],[7,4,6,1]]
+*/
+
+
+dzn_MMR_RepackLoggingInfo = [];
+
+dzn_MMR_Map = [
+	["CUP_20Rnd_762x51_B_SCAR", "hlc_20rnd_762x51_b_G3","Some_Other_Class"]
+	,["CUP_20Rnd_TE1_Green_Tracer_762x51_SCAR", "hlc_20rnd_762x51_T_G3","Some_Other_Class"]
+	,["7.62x39mm AK", 				"30Rnd_762x39_Mag_F", "CUP_30Rnd_762x39_AK47_M", "CUP_30Rnd_Sa58_M", "rhs_30Rnd_762x39mm"]
+	,["7.62x39mm Green Tracer AK", 		"30Rnd_762x39_Mag_Tracer_Green_F", "CUP_30Rnd_762x39_AK47_M", "CUP_30Rnd_Sa58_M_TracerG", "rhs_30Rnd_762x39mm_tracer"]
+	,["7.62x39mm Green Reload Tracer AK", 	"30Rnd_762x39_Mag_Green_F", "CUP_30Rnd_762x39_AK47_M", "CUP_30Rnd_Sa58_M_TracerG", "rhs_30Rnd_762x39mm_tracer"]
+	,["7.62x39mm Yellow Tracer AK", 		"30Rnd_762x39_Mag_Tracer_F", "CUP_30Rnd_762x39_AK47_M", "CUP_30Rnd_Sa58_M_TracerY", "rhs_30Rnd_762x39mm_tracer"]
+	,["7.62x39mm Red Tracer AK", 		"30Rnd_762x39_Mag_Tracer_F", "CUP_30Rnd_762x39_AK47_M", "CUP_30Rnd_Sa58_M_TracerR", "rhs_30Rnd_762x39mm_tracer"]
+];
+
+dzn_MMR_fnc_GetMapped = {
+	/* @MappedMagazinesList = @Magazine call dzn_MMR_GetMapped */
+	private _mapped = dzn_MMR_Map select { _this in _x };
+	
+	if (count _mapped > 0) then {
+		_mapped select 0
 	} else {
-		[_unit, _kit] call dzn_fnc_gear_assignGear;
-	};
+		[]
+	}
 };
 
-// ******************************
-//    SET GEAR functions 
-// ******************************
-	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
-	#define cItem(IDX)				(_ctg select IDX)
-	#define IsItem(ITEM)				(typename (ITEM) == "STRING")
-	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {selectRandom ITEM}
+dzn_MMR_fnc_Convert2 = {
+	params["_mag","_convertedMag"];
 	
-dzn_fnc_gear_assignGear = {
-	// [@Unit, @GearSet] spawn dzn_fnc_gear_assignGear;
-	private["_ctg","_unit","_gear","_magClasses","_r","_act","_item"];
-	_unit = _this select 0;
-	_gear = _this select 1;	
-	_ctg = [];
-	_unit setVariable ["BIS_enableRandomization", false];
+	private _mags = (magazinesAmmoFull player) select { _mag in _x };
+	private _totalAmmo = 0;
+	{ _totalAmmo = _totalAmmo + (_x select 1); } forEach _mags;
 	
-	enableSentences false;
-	
-	// Clear Gear
-	removeUniform _unit;
-	removeVest _unit;
-	removeBackpack _unit;
-	removeHeadgear _unit;
-	removeGoggles _unit;
-	removeAllAssignedItems _unit;
-	removeAllWeapons _unit;
-	waitUntil { (items _unit) isEqualTo [] };	
+	player removeMagazines _mag;
+};
 
-	// ADD WEAPONS
-	// Backpack to add first mag for all weapons
-	_unit addBackpack dzn_gear_defaultBackpack;
-	_magClasses = [];
+
+dzn_MMR_fnc_Convert = {
+	params["_mag","_convertedMag"];
 	
-	for "_i" from 1 to 3 do {
-		SET_CAT(_i);		
-		_r = if IsItem(cItem(1)) then { -1 } else { round(random((count cItem(1) - 1))) };
-		
-		if (_r == -1) then { 
-			_unit addMagazine cItem(2);
-			_unit addWeaponGlobal cItem(1);
-			_magClasses pushBack cItem(2);
-		} else {			
-			_unit addMagazine (cItem(2) select _r);
-			_unit addWeaponGlobal (cItem(1) select _r);
-			_magClasses pushBack (cItem(2) select _r);
-		};
-		
-		{
-			call compile format [
-				"_unit %1 '%2';"
-				, switch (_i) do {
-					case 1: { "addPrimaryWeaponItem" };
-					case 2: { "addSecondaryWeaponItem" };
-					case 3: { "addHandgunItem" };
-				}
-				, getItem(_x)
-			];
-		} forEach cItem(3);
-	};	
-	removeBackpack _unit;
+	private _mags = (magazinesAmmoFull player) select { _mag in _x };
+	private _magCount = count _mags;
+	private _convertedMagCount = 0;
 	
-	// ADD EQUP
-	SET_CAT(0);
+	player removeMagazines _mag;
+	
 	{
-		call compile format [
-			"_unit %1 '%2'"
-			, _x
-			, getItem(cItem(_forEachIndex + 1))
-		];
-	} forEach ["forceAddUniform","addVest","addBackpackGlobal","addHeadgear","addGoggles"];
+		private _magAmmo = _x select 1;
+		private _convertMagAmmo = getNumber (configFile >> "CfgMagazines" >> _convertedMag>> "count");
+		private _count = ceil (_magAmmo / _convertMagAmmo);
+		_convertedMagCount = _convertedMagCount + _count;
 		
-	// ADD ASSIGNED ITEMS
-	SET_CAT(4);
-	for "_i" from 1 to ((count _ctg) - 1) do {
-		_unit addWeapon (if IsItem(cItem(_i)) then {cItem(_i)} else { selectRandom cItem(_i) });	
-	};
-	
-	// ADD GEAR
-	{		
-		SET_CAT(_forEachIndex + 5);
-		_act = _x;
-		{
-			// ["Aid", 2]
-			_item = "";
-			if ((_x select 0) in ["PRIMARY MAG","SECONDARY MAG","HANDGUN MAG"]) then {
-				_item = switch (_x select 0) do {
-					case "PRIMARY MAG": { _magClasses select 0 };
-					case "SECONDARY MAG": { _magClasses select 1 };
-					case "HANDGUN MAG": { _magClasses select 2 };
-				};				
-			} else {			
-				_item = getItem(_x select 0);
-			};			
-			
-			call compile format [
-				"for '_j' from 1 to (_x select 1) do { _unit %1 '%2'; }"
-				, _act
-				, _item
-			];			
-		} forEach cItem(1);
-	} forEach ["addItemToUniform","addItemToVest","addItemToBackpack"];
-	
-	if (dzn_gear_enableGearNotes) then {
-		private["_noteKit"];
-		_noteKit = _unit call dzn_fnc_gear_getGear;
-		
-		_unit setVariable [
-			"dzn_gear_shortNote" 
-			, [_unit, _noteKit] call dzn_fnc_gear_gnotes_getShortGearNote
-			, true
-		];
-		_unit setVariable [
-			"dzn_gear_fullNote"
-			, [_unit, _noteKit] call dzn_fnc_gear_gnotes_getFullGearNote
-			, true
-		];
-	};
-	_unit setVariable ["dzn_gear_done", true, true];
-	
-	// ADD IDENTITY
-	if (!isNil {_gear select 8}) then {
-		[_unit, _gear select 8, "init"] call dzn_fnc_gear_assignIdentity;
-	};
-	
-	[] spawn { sleep 3; enableSentences true; };
-};
-
-dzn_fnc_gear_assignIdentity = {
-	params["_unit","_identity",["_mode","apply"]];
-	
-	private _face = getItem( (_identity select 1) );
-	if (_face != "") then { _unit setFace _face; };
-	
-	private _voice = getItem( (_identity select 2) );
-	if (_voice != "") then { _unit setSpeaker _voice; };
-	
-	private _name = getItem( (_identity select 3) );
-	if (_name != "") then {
-		if (count (_name splitString " ") < 2) then { _name = format ["%1 %1", _name]; };		
-		_unit setName [
-			_name splitString " " joinString " "
-			, (_name splitString " ") select 0
-			, (_name splitString " ") select 1
-		];
-	};
-	
-	if (toLower(_mode) == "init") then {
-		_unit setVariable ["dzn_gear_identity", ["Identity", _face, _voice, _name], true];		
-	} else {
-		_unit setVariable ["dzn_gear_identitySet", true];
-	};	
-};
-
-dzn_fnc_gear_assignCargoGear = {
-	/*
-		Change gear of given box or vehicle with given gear set	
-		EXAMPLE:	[ @Unit, @GearSet ] spawn dzn_fnc_gear_assignCargoGear;
-		INPUT:
-			0: OBJECT	- Vehicle or box for which gear will be set
-			1: ARRAY	- Set of gear
-		OUTPUT: NULL
-	*/
-
-	private["_box","_category"];
-	_box = _this select 0;
-	
-	// Clear boxes
-	clearWeaponCargoGlobal _box;
-	clearMagazineCargoGlobal _box;
-	clearBackpackCargoGlobal _box;
-	clearItemCargoGlobal _box;
-	
-	// Add Weapons
-	_category = (_this select 1) select 0;
-	{_box addWeaponCargoGlobal _x;} forEach _category;
-	
-	// Add Magazines
-	_category = (_this select 1) select 1;
-	{_box addMagazineCargoGlobal _x;} forEach _category;
-	
-	// Add Items
-	_category = (_this select 1) select 2;
-	{_box addItemCargoGlobal _x;} forEach _category;
-	
-	// Add Backpacks
-	_category = (_this select 1) select 3;
-	{_box addBackpackCargoGlobal _x;} forEach _category;
-	
-	_box setVariable ["dzn_gear_done", true, true];
-};
-
-
-// ******************************
-//    GET GEAR functions 
-// ******************************
-
-dzn_fnc_gear_getGear = {
-	// @Kit = @Unit call dzn_fnc_gear_getGear
-	// Return:	Kit, Formatted Kit in clipboard
-	private["_g","_kit","_str","_formatedString","_lastId","_i"];
-
-	#define NG			_g = []
-	#define AddGear(ACT)	_g pushBack (ACT)
-	#define AddToKit		_kit pushBack _g
-	#define WeaponMag(X)	if ((X) isEqualTo []) then { "" } else { X select 0 }
-	_kit = [];
-	
-	NG;
-	{AddGear(_x);} forEach [
-		"<EQUIPEMENT >>  "
-		,uniform _this
-		,vest _this
-		,backpack _this
-		,headgear _this
-		,goggles _this
-	];	
-	AddToKit;
-	
-	// Primary
-	NG;
-	_priMag = WeaponMag(primaryWeaponMagazine _this);
-	{AddGear(_x);} forEach [
-		"<PRIMARY WEAPON >>  "
-		,primaryWeapon _this
-		,_priMag
-		,primaryWeaponItems  _this
-	];
-	AddToKit;
-
-	// Secondary
-	NG;
-	_secMag = WeaponMag(secondaryWeaponMagazine _this);
-	{AddGear(_x)} forEach [
-		"<LAUNCHER WEAPON >>  "
-		,secondaryWeapon _this
-		,_secMag
-		,secondaryWeaponItems _this
-	];
-	AddToKit;
-	
-	// Handgun
-	NG;
-	_handMag = WeaponMag(handgunMagazine _this);
-	{AddGear(_x)} forEach [
-		"<HANDGUN WEAPON >>  "
-		,handgunWeapon _this
-		,_handMag
-		,handgunItems _this
-	];
-	AddToKit;
-	
-	// Assigned Items
-	_g = ["<ASSIGNED ITEMS >>  "] + assignedItems _this;
-	AddToKit;
-	
-	// Equiped Items and magazines
-	{
-		NG;
-		_items = _x call BIS_fnc_consolidateArray;
-		{
-			switch (_x select 0) do {
-				case _priMag: 	{ _x set [0, "PRIMARY MAG"] };
-				case _secMag: 	{ _x set [0, "SECONDARY MAG"] };
-				case _handMag: 	{ _x set [0, "HANDGUN MAG"] };		
-			};		
-		} forEach _items;
-		
-		{ AddGear(_x) } forEach [
-			switch (_forEachIndex) do {
-				case 0: {"<UNIFORM ITEMS >> "};
-				case 1: {"<VEST ITEMS >> "};
-				case 2: {"<BACKPACK ITEMS >> "};
-			}			
-			,_items
-		];
-		
-		AddToKit;	
-	} forEach [
-		uniformItems _this
-		,vestItems _this
-		,backpackItems _this	
-	];
-	
-	_kit
-};
-
-dzn_fnc_gear_getCargoGear = {
-	/*
-		Return structured array of gear (kit) of given box/vehicle
-		EXAMPLE: BOX call dzn_fnc_gear_getCargoGear;
-		INPUT:
-			0: OBJECT	- Box or vehicle
-		OUTPUT:	ARRAY (kitArray), Copied to clipboard kit
-	*/	
-	private ["_kit", "_classnames", "_count", "_cargo", "_categoryKit","_str","_formatedString","_lastId","_i"];
-	
-	_kit = [];
-	_cargo = [getWeaponCargo _this, getMagazineCargo _this, getItemCargo _this, getBackpackCargo _this];
-	{
-		_classnames = _x select 0;
-		_count = _x select 1;
-		_categoryKit = [];
-		{
-			_categoryKit = _categoryKit + [ [_x, (_count select _forEachIndex)] ];
-		} forEach _classnames;		
-		
-		_kit pushBack _categoryKit;
-	} forEach _cargo;
-	
-	_kit
-};
-
-// **************************
-// AEROSAN'S GET/SET LOADOUT
-// **************************
-aerosan_fnc_getLoadout = compile preprocessFileLineNumbers "dzn_gear\fn\aerosan\get_loadout.sqf";
-aerosan_fnc_setLoadout = compile preprocessFileLineNumbers "dzn_gear\fn\aerosan\set_loadout.sqf";
-
-dzn_fnc_gear_getPreciseGear = {
-	// @SimpleGear = @Unit call dzn_gear_getSimpleGear
-	[_this, ["ammo"]] call aerosan_fnc_getLoadout;
-};
-
-dzn_fnc_gear_setPreciseGear = {
-	// [@Unit, @SimpleGear] call dzn_fnc_gear_setSimpleGear
-	[_this select 0, _this select 1, ["ammo"]] call aerosan_fnc_setLoadout;
-};
-
-// **************************
-// INITIALIZING FUNCTIONS
-// **************************
-dzn_fnc_gear_nullifyUnusedVars = {
-	if (!isNil "dzn_gear_arsenalEventHandlerID") then {
-		removeMissionEventHandler ["EachFrame", dzn_gear_arsenalEventHandlerID];
-	};
-
-	if (!isNil "dzn_gear_editMode_controlsOverArsenalEH") then {
-		(uinamespace getvariable "RSCDisplayArsenal") displayRemoveEventHandler ["KeyDown", dzn_gear_editMode_controlsOverArsenalEH];
-	};
-
-	{
-		call compile format ["if (!isNil ""%1"") then { %1 = nil; };", _x];
-	} forEach [
-		"dzn_gear_UseStandardUniformItems"
-		, "dzn_gear_StandardUniformItems"
-		, "dzn_gear_LeaderUniformItems"
-		, "dzn_gear_UseStandardAssignedItems"
-		, "dzn_gear_StandardAssignedItems"
-		, "dzn_gear_LeaderAssignedItems"
-		, "dzn_gear_ShowGearTotals"
-		, "dzn_gear_GearTotalsBG_RGBA"
-		, "dzn_gear_ReplaceRHSStanagToDefault"
-		, "dzn_gear_kitKey"
-		, "dzn_gear_kitRoles"		
-		, "dzn_gear_editMode_keyIsDown"
-		, "dzn_gear_editMode_primaryWeaponList"
-		, "dzn_gear_editMode_primaryWeaponMagList"
-		, "dzn_gear_editMode_handgunWeaponList"
-		, "dzn_gear_editMode_handgunWeaponMagList"
-		, "dzn_gear_editMode_secondaryWeaponList"
-		, "dzn_gear_editMode_secondaryWeaponMagList"
-		, "dzn_gear_editMode_uniformList"
-		, "dzn_gear_editMode_headgearList"
-		, "dzn_gear_editMode_gogglesList"
-		, "dzn_gear_editMode_vestList"
-		, "dzn_gear_editMode_backpackList"
-		, "dzn_gear_editMode_arsenalOpened"
-		, "dzn_gear_editMode_arsenalTimerPause"
-		, "dzn_gear_editMode_canCheck_ArsenalDiff"
-		, "dzn_gear_editMode_waitToCheck_ArsenalDiff"
-		, "dzn_gear_editMode_controlsOverArsenalEH"
-		, "dzn_gear_editMode_notif_pos"
-		, "dzn_gear_editMode_lastInventory"
-		, "dzn_gear_arsenalEventHandlerID"
-		
-		, "dzn_fnc_gear_editMode_showKeybinding"
-		, "dzn_fnc_gear_editMode_onKeyPress"
-		, "dzn_fnc_gear_editMode_getEquipItems"
-		, "dzn_fnc_gear_editMode_getCurrentWeapon"
-		, "dzn_fnc_gear_editMode_getCurrentIdentity"
-		
-		, "dzn_fnc_gear_editMode_showKitGetter"
-		, "dzn_fnc_gear_editMode_createKit"		
-		, "dzn_fnc_gear_editMode_setOptions"
-		, "dzn_fnc_gear_editMode_showAmmoBearerGetterMenu"
-		, "dzn_fnc_gear_editMode_showAmmoBearerSetterMenu"
-		
-		, "dzn_fnc_gear_editMode_showAsStructuredList"
-		, "dzn_fnc_gear_editMode_getItemName"
-		, "dzn_fnc_gear_editMode_getVehicleName"
-		, "dzn_fnc_gear_editMode_showGearTotals"
-		, "dzn_fnc_gear_editMode_showNotif"
-		, "dzn_fnc_gear_editMode_initialize"		
-	];
-	diag_log "dzn Gear : Edit mode variables cleared";
-};
-
-dzn_fnc_gear_startLocalIdentityLoop = {
-	dzn_gear_applyLocalIdentity = true;
-
-	["dzn_gear_localIdentityLoop", "onEachFrame", {	
-		if !(dzn_gear_applyLocalIdentity) exitWith {};
-		
-		[] spawn {
-			{
-				if (!isNil {_x getVariable "dzn_gear_identity"} && !(_x getVariable ["dzn_gear_identitySet",false])) then {				
-					[
-						_x
-						, _x getVariable "dzn_gear_identity"
-					] call dzn_fnc_gear_assignIdentity;							
-				};
-				sleep .1;
-			} forEach allUnits;	
-			
-			dzn_gear_applyLocalIdentity = false;
-			sleep 10;
-			dzn_gear_applyLocalIdentity = true;
-		};
-	}] call BIS_fnc_addStackedEventHandler;
-};
-
-dzn_fnc_gear_initialize = {
-	// Wait until player initialized in multiplayer
-	if (isMultiplayer && hasInterface) then {
-		waitUntil { !isNull player && { local player} };
-	};
-	
-	private["_crewKit","_synKit","_logic","_par","_id","_kit"];
-	{
-		_logic = _x;
-		{
-			_par 		= _x select 0;
-			_id 		= _x select 1;
-			_kit 		= "";
-			
-			if (!isNil { _logic getVariable _par } || [_par, str(_logic), false] call BIS_fnc_inString) then {
-				_kit = if (!isNil {_logic getVariable _par}) then {_logic getVariable _par} else {str(_logic) select [_id]};	
-				{
-					if (local _x) then { 
-						if (isNil {_x getVariable _par}) then {
-							_x setVariable [ _par, _kit, true ]; 
-						};
-					};
-				} forEach (synchronizedObjects _logic);				
-			};
-		} forEach [ ["dzn_gear", 9], ["dzn_gear_cargo", 15] ];
-	} forEach (entities "Logic");
-	
-	// Vehicles
-	{
-		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {
-			// Crew Kit
-			if (!isNil { _x getVariable "dzn_gear" }) then {			
-			_crewKit = _x getVariable "dzn_gear";
-				{_x setVariable ["dzn_gear", _crewKit, true];} forEach (crew _x);
-			};
-			
-			// Cargo Kit
-			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
-				// From Variable
-				[_x, _x getVariable "dzn_gear_cargo", true] call dzn_fnc_gear_assignKit;
-			};
-		};
-	} forEach (vehicles);
-
-	// Units
-	{
-		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {			
-			if (!isNil { _x getVariable "dzn_gear" }) then {// From Variable
-				[_x, _x getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
+		for "_i" from 1 to _count do {
+			if ( _convertMagAmmo > _magAmmo) then {
+				player addMagazine [_convertedMag, _magAmmo];
+				_magAmmo = 0;
 			} else {
-				if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
+				player addMagazine [_convertedMag, _convertMagAmmo];
+				_magAmmo = _magAmmo - _convertMagAmmo;
 			};
 		};
-	} forEach (allUnits);
+	} forEach _mags;
 	
-	dzn_gear_initDone = true;
-	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
+	[_mag, _convertedMag, _magCount, _convertedMagCount] call dzn_MMR_fnc_AddLogLine;
+};
+
+dzn_MMR_fnc_Action = {	
+	private _mags = [];
+	{ _mags pushBackUnique _x; } forEach (magazines player);
 	
-	if (hasInterface && dzn_gear_enableIdentitySync) then {
-		[] spawn {
-			waitUntil { time > 5 };
-			call dzn_fnc_gear_startLocalIdentityLoop;
-		};
+	private _primaryWeaponAllMags = getArray (configFile >> "CfgWeapons" >> primaryWeapon player >> "magazines");
+	private _showNoRepackHint = true;
+	dzn_MMR_RepackLoggingInfo = [];
+	
+	{
+		private _mag = _x;
+		
+		if !(_mag in _primaryWeaponAllMags) then {
+			_mapped = _mag call dzn_MMR_fnc_GetMapped;
+			
+			if !((_primaryWeaponAllMags select { _x in _mapped}) isEqualTo []) then {
+				_targetMag = (_mapped - [_mag] - (_mapped - [_mag] - _primaryWeaponAllMags)) select 0;
+				
+				player sideChat format ["Conversation of %1 to %2", _mag, _targetMag];
+				_showNoRepackHint = false;
+				
+				[_mag, _targetMag] call dzn_MMR_fnc_Convert;
+			} else {
+				player sideChat format ["No conversation target for %1", _mag];
+			};
+		};	
+	} forEach _mags;
+	
+	if (_showNoRepackHint) then {
+		dzn_MMR_RepackLoggingInfo pushBack 
+		hint parseText format [
+			"<t color='#86CC5E'>No mags to repack for</t> %1"
+			, getText (configFile >> "CfgWeapons" >> primaryWeapon player >> "displayName")
+		];
+	} else {
+		call dzn_MMR_fnc_ShowHint;
 	};
 };
+
+
+
+dzn_MMR_fnc_AddLogLine = {
+	params ["_mag", "_convertedMag", "_count", "_convertedMagCount"];
+	
+	
+	dzn_MMR_RepackLoggingInfo pushBack format [
+		"<t color='#86CC5E'>Repacked </t> %1x %2 <t color='#86CC5E'>to</t> %3x %4"
+		, _count
+		, getText (configFile >> "CfgMagazines" >> _mag >> "displayName")
+		, _convertedMagCount
+		, getText (configFile >> "CfgMagazines" >> _convertedMag >> "displayName")
+	];
+};
+
+dzn_MMR_fnc_ShowHint = {
+	private _hint = "<t size='1.5' color='#ffdd32'>Mixed-mod Repack</t>";
+	private _arr = dzn_MMR_RepackLoggingInfo call BIS_fnc_consolidateArray;
+
+	{ 
+		_hint = format ["%1<br />%2", _hint, _x]; 		
+	} forEach dzn_MMR_RepackLoggingInfo;
+	
+	hint parseText _hint;
+};
+	
+	/*
+		- Get mags types that player have (Mag1, Mag2)
+		- Get all mags types available for weapon (Mag1, MagX, MagY)
+		
+		- Get mapped magazines for each mags that are not available for weapon (e.g. for Mag2 -> [Mag2, Mag1, MagZ..] )
+		- Check if mags available for weapons are present in the mapped list ( e.g. Mag1 is in lisn [Mag2, Mag1, MagZ..] )
+		
+		- If not -> exit with Hint "nothing to convert"
+		- Get pair of mag to convert and target mag (e.g. [Mag2, Mag1])
+		
+		- Call dzn_MMR_fnc_Convert using found pair
+	*/
+	
