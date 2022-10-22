@@ -38,10 +38,10 @@ dzn_fnc_gear_assignKit = {
 // ******************************
 //    SET GEAR functions 
 // ******************************
-	#define SET_CAT(CIDX)				_ctg = _gear select CIDX
-	#define cItem(IDX)				(_ctg select IDX)
-	#define IsItem(ITEM)				(typename (ITEM) == "STRING")
-	#define getItem(ITEM)				if IsItem(ITEM) then {ITEM} else {selectRandom ITEM}
+#define SET_CAT(CIDX) _ctg = _gear select CIDX
+#define cItem(IDX)    (_ctg select IDX)
+#define IsItem(ITEM)  (typename (ITEM) == "STRING")
+#define getItem(ITEM) if IsItem(ITEM) then {ITEM} else {selectRandom (ITEM)}
 	
 dzn_fnc_gear_assignGear = {
 	// [@Unit, @GearSet] spawn dzn_fnc_gear_assignGear;
