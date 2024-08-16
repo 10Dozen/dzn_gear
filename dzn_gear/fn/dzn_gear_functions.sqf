@@ -205,9 +205,7 @@ dzn_fnc_gear_assignCargoGear = {
 	clearBackpackCargoGlobal _container;
 	clearItemCargoGlobal _container;
 
-	private ["_items"];
-
-	#define GET_RANDOM_ITEM(ITEM) if (ITEM isEqualType []) then { ITEM = selectRandom ITEM; };
+	#define GET_RANDOM_ITEM(ITEM) if (ITEM isEqualType []) then { selectRandom ITEM } else { ITEM }
 
 	// Add weapons
 	{

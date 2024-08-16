@@ -1,3 +1,5 @@
+params [["_editModeEnabled", false], ["_timeout", 0]];
+
 // **************************
 // 	DZN GEAR v2.9
 //
@@ -18,7 +20,7 @@ call compile preprocessFileLineNumbers "dzn_gear\Settings.sqf";
 // FUNCTIONS
 // **************************
 dzn_gear_defaultBackpack = "B_Carryall_khk";
-dzn_gear_editModeEnabled = _this select 0;
+dzn_gear_editModeEnabled = _editModeEnabled;
 
 call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_functions.sqf";
 
@@ -33,14 +35,14 @@ if (dzn_gear_editModeEnabled) then {
 // **************************
 // GEARS
 // **************************
-call compile preprocessFileLineNumbers "dzn_gear\Kits.sqf"
+call compile preprocessFileLineNumbers "dzn_gear\Kits.sqf";
 
 // **************************
 // INITIALIZATION
 // **************************
 // Delay before run
-if (!isNil { _this select 1 } && { typename (_this select 1) == "SCALAR" }) then { 
-	waitUntil { time > _this select 1 };
+if (_timeout > 0) then { 
+	waitUntil { time > _timeout };
 };
 
 if (dzn_gear_enableGearAssignementTable) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf"; };
