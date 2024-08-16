@@ -49,3 +49,24 @@
 #define UNIFORM_ITEMS		["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]
 #define UNIFORM_ITEMS_L		["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1],["ACE_MapTools",1]
 // ****************
+
+
+kit_test1 = [
+	["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],
+	["<PRIMARY WEAPON   >> ","SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","","",""]],
+	["<LAUNCHER WEAPON  >> ","","",["","","",""]],
+	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
+	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG",2]]],
+	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]],
+	["<BACKPACK ITEMS   >> ",[]],
+	["<IDENTITY         >> ","TanoanHead_A3_02","male01engfre","john Doe"]
+];
+
+cargo_kit_test2 = [
+    [[["arifle_MX_ACO_pointer_F","hgun_P07_F"],3]],
+    [],
+    [[["FirstAidKit", "ACE_rope6"],4]],
+    [],
+    [[["arifle_MX_GL_F", "muzzle_snds_H", "", "optic_aco", ["30Rnd_65x39_caseless_mag", 15], ["3Rnd_HE_Grenade_shell", 2], ""], 2]]
+];

@@ -197,33 +197,49 @@ dzn_fnc_gear_assignCargoGear = {
 			1: ARRAY	- Set of gear
 		OUTPUT: NULL
 	*/
+	params ["_container", "_gear"];
 
-	private["_box","_category"];
-	_box = _this select 0;
-	
 	// Clear boxes
-	clearWeaponCargoGlobal _box;
-	clearMagazineCargoGlobal _box;
-	clearBackpackCargoGlobal _box;
-	clearItemCargoGlobal _box;
-	
-	// Add Weapons
-	_category = (_this select 1) select 0;
-	{_box addWeaponCargoGlobal _x;} forEach _category;
-	
+	clearWeaponCargoGlobal _container;
+	clearMagazineCargoGlobal _container;
+	clearBackpackCargoGlobal _container;
+	clearItemCargoGlobal _container;
+
+	#define GET_RANDOM_ITEM(ITEM) if (ITEM isEqualType []) then { selectRandom ITEM } else { ITEM }
+
+	// Add weapons
+	{
+		_x params ["_item", "_count"];
+		_container addWeaponCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 0);
+
 	// Add Magazines
-	_category = (_this select 1) select 1;
-	{_box addMagazineCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addMagazineCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 1);
 	
 	// Add Items
-	_category = (_this select 1) select 2;
-	{_box addItemCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addItemCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 2);
 	
 	// Add Backpacks
-	_category = (_this select 1) select 3;
-	{_box addBackpackCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addBackpackCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 3);
+
+	// Add Weapons with attachements (optional)
+	if (count _gear > 4) then {
+		{
+			_container addWeaponWithAttachmentsCargoGlobal _x;
+		} forEach (_gear select 4);
+	};
 	
-	_box setVariable ["dzn_gear_done", true, true];
+	_container setVariable ["dzn_gear_done", true, true];
+	_container setVariable ["dzn_gear", _gear, true];
 };
 
 
@@ -231,68 +247,66 @@ dzn_fnc_gear_assignCargoGear = {
 //    GET GEAR functions 
 // ******************************
 
+#define CAT_EQUIPMENT      "<EQUIPEMENT       >> "
+#define CAT_PRIMARY        "<PRIMARY WEAPON   >> "
+#define CAT_LAUNCHER       "<LAUNCHER WEAPON  >> "
+#define CAT_HANDGUN        "<HANDGUN WEAPON   >> "
+#define CAT_ASSIGNED       "<ASSIGNED ITEMS   >> "
+#define CAT_UNIFORM_ITEMS  "<UNIFORM ITEMS    >> "
+#define CAT_VEST_ITEMS     "<VEST ITEMS       >> "
+#define CAT_BACKPACK_ITEMS "<BACKPACK ITEMS   >> "
+#define CAT_IDENTITY       "<IDENTITY         >> "
+
 dzn_fnc_gear_getGear = {
 	// @Kit = @Unit call dzn_fnc_gear_getGear
 	// Return:	Kit, Formatted Kit in clipboard
 	private["_g","_kit","_str","_formatedString","_lastId","_i"];
 
-	#define NG			_g = []
-	#define AddGear(ACT)	_g pushBack (ACT)
-	#define AddToKit		_kit pushBack _g
-	#define WeaponMag(X)	if ((X) isEqualTo []) then { "" } else { X select 0 }
+	#define WeaponMag(X) (if ((X) isEqualTo []) then { "" } else { X select 0 })
+
 	_kit = [];
-	
-	NG;
-	{AddGear(_x);} forEach [
-		"<EQUIPEMENT >>  "
+
+	_kit pushBack [
+		CAT_EQUIPMENT
 		,uniform _this
 		,vest _this
 		,backpack _this
 		,headgear _this
 		,goggles _this
-	];	
-	AddToKit;
+	];
 	
 	// Primary
-	NG;
 	_priMag = WeaponMag(primaryWeaponMagazine _this);
-	{AddGear(_x);} forEach [
-		"<PRIMARY WEAPON >>  "
+	_kit pushBack [
+		CAT_PRIMARY
 		,primaryWeapon _this
 		,_priMag
-		,primaryWeaponItems  _this
+		,primaryWeaponItems _this
 	];
-	AddToKit;
 
 	// Secondary
-	NG;
 	_secMag = WeaponMag(secondaryWeaponMagazine _this);
-	{AddGear(_x)} forEach [
-		"<LAUNCHER WEAPON >>  "
+	_kit pushBack [
+		CAT_LAUNCHER
 		,secondaryWeapon _this
 		,_secMag
 		,secondaryWeaponItems _this
 	];
-	AddToKit;
 	
 	// Handgun
-	NG;
 	_handMag = WeaponMag(handgunMagazine _this);
-	{AddGear(_x)} forEach [
-		"<HANDGUN WEAPON >>  "
+	_kit pushBack [
+		CAT_HANDGUN
 		,handgunWeapon _this
 		,_handMag
 		,handgunItems _this
 	];
-	AddToKit;
 	
 	// Assigned Items
-	_g = ["<ASSIGNED ITEMS >>  "] + assignedItems _this;
-	AddToKit;
+	_kit pushBack ([CAT_ASSIGNED] + assignedItems _this);
 	
 	// Equiped Items and magazines
 	{
-		NG;
 		_items = _x call BIS_fnc_consolidateArray;
 		{
 			switch (_x select 0) do {
@@ -301,22 +315,30 @@ dzn_fnc_gear_getGear = {
 				case _handMag: 	{ _x set [0, "HANDGUN MAG"] };		
 			};		
 		} forEach _items;
-		
-		{ AddGear(_x) } forEach [
+
+		_kit pushBack [
 			switch (_forEachIndex) do {
-				case 0: {"<UNIFORM ITEMS >> "};
-				case 1: {"<VEST ITEMS >> "};
-				case 2: {"<BACKPACK ITEMS >> "};
-			}			
-			,_items
+				case 0: { CAT_UNIFORM_ITEMS  };
+				case 1: { CAT_VEST_ITEMS     };
+				case 2: { CAT_BACKPACK_ITEMS };
+			},
+			_items
 		];
-		
-		AddToKit;	
 	} forEach [
 		uniformItems _this
-		,vestItems _this
-		,backpackItems _this	
+		, vestItems _this
+		, backpackItems _this	
 	];
+
+	// Copy idnetity if setting enabled 
+	if (dzn_gear_enableIdentitySync) then {
+		_kit pushBack [
+			CAT_IDENTITY
+			, face _this
+			, speaker _this
+			, name _this
+		];
+	};
 	
 	_kit
 };
