@@ -197,33 +197,51 @@ dzn_fnc_gear_assignCargoGear = {
 			1: ARRAY	- Set of gear
 		OUTPUT: NULL
 	*/
+	params ["_container", "_gear"];
 
-	private["_box","_category"];
-	_box = _this select 0;
-	
 	// Clear boxes
-	clearWeaponCargoGlobal _box;
-	clearMagazineCargoGlobal _box;
-	clearBackpackCargoGlobal _box;
-	clearItemCargoGlobal _box;
-	
-	// Add Weapons
-	_category = (_this select 1) select 0;
-	{_box addWeaponCargoGlobal _x;} forEach _category;
-	
+	clearWeaponCargoGlobal _container;
+	clearMagazineCargoGlobal _container;
+	clearBackpackCargoGlobal _container;
+	clearItemCargoGlobal _container;
+
+	private ["_items"];
+
+	#define GET_RANDOM_ITEM(ITEM) if (ITEM isEqualType []) then { ITEM = selectRandom ITEM; };
+
+	// Add weapons
+	{
+		_x params ["_item", "_count"];
+		_container addWeaponCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 0);
+
 	// Add Magazines
-	_category = (_this select 1) select 1;
-	{_box addMagazineCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addMagazineCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 1);
 	
 	// Add Items
-	_category = (_this select 1) select 2;
-	{_box addItemCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addItemCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 2);
 	
 	// Add Backpacks
-	_category = (_this select 1) select 3;
-	{_box addBackpackCargoGlobal _x;} forEach _category;
+	{
+		_x params ["_item", "_count"];
+		_container addBackpackCargoGlobal [GET_RANDOM_ITEM(_item), _count];
+	} forEach (_gear select 3);
+
+	// Add Weapons with attachements (optional)
+	if (count _gear > 4) then {
+		{
+			_container addWeaponWithAttachmentsCargoGlobal _x;
+		} forEach (_gear select 4);
+	};
 	
-	_box setVariable ["dzn_gear_done", true, true];
+	_container setVariable ["dzn_gear_done", true, true];
+	_container setVariable ["dzn_gear", _gear, true];
 };
 
 

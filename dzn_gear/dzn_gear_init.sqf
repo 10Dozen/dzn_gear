@@ -1,5 +1,5 @@
 // **************************
-// 	DZN GEAR v2.8
+// 	DZN GEAR v2.9
 //
 //	Initialized when:
 //	{ !isNil "dzn_gear_initDone" }
@@ -7,7 +7,7 @@
 //	Server-side initialized when:
 //	{ !isNil "dzn_gear_serverInitDone" }
 //
-dzn_gear_version = "v2.8ace";
+dzn_gear_version = "v2.9";
 
 // *************************
 //	SETTINGS
@@ -33,7 +33,7 @@ if (dzn_gear_editModeEnabled) then {
 // **************************
 // GEARS
 // **************************
-#include "Kits.sqf"
+call compile preprocessFileLineNumbers "dzn_gear\Kits.sqf"
 
 // **************************
 // INITIALIZATION
@@ -54,4 +54,4 @@ if (
 	call dzn_fnc_gear_nullifyUnusedVars;
 };
 
-[] spawn dzn_fnc_gear_initialize;
+[] call dzn_fnc_gear_initialize;
