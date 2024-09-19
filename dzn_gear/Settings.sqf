@@ -50,15 +50,15 @@ dzn_gear_UseACEArsenalOnEdit = true;
 dzn_gear_UseStandardUniformItems		= "standard";
 // dzn_gear_StandardUniformItems		= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
 // dzn_gear_LeaderUniformItems			= ["<UNIFORM ITEMS >> ",[["ACE_MapTools",1],["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
-dzn_gear_StandardUniformItems		= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS]]';
-dzn_gear_LeaderUniformItems			= '["<UNIFORM ITEMS >> ",[UNIFORM_ITEMS_L]]';
+dzn_gear_StandardUniformItems		= '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS]]';
+dzn_gear_LeaderUniformItems			= '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS_L]]';
 
 
 dzn_gear_UseStandardAssignedItems		= "standard";
 // dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM]';
 // dzn_gear_LeaderAssignedItems			= '["<ASSIGNED ITEMS >>  ","ItemMap","ItemCompass","ItemWatch","ItemRadio", NVG_NIGHT_ITEM, "Binocular"]';
-dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS]';
-dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS >>  ", ASSIGNED_ITEMS_L]';
+dzn_gear_StandardAssignedItems		= '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS]';
+dzn_gear_LeaderAssignedItems		= '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS_L]';
 
 
 // Edit Mode Gear Totals dialog (enabled only when dzn_commonFunctions is used)
@@ -80,14 +80,54 @@ dzn_gear_kitRoles = [
 	,["2IC", "2ic"]
 	,["Командир Взвода", "pl"]
 	,["Командир отделения", "sl"]
-	,["Наводчик-оператор", "crew"]
-	,["Механик-водитель", "crew"]
+	,["Командир машины", "crew_com"]
+	,["Наводчик-оператор", "crew1"]
+	,["Механик-водитель", "crew2"]
 	,["Пулеметчик", "mg"]
 	,["Стрелок-Гранатометчик", "at"]
 	,["Стрелок, помощник гранатометчика", "aat"]
 	,["Старший стрелок", "ar"]
 	,["Стрелок (ГП)", "gr"]
 	,["Стрелок", "r"]
-	,["Снайпер", "mm"]
+	,["Стрелок, вариация 2", "r2"]
+	,["Стрелок, вариация 3", "r3"]		
+	,["Снайпер", "snp"]
+	,["Взводный снайпер", "mm"]
+	,["Оператор ПТРК, первый номер", "atgm1"]
+	,["Оператор ПТРК, второй номер", "atgm2"]
+	,["Оператор безоткатного орудия, первый номер", "atg1"]  
+	,["Оператор безоткатного орудия, второй номер", "atg2"]  
+	,["Оператор тяжёлого пулемёта, первый номер", "hmg1"]  
+	,["Оператор тяжёлого пулемёта, второй номер", "hmg2"]
+	,["Оператор АГС, первый номер", "ags1"]  
+	,["Оператор АГС, второй номер", "ags2"]  
+	,["Миномётчик, первый номер", "mort1"]    
+	,["Миномётчик, второй номер", "mort2"]
+	,["Боец с ПЗРК", "aa"]
+	,["Пилот вертолёта", "helipilot"]
+	,["Оператор-наводчик вертолёта", "heligunner"]
+	,["Бортстрелок", "sidegunner"]	
+	,["Пилот самолёта", "pilot"]
+	,["Штурмовик", "sttp"]
+	,["Штурмовик c дробовиком", "shg"]  
+	,["Штурмовик со щитом", "shb"]
+	,["Боец ближнего боя", "melee"]  
+	,["Диверсант", "sbtr"]
+	,["Сапёр", "spr"]  
+	,["Огнемётчик", "fttr"]
+	,["Медик", "med"]
+	,["Командир роты", "cl"]
+	,["Корректировщик снайпера", "sptr"]
+	,["Артиллерист", "arty"]
+	,["Боец расчёта", "gcrew"]
+	,["Подносчик боеприпасов", "aux"]
+	,["Инженер", "eng"]  
+	,["Раненный", "inj"]
+	,["Радист", "rad"]
+	,["Оператор БПЛА", "uav"]
+	,["Старший оператор БПЛА", "uav1"]
+	,["Младший оператор БПЛА", "uav2"]
+	,["VIP", "vip"]		
 	,["", ""]
 ];
+

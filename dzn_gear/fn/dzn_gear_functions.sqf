@@ -207,37 +207,43 @@ dzn_fnc_gear_assignCargoGear = {
 
 	#define GET_RANDOM_ITEM(ITEM) if (ITEM isEqualType []) then { selectRandom ITEM } else { ITEM }
 
+	_gear params [
+		["_weapons", []],
+		["_magazines", []],
+		["_items", []],
+		["_backpacks", []],
+		["_weaponsWithAttachments", []]
+	];
+
 	// Add weapons
 	{
 		_x params ["_item", "_count"];
 		_container addWeaponCargoGlobal [GET_RANDOM_ITEM(_item), _count];
-	} forEach (_gear select 0);
+	} forEach _weapons;
 
 	// Add Magazines
 	{
 		_x params ["_item", "_count"];
 		_container addMagazineCargoGlobal [GET_RANDOM_ITEM(_item), _count];
-	} forEach (_gear select 1);
+	} forEach _magazines;
 	
 	// Add Items
 	{
 		_x params ["_item", "_count"];
 		_container addItemCargoGlobal [GET_RANDOM_ITEM(_item), _count];
-	} forEach (_gear select 2);
+	} forEach _items;
 	
 	// Add Backpacks
 	{
 		_x params ["_item", "_count"];
 		_container addBackpackCargoGlobal [GET_RANDOM_ITEM(_item), _count];
-	} forEach (_gear select 3);
+	} forEach _backpacks;
 
 	// Add Weapons with attachements (optional)
-	if (count _gear > 4) then {
-		{
-			_container addWeaponWithAttachmentsCargoGlobal _x;
-		} forEach (_gear select 4);
-	};
-	
+	{
+		_container addWeaponWithAttachmentsCargoGlobal _x;
+	} forEach _weaponsWithAttachments;
+
 	_container setVariable ["dzn_gear_done", true, true];
 	_container setVariable ["dzn_gear", _gear, true];
 };
