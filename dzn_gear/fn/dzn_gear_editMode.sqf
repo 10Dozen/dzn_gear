@@ -758,7 +758,7 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		["BR"],
 		["LABEL", "<t size='0.9'>You also can enter several names using comma.</t>"],
 		["BR"],
-		["LABEL", "Filter (personal kits)*", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
+		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
 		["INPUT", "", [["tag", "i_filter"]]],
 		["BR"],
 		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
@@ -876,9 +876,8 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 		[["tooltip", "KEK-LOL"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
 		["BR"],
 
-
 		["LABEL"],
-		["BUTTON", "Compose", {}, [], [["w",0.25]]
+		["BUTTON", "Compose", {}, [], [["w",0.25]]]
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
