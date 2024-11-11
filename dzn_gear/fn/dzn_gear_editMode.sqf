@@ -596,9 +596,11 @@ dzn_fnc_gear_editMode_createKit = {
 dzn_fnc_gear_editMode_formatCargoKit = {
 	params ["_name", "_kit"];
 
-	private _output = [format ["%1 = [", _name]];
-	{ _output pushBack format ["    %1,", _x] } forEach _kit;
-	_output pushBack "];";
+	private _output = [
+		format ["%1 = [", _name]
+        	(_kit apply { format ["    %1", _x] }) joinString toString[44,13,10],
+        	 "];"
+        ];
 
 	_output joinString toString[10]
 };
@@ -1089,7 +1091,7 @@ dzn_fnc_gear_editMode_composeCargoItemsFromKits = {
 
 	private _cfgWeapons = configFile >> "CfgWeapons";
 	private _cfgMagazines = configFile >> "CfgMagazines";
-	private _cfgBackpacks = configFile >> "CfgBackpacks";
+	private _cfgBackpacks = configFile >> "CfgVehicles";
 
 	{
 		if (_x in ["", "PRIMARY MAG", "SECONDARY MAG", "HANDGUN MAG"]) then { continue; };
