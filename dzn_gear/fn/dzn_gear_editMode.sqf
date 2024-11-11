@@ -597,7 +597,7 @@ dzn_fnc_gear_editMode_formatCargoKit = {
 	params ["_name", "_kit"];
 
 	private _output = [
-		format ["%1 = [", _name]
+		format ["%1 = [", _name],
         	(_kit apply { format ["    %1", _x] }) joinString toString[44,13,10],
         	 "];"
         ];
