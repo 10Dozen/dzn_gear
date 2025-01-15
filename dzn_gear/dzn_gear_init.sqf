@@ -1,7 +1,7 @@
 params [["_editModeEnabled", false], ["_timeout", 0]];
 
 // **************************
-// 	DZN GEAR v2.9
+// 	DZN GEAR v2.10
 //
 //	Initialized when:
 //	{ !isNil "dzn_gear_initDone" }
@@ -9,7 +9,7 @@ params [["_editModeEnabled", false], ["_timeout", 0]];
 //	Server-side initialized when:
 //	{ !isNil "dzn_gear_serverInitDone" }
 //
-dzn_gear_version = "v2.9";
+dzn_gear_version = "v2.10";
 
 // *************************
 //	SETTINGS
@@ -41,7 +41,7 @@ call compile preprocessFileLineNumbers "dzn_gear\Kits.sqf";
 // INITIALIZATION
 // **************************
 // Delay before run
-if (_timeout > 0) then { 
+if (_timeout > 0) then {
 	waitUntil { time > _timeout };
 };
 

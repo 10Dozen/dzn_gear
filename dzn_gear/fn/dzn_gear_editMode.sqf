@@ -1,9 +1,24 @@
+/* TODO:
+	[ok] - Export kit in missionNamespace
+	[ok] - highlight roles in list that already was used
+	- Finish ammo bearier exporter page
+
+*/
+
+
 // **************************
 // EDIT MODE
 // **************************
 #define DBG_PREFIX "(dzn_gear) "
 #define DBG_ diag_log format [DBG_PREFIX +
 #define EOL ]
+
+#define BG_PALE_GREEN [0.54, 0.63, 0.44, 1]
+#define BG_PALE_RED   [0.63, 0.54, 0.44, 1]
+#define BG_STEEL_BLUE [0.24, 0.29, 0.34, 0.8]
+
+#define COLOR_DARK_GREEN [0.5, 0.7, 0.6, 1]
+#define COLOR_WHITE      [1,1,1,1]
 
 // ******************
 // Functions
@@ -14,15 +29,15 @@ dzn_fnc_gear_editMode_showKeybinding = {
 		<br /><br /><t size='1.45' color='#3793F0' underline='true'>Keybinding:</t>
 		<br /><br /><t %1>[F1]</t><t %2> - Show keybinding</t>
 		<br />
-		<br /><t %1>[SPACE]</t><t %2> - Open Arsenal</t>  
+		<br /><t %1>[SPACE]</t><t %2> - Open Arsenal</t>
 		<br /><t %1>[CTRL + SPACE]</t><t %2> - Copy gear of player or cursorTarget and add it to action list</t>
 		<br />
 		<br /><t %1>[{1...6}]</t><t %2> - Show item list and copy</t>
 		<br /><t %1>[SHIFT + {1...6}]</t><t %2> - Set current item list and copy list</t>
-		<br /><t %1>[CTRL + {1...6}]</t><t %2> - Add item to list and copy</t>		
+		<br /><t %1>[CTRL + {1...6}]</t><t %2> - Add item to list and copy</t>
 		<br /><t %1>[ALT + {1...6}]</t><t %2> - Clear item list</t>
 		<br /><t align='left' size='0.8'>where
-		<br />1 or C -- Primary weapon and magazine 
+		<br />1 or C -- Primary weapon and magazine
 		<br />2 or U -- Uniform
 		<br />3 or H -- Headgear
 		<br />4 or G -- Goggles
@@ -49,16 +64,16 @@ dzn_fnc_gear_editMode_showKeybinding = {
 	if (_shift) then { [MODE,"SHIFT"] call dzn_fnc_gear_editMode_getEquipItems;};	\
 	if !(_ctrl || _alt || _shift) then { [MODE,"NONE"] call dzn_fnc_gear_editMode_getEquipItems;}
 
-	
+
 dzn_fnc_gear_editMode_onKeyPress = {
-	if (!alive player || dzn_gear_editMode_keyIsDown) exitWith {};	
-	private["_key","_shift","_crtl","_alt","_handled"];	
-	_key = _this select 1; 
-	_shift = _this select 2; 
-	_ctrl = _this select 3; 
+	if (!alive player || dzn_gear_editMode_keyIsDown) exitWith {};
+	private["_key","_shift","_crtl","_alt","_handled"];
+	_key = _this select 1;
+	_shift = _this select 2;
+	_ctrl = _this select 3;
 	_alt = _this select 4;
 	_handled = false;
-	
+
 	switch _key do {
 		// See for key codes -- https://community.bistudio.com/wiki/DIK_KeyCodes
 		// F1 button
@@ -77,33 +92,33 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			};
 			SET_HANDLED;
 		};
-		
+
 		// Space
 		case 57: {
-			SET_KEYDOWN;			
-			if (_ctrl) exitWith { 
+			SET_KEYDOWN;
+			if (_ctrl) exitWith {
 				dzn_fnc_gear_editMode_navBarIdx = 0; // -- Reset to Create Kit page
 				[] call dzn_fnc_gear_editMode_handleMenu;
 				SET_HANDLED;
 			};
-			
-			if !(_ctrl || _alt || _shift) then { 
+
+			if !(_ctrl || _alt || _shift) then {
 				[] spawn {
 					["#(argb,8,8,3)color(0,0,0,1)",false,nil,0.1,[0,0.5]] spawn bis_fnc_textTiles;
-					sleep 0.3; 
+					sleep 0.3;
 					if (dzn_gear_UseACEArsenalOnEdit) then {
 						[player, player, true] call ace_arsenal_fnc_openBox;
 					} else {
 						["Open", true] call BIS_fnc_arsenal;
 					};
-				}; 
+				};
 			};
 			SET_HANDLED;
 		};
 		// 1 or C button - Primary weapon
 		case 2;
 		case 46:{
-			SET_KEYDOWN;			
+			SET_KEYDOWN;
 			if (_shift) then {		["Primary", "SHIFT"] call dzn_fnc_gear_editMode_getCurrentWeapon; };
 			if (_ctrl) then {		["Primary", "CTRL"] call dzn_fnc_gear_editMode_getCurrentWeapon; };
 			if (_alt) then {		["Primary", "ALT"] call dzn_fnc_gear_editMode_getCurrentWeapon; };
@@ -168,26 +183,26 @@ dzn_fnc_gear_editMode_onKeyPress = {
 		// I
 		case 23: {
 			SET_KEYDOWN;
-			if (_ctrl) then { 
-				call dzn_fnc_gear_editMode_getCurrentIdentity;				
+			if (_ctrl) then {
+				call dzn_fnc_gear_editMode_getCurrentIdentity;
 			};
 			SET_HANDLED;
 		};
-		
+
 		// PGUP
 		case 201: {
 			SET_KEYDOWN;
 			["UseStandardUniformItems"] call dzn_fnc_gear_editMode_setOptions;
 			SET_HANDLED;
 		};
-		
+
 		// PGDOWN
 		case 209: {
 			SET_KEYDOWN;
 			["UseStandardAssignedItems"] call dzn_fnc_gear_editMode_setOptions;
 			SET_HANDLED;
 		};
-		
+
 		// DELETE
 		case 211: {
 			SET_KEYDOWN;
@@ -195,14 +210,14 @@ dzn_fnc_gear_editMode_onKeyPress = {
 				clearAllItemsFromBackpack player;
 				{player removeItemFromVest _x;} forEach (vestItems player);
 				{player removeItemFromUniform _x;} forEach (uniformItems player);
-				
+
 				[parseText "<t align='right' font='PuristaBold' size='1'>All items was removed</t>", true, nil, 7, 0.2, 0] spawn BIS_fnc_textTiles;
 			} else {
 				private _infKit = [["","","","","",""],["","","",["","","",""]],["","","",["","","",""]],["","","",["","","",""]],[""],["",[]],["",[]],["",[]]];
 				private _vehKit = [[],[],[],[]];
 				private _infMsg = parseText "<t align='right' font='PuristaBold' size='1'>Gear was removed</t>";
-				
-				if (isNull cursorTarget) then {			
+
+				if (isNull cursorTarget) then {
 					[player, _infKit] call dzn_fnc_gear_assignGear;
 					[_infMsg, true, nil, 7, 0.2, 0] spawn BIS_fnc_textTiles;
 				} else {
@@ -218,7 +233,7 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			SET_HANDLED;
 		};
 	};
-	
+
 	[] spawn { uisleep 0.05; dzn_gear_editMode_keyIsDown = false; };
 	_handled
 };
@@ -229,13 +244,13 @@ dzn_fnc_gear_editMode_onKeyPress = {
 // *****************************
 
 dzn_fnc_gear_editMode_getEquipItems = {
-	// [@ItemType,@Option] call dzn_fnc_gear_editMode_getEquipItems	
+	// [@ItemType,@Option] call dzn_fnc_gear_editMode_getEquipItems
 	// 0	@ItemType :		"UNIFORM","HEADGEAR","GOGGLES","VEST","BACKPACK"
 	// 1	@Option :		"NONE", "ALT", "CTRL", "SHIFT"
 	private["_mode","_getEquipType","_ownerUnit","_owner","_item"];
-	
+
 	#define TEXT_FROM_UPPER(X)	toUpper(X select [0,1])  + toLower(X select [1])
-	
+
 	_getEquipType = {
 		// @List = @Mode call _getEquipType
 		private["_r"];
@@ -243,34 +258,34 @@ dzn_fnc_gear_editMode_getEquipItems = {
 			"if (count dzn_gear_editMode_%1List > 1) then {
 				dzn_gear_editMode_%1List;
 			} else {
-				dzn_gear_editMode_%1List select 0;		
+				dzn_gear_editMode_%1List select 0;
 			}"
 			, toLower(_this)
 		];
-		
+
 		_r
 	};
-	
+
 	_mode = _this select 0;
-	_ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget }; 
+	_ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget };
 	_owner = if (isNull cursorTarget) then { "Player" } else { "Unit" };
 	_item = call compile format ["%1 _ownerUnit", toLower(_mode)];
 	private _text = "";
-	
+
 	switch (_this select 1) do {
 		case "SHIFT": {
-			// Set			
+			// Set
 			_text = format ["<t color='#6090EE' size='1.1'>%3 of %1 is COPIED</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
-			copyToClipboard str(_mode call _getEquipType);		
+			copyToClipboard str(_mode call _getEquipType);
 		};
 		case "CTRL": {
 			// Add
 			_text = format ["<t color='#6090EE' size='1.1'>%3 of %1 is ADDED to list</t><br />%2", _owner, _item, TEXT_FROM_UPPER(_mode)];
 			call compile format [
 				"if !(_item in dzn_gear_editMode_%1List) then {
-					dzn_gear_editMode_%1List pushBack _item;				
+					dzn_gear_editMode_%1List pushBack _item;
 				};"
-				, toLower(_mode)			
+				, toLower(_mode)
 			];
 			copyToClipboard str(_mode call _getEquipType);
 		};
@@ -281,25 +296,25 @@ dzn_fnc_gear_editMode_getEquipItems = {
 				"dzn_gear_editMode_%1List = [];"
 				, toLower(_mode)
 			];
-		};		
+		};
 		default {
-			// Show	
+			// Show
 			_text = format [
-				"<t color='#6090EE' size='1.1'>%2 list:</t><br /><t size='0.6' color='#FFD000'>Item</t><br />%1" 
+				"<t color='#6090EE' size='1.1'>%2 list:</t><br /><t size='0.6' color='#FFD000'>Item</t><br />%1"
 				, [(_mode call _getEquipType), true] call dzn_fnc_gear_editMode_showAsStructuredList
 				, TEXT_FROM_UPPER(_mode)
 			];
 			copyToClipboard str(_mode call _getEquipType);
 		};
 	};
-	
+
 	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
 		[_text, "TOP", [0,0,0,.8], 5] call dzn_fnc_ShowMessage;
-	};	
-	
+	};
+
 	if (isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
 		hint parseText  _text;
-	} else {		
+	} else {
 		[
 			_text
 			, "TOP"
@@ -311,11 +326,11 @@ dzn_fnc_gear_editMode_getEquipItems = {
 
 dzn_fnc_gear_editMode_getCurrentWeapon = {
 	params ["_type", "_key"];
-	
-	private _ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget }; 
+
+	private _ownerUnit = if (isNull cursorTarget) then { player } else { driver cursorTarget };
 	private _owner = if (isNull cursorTarget) then { "Player" } else { "Unit" };
-	
-	private ["_weaponList","_magList","_weapon","_magazine","_text"];	
+
+	private ["_weaponList","_magList","_weapon","_magazine","_text"];
 	switch toLower(_type) do {
 		case "primary": {
 			_weaponList = dzn_gear_editMode_primaryWeaponList;
@@ -336,26 +351,26 @@ dzn_fnc_gear_editMode_getCurrentWeapon = {
 			_magazine = (handgunMagazine _ownerUnit) select 0;
 		};
 	};
-	
+
 	private _wpnAndMag = {
 		params ["_weaponList","_magList"];
-		if (count _weaponList > 1) then { 
+		if (count _weaponList > 1) then {
 			[_weaponList , _magList];
 		} else {
-			[ _weaponList select 0 , _magList select 0];		
+			[ _weaponList select 0 , _magList select 0];
 		};
 	};
-	
+
 	switch (_key) do {
 		case "SHIFT": {
 			// Set
 			_text = format ["<t color='#6090EE' size='1.1'>%3 weapon of %1 is COPIED</t><br />%2", _owner, _weapon, _type];
 			_weaponList deleteRange [0, count _weaponList];
 			_magList deleteRange [0, count _magList];
-			
+
 			_weaponList pushBack _weapon;
 			_magList pushBack _magazine;
-			
+
 			copyToClipboard str([_weaponList, _magList ] call  _wpnAndMag);
 		};
 		case "CTRL": {
@@ -363,7 +378,7 @@ dzn_fnc_gear_editMode_getCurrentWeapon = {
 			_text = format ["<t color='#6090EE' size='1.1'>%3 weapon of %1 is ADDED to list</t><br />%2", _owner, _weapon, _type];
 			if !(_weapon in dzn_gear_editMode_primaryWeaponList) then {
 				_weaponList pushBack _weapon;
-				_magList pushBack _magazine;			
+				_magList pushBack _magazine;
 			};
 			copyToClipboard str([_weaponList, _magList ] call  _wpnAndMag);
 		};
@@ -372,27 +387,27 @@ dzn_fnc_gear_editMode_getCurrentWeapon = {
 			_text = format ["<t color='#6090EE' size='1.1'>%1 weapon is CLEARED</t>", _type];
 			_weaponList deleteRange [0, count _weaponList];
 			_magList deleteRange [0, count _magList];
-		};		
+		};
 		default {
-			// Show	
+			// Show
 			_text = format [
-				"<t color='#6090EE' size='1.1'>%3 weapon list:</t><br /><t size='0.6' color='#FFD000'>Weapon</t><br />%1<br /><t size='0.6' color='#FFD000'>Magazines</t><br />%2" 
+				"<t color='#6090EE' size='1.1'>%3 weapon list:</t><br /><t size='0.6' color='#FFD000'>Weapon</t><br />%1<br /><t size='0.6' color='#FFD000'>Magazines</t><br />%2"
 				, [(([_weaponList, _magList ] call  _wpnAndMag) select 0), true] call dzn_fnc_gear_editMode_showAsStructuredList
 				, [(([_weaponList, _magList ] call  _wpnAndMag) select 1), true] call dzn_fnc_gear_editMode_showAsStructuredList
 				, _type
 			];
-			copyToClipboard str([_weaponList, _magList ] call  _wpnAndMag);	
+			copyToClipboard str([_weaponList, _magList ] call  _wpnAndMag);
 		};
 	};
-	
-	
+
+
 	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
 		[_text, "TOP", [0,0,0,.8], 5] call dzn_fnc_ShowMessage;
-	};	
-	
+	};
+
 	if (isNull ( uinamespace getvariable "RSCDisplayArsenal" )) then {
 		hint parseText _text;
-	} else {		
+	} else {
 		[
 			_text
 			, "TOP"
@@ -402,20 +417,20 @@ dzn_fnc_gear_editMode_getCurrentWeapon = {
 	};
 };
 
-dzn_fnc_gear_editMode_getCurrentIdentity = {	
+dzn_fnc_gear_editMode_getCurrentIdentity = {
 	private _owner = if (!isNull cursorTarget && {cursorTarget isKindOf "CAManBase"}) then { "Unit" } else { "Player" };
 
 	private _unit = if (_owner == "Unit") then { cursorTarget } else { player };
 	private _face = face _unit;
 	private _voice = speaker _unit;
-	private _name = name _unit;	
-	
+	private _name = name _unit;
+
 	hint parseText format [
 		"<t color='#6090EE' size='1.1'>%1 Identity was copied to clipboard</t><br />Face: %2<br />Speaker: %3<br />Name: %4"
 		, _owner
 		, _face
 		, _voice
-		, _name		
+		, _name
 	];
 	copyToClipboard format[',["<IDENTITY >>", "%1", "%2", ""]', _face, _voice, _name];
 };
@@ -426,43 +441,45 @@ dzn_fnc_gear_editMode_createKit = {
 
 	// @Add action? call dzn_fnc_gear_editMode_createKit
 	// RETURN: 	Copy kit to clipboard, Add action in actin menu, Show notification
-	
+
 	private _name = _this;
 	#define GetColors ["F","C","B","3","6","9"] call BIS_fnc_selectRandom
 	private _colorString = format [
 		"#%1%2%3%4%5%6", GetColors, GetColors, GetColors, GetColors, GetColors, GetColors
 	];
-	
+
 	private _addKitAction = {
 		// @ColorString, @Kit call _addKitAction
-		player addAction [		
+		params ["_name", "_color", "_kit"];
+
+		player addAction [
 			format [
-				"<t color='%1'>Kit with %3 at %2</t>"
-				,_this select 0
-				,[time/3600, "HH:MM:SS"] call BIS_fnc_timeToString
-				,((_this select 1) select 1 select 1) call dzn_fnc_gear_editMode_getItemName
+				"<t color='%3'>%1 (at %2)</t>",
+				_name,
+				[time/3600, "HH:MM:SS"] call BIS_fnc_timeToString,
+				_color
 			],
 			{
-				if (isNull cursorTarget) then {
-					[player, _this select 3] call dzn_fnc_gear_assignGear;
-				} else {
-					if (cursorTarget isKindOf "CAManBase") then {
-						[cursorTarget, _this select 3] call dzn_fnc_gear_assignGear;
-					};
+				params ["", "", "", "_kitArg"];
+				if (isNull cursorTarget) exitWith {
+					[player, _kitArg] call dzn_fnc_gear_assignGear;
+				};
+				if (cursorTarget isKindOf "CAManBase") then {
+					[cursorTarget, _kitArg] call dzn_fnc_gear_assignGear;
 				};
 			},
-			_this select 1,0
-		];	
-	};	
-	
+			_kit ,0
+		];
+	};
+
 	private _addCargoKitAction = {
 		// @ColorString, @Kit call _addKitAction
 		player addAction [
 			format [
-				"<t color='%1'>Cargo Kit from %3 at %2</t>"			
+				"<t color='%1'>Cargo Kit from %3 at %2</t>"
 				, _this select 0
 				, [time/3600, "HH:MM:SS"] call BIS_fnc_timeToString
-				, (typeOf cursorTarget) call dzn_fnc_gear_editMode_getVehicleName			
+				, (typeOf cursorTarget) call dzn_fnc_gear_editMode_getVehicleName
 			]
 			, {
 				if (!isNull cursorTarget && !(cursorTarget isKindOf "CAManBase")) then {
@@ -473,20 +490,20 @@ dzn_fnc_gear_editMode_createKit = {
 					};
 				};
 			}
-			, _this select 1, 0		
+			, _this select 1, 0
 		];
-	};	
-	
+	};
+
 	private _replaceDefaultMagazines = {
 		if !(dzn_gear_ReplaceRHSStanagToDefault) exitWith {};
-		
+
 		if ((_this select 1) select 2 == "rhs_mag_30Rnd_556x45_Mk318_Stanag") then {
 			(_this select 1) set [2, "30Rnd_556x45_Stanag"];
 		};
 	};
-	
+
 	private _useStandardItems = {
-		// @Kit call _useStandardItems		
+		// @Kit call _useStandardItems
 		if (toLower(dzn_gear_UseStandardAssignedItems) != "no") then {
 			_this set [
 				4
@@ -496,7 +513,7 @@ dzn_fnc_gear_editMode_createKit = {
 				}
 			];
 		};
-		
+
 		if (toLower(dzn_gear_UseStandardUniformItems) != "no") then {
 			_this set [
 				5
@@ -507,49 +524,52 @@ dzn_fnc_gear_editMode_createKit = {
 			];
 		};
 	};
-	
+
 	private _formatAndCopyKit = {
 		/* @Kit call _formatAndCopyKit
 		 * Format of output
 		 */
-		 
+
 		_this pushBack "];";		// closing bracket
-		private _lastItemNo = count(_this) - 1;		
-		private _formatedString = format ["%1 = [", _name];	
+		private _lastItemNo = count(_this) - 1;
+		private _formatedString = format ["%1 = [", _name];
 		{
 			_formatedString = format [
-				"%1
-%2%3%4"
+				"%1" + toString[10] + "%2%3%4"
 				, _formatedString
-				, if (_forEachIndex != _lastItemNo) then { "	" } else { "" }
+				, ["", "    "] select (_forEachIndex != _lastItemNo) // if (_forEachIndex != _lastItemNo) then { "	" } else { "" }
 				, _x
-				, if (_forEachIndex < _lastItemNo - 1) then { "," } else { "" }
+				, ["", ","] select (_forEachIndex < _lastItemNo - 1) // if (_forEachIndex < _lastItemNo - 1) then { "," } else { "" }
 			];
 		} forEach _this;
-		
+
 		copyToClipboard _formatedString;
 	};
-	
+
 	private _copyUnitKit = {
 		params ["_title", "_kit", "_name", "_colorString"];
-		
-		[_colorString, _kit + []] call _addKitAction; 
-		
+
 		_kit call _replaceDefaultMagazines;
+
+		[_name, _colorString, _kit + []] call _addKitAction;
+
 		_kit call _useStandardItems;
 		_kit call _formatAndCopyKit;
+
+		missionNamespace setVariable [_name, _kit];
+
 		["KIT_COPIED", [_title, _colorString]] call dzn_fnc_gear_editMode_showNotif;
 	};
-	
+
 	private _copyCargoKit = {
 		params ["_title", "_kit", "_name", "_colorString"];
-		
+
 		// Format of output
 		private _str = str(_kit);
-		private _formatedString = ""; 
+		private _formatedString = "";
 		private _lastId = 0;
 		for "_i" from 0 to ((count _str) - 1) do {
-			if (_str select [_i,2] in ["[[","[]"]) then {		
+			if (_str select [_i,2] in ["[[","[]"]) then {
 				_formatedString = format[
 						"%1
 	%2"
@@ -569,17 +589,17 @@ dzn_fnc_gear_editMode_createKit = {
 				];
 			};
 		};
-		
+
 		_formatedString = format ["cargo_%1 = %2", _name, [_formatedString,4] call BIS_fnc_trimString];
 		copyToClipboard _formatedString;
-		
+
 		[_colorString, _kit] call _addCargoKitAction;
 		["KIT_COPIED", ["Cargo", _colorString]] call dzn_fnc_gear_editMode_showNotif;
 	};
 
 	if (isNull cursorTarget) then {
 		// Player
-		["Player's", player call dzn_fnc_gear_getGear, _name, _colorString] call _copyUnitKit;	
+		["Player's", player call dzn_fnc_gear_getGear, _name, _colorString] call _copyUnitKit;
 		// [_colorString, (player call dzn_fnc_gear_getGear)] call _addKitAction; };
 	} else {
 		if (cursorTarget isKindOf "CAManBase") then {
@@ -587,9 +607,9 @@ dzn_fnc_gear_editMode_createKit = {
 			["Unit's", cursorTarget call dzn_fnc_gear_getGear, _name, _colorString] call _copyUnitKit;
 			// [_colorString, (cursorTarget call dzn_fnc_gear_getGear)] call _addKitAction;
 		} else {
-			// Vehicle	
+			// Vehicle
 			["Vehicle's", cursorTarget call dzn_fnc_gear_getCargoGear, _name, _colorString] call _copyCargoKit;
-		};	
+		};
 	};
 };
 
@@ -606,19 +626,17 @@ dzn_fnc_gear_editMode_formatCargoKit = {
 };
 
 
-// ---
+// --- Menu
 dzn_fnc_gear_editMode_navBarIdx = 0;
 dzn_fnc_gear_editMode_navBarPages = [
-	["Create Kit", 'dzn_fnc_gear_editMode_showMenu_KitGetter'],
+	["Main", 'dzn_fnc_gear_editMode_showMenu_Main'],
 	["Cargo Kit Composer", 'dzn_fnc_gear_editMode_showMenu_CargoKitComposer'],
-	["Ammo Bearer Composer", 'dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer'],
-	["Settings", 'dzn_fnc_gear_editMode_showMenu_Settings']
+	["Ammo Bearer Composer", 'dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer']
+	// ["Settings", 'dzn_fnc_gear_editMode_showMenu_Settings']
 ];
 
 dzn_fnc_gear_editMode_handleMenu = {
 	params [["_paginationDirection", 0]];
-
-	DBG_ "(HandleMenu) Params: %1", _paginationDirection EOL;
 
 	private _targetPageIdx = dzn_fnc_gear_editMode_navBarIdx + _paginationDirection;
 	private _maxIdx = (count dzn_fnc_gear_editMode_navBarPages) - 1;
@@ -636,32 +654,25 @@ dzn_fnc_gear_editMode_handleMenu = {
 	private _prevPage = dzn_fnc_gear_editMode_navBarPages # ([_targetPageIdx - 1] call _getInRangeIndex);
 	private _nextPage = dzn_fnc_gear_editMode_navBarPages # ([_targetPageIdx + 1] call _getInRangeIndex);
 
-	
-	DBG_ "(HandleMenu) _targetPage=%1", _targetPage EOL;
-	DBG_ "(HandleMenu) _prevPage=%1", _prevPage EOL;
-	DBG_ "(HandleMenu) _nextPage=%1", _nextPage EOL;
-
 	private _menu = [
 		["HEADER", "dzn_Gear Menu"],
 		[
-			"BUTTON", 
-			"<t align='center'>&lt;</t>", 
+			"BUTTON",
+			"<t align='center'>&lt;</t>",
 			{
 				params ["_ad"];
-				hint "<<<";
 				[-1] call dzn_fnc_gear_editMode_handleMenu;
 			}, [],
 			[["w", 0.25], ["size", 0.05], ["tooltip", _prevPage # 0]]
 		],
 		["LABEL", format ["<t align='center'>%1</t>", _targetPage # 0], [["bg", [0,0,0,1]], ["size", 0.05]]],
 		[
-			"BUTTON", 
-			"<t align='center'>&gt;</t>", 
-			{ 
+			"BUTTON",
+			"<t align='center'>&gt;</t>",
+			{
 				params ["_ad"];
-				hint ">>>";
 				[+1] call dzn_fnc_gear_editMode_handleMenu;
-			}, [], 
+			}, [],
 			[["w", 0.25], ["size", 0.05], ["tooltip", _nextPage # 0]]
 		],
 		["BR"]
@@ -670,7 +681,8 @@ dzn_fnc_gear_editMode_handleMenu = {
 	[_menu] call (missionNamespace getVariable (_targetPage # 1));
 };
 
-dzn_fnc_gear_editMode_showMenu_Settings = {
+
+dzn_fnc_gear_editMode_showMenu_Main = {
 	params ["_menuNavbar"];
 
 	private _options = [
@@ -681,34 +693,141 @@ dzn_fnc_gear_editMode_showMenu_Settings = {
 	private _assignedItemsCurSel = _options findIf {dzn_gear_UseStandardAssignedItems == _x # 1};
 	private _uniformItemsCurSel = _options findIf {dzn_gear_UseStandardUniformItems == _x # 1};
 
+	// -- Higlight kits that already exists with current key + role
+	private _roles = dzn_gear_kitRoles apply {
+		[_x # 0, _x # 1, [
+			[
+				"color", [
+					COLOR_WHITE, COLOR_DARK_GREEN
+				] select (!isNil format ["kit_%1_%2", dzn_gear_kitKey, _x # 1])
+			]
+		]]
+	};
+
 	private _menu = _menuNavbar + [
-		["LABEL", "<t size='0.9'>Option to override ASSIGNED_ITEMS and UNIFORM_ITEMS by presets defined in Settings</t>"], 
+		[
+			"LABEL",
+			"<t size='0.9'>Kit name should be in format: kit_usmc_ar, where ""usmc"" is a key to faction and ""ar"" is a role."
+		],
 		["BR"],
 
-		["LABEL", "Assigned items mode"],
+		["LABEL", "<t size='0.9'>On pressing ""GET"" button - formatted kit will be copied to the clipboard"],
+		["BR"],["LABEL"],["BR"],
+
+		["LABEL"],
+		["LABEL", "Key"],
+		["LABEL", "Role"],
+		["BR"],
+
+		["LABEL", "Set kit by role: <t align='right'>kit_</t>"],
+		["INPUT", dzn_gear_kitKey, [["tag", "i_kitKey"]], [
+			["EditChanged", {
+				params ["_eventData", "_dialogCOB", "_args"];
+				private _ctrl = _dialogCOB call ["GetByTag", "d_rolename"];
+				{
+					_ctrl lbSetColor [
+						_forEachIndex,
+						[
+							COLOR_WHITE, COLOR_DARK_GREEN
+						] select (!isNil format ["kit_%1_%2", _eventData # 1, _x # 1])
+					];
+				} forEach dzn_gear_kitRoles;
+			}, callbackArgs]
+		]],
+		["DROPDOWN", _roles /* dzn_gear_kitRoles */, dzn_gear_kitRolesId, [["tag", "d_rolename"]]],
+		["BR"],
+
+		["LABEL", "or"],
+		["BR"],
+
+		["LABEL", "Set custom name: <t align='right'>kit_</t>"],
+		["INPUT", "", [["tag", "i_customName"]]],
+		["LABEL", "<t size='0.8' color='#ff3333'>No special symbols/spaces!</t>"],
+		["BR"],
+
+		["LABEL"],["BR"],
+
+		[
+			"LABEL",
+			"<t size='0.9'>Option to override ASSIGNED_ITEMS and UNIFORM_ITEMS by presets defined in Settings</t>",
+			[["bg", BG_STEEL_BLUE]]
+		],
+		["BR"],
+
+		["LABEL", "Assigned items"],
 		["LISTBOX", _options, _assignedItemsCurSel, [["tag", "l_assignedItems"]]],
 		["BR"],
 
-		["LABEL", "Uniform items mode"],
+		["LABEL", "Uniform items"],
 		["LISTBOX", _options, _uniformItemsCurSel, [["tag", "l_uniformItems"]]],
+		["BR"],
+
+		["LABEL", ""],
+		["BUTTON", "<t align='center'>GET</t>", {
+			params ["_ad"];
+			private _vals = _ad call ["GetTaggedValues"];
+
+			dzn_gear_UseStandardAssignedItems = (_vals get "l_assignedItems") # 2;
+			dzn_gear_UseStandardUniformItems = (_vals get "l_uniformItems") # 2;
+			dzn_gear_kitRolesId = (_vals get "d_rolename") # 0;
+
+			private _name = _vals get "i_customName";
+			if (_name == "") then {
+				dzn_gear_kitKey = _vals get "i_kitKey";
+				_name = format [
+					"kit_%1_%2",
+					dzn_gear_kitKey,
+					(_vals get "d_rolename") # 2
+				];
+			};
+			_ad call ["Close"];
+			_name call dzn_fnc_gear_editMode_createKit;
+		}, [], [["w",0.25], ["bg", BG_PALE_GREEN]]]
+	];
+
+	_menu call dzn_fnc_ShowAdvDialog2;
+};
+
+dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
+	/*
+		Menu to select ammo from current's unit gear or from given kit name
+
+
+	*/
+	params ["_menuNavbar"];
+
+	private _currentWeapon = primaryWeapon player;
+	private _allMags = (compatibleMagazines _currentWeapon) apply {
+		[
+			getText (configFile >> "CfgMagazines" >> _x >> "displayName"),
+			_x,
+			[["icon", getText (configFile >> "CfgMagazines" >> _x >> "picture")]]
+		]
+	};
+
+
+	private _menu = _menuNavbar + [
+		["LABEL", "Kit name (optional)"],
+		["INPUT", ""/* , [], [ TODO: EditChange handling]*/],
 		["BR"],
 
 		["LABEL"], ["BR"],
 
-		["LABEL", ""],
-		["BUTTON", "SAVE", {
-			params ["_ad"];
-			private _vals = _ad call ["GetTaggedValues"];
-			dzn_gear_UseStandardAssignedItems = (_vals get "l_assignedItems") # 2;
-			dzn_gear_UseStandardUniformItems = (_vals get "l_uniformItems") # 2;
-			[
-				"OPTION_SAVED", 
-				[
-					toUpper(dzn_gear_UseStandardAssignedItems), 
-					toUpper(dzn_gear_UseStandardUniformItems)
-				]
-			] call dzn_fnc_gear_editMode_showNotif;
-		}, [], [["w", 0.25]]]
+		["LABEL", "Primary weapon magazines: 4", [["bg", BG_STEEL_BLUE]]],
+		["BR"],
+		["DROPDOWN", _allMags, 0, [["tag", "d_maglist"],["w", 0.75], ["h", 0.1]]],
+		["BUTTON", "<t align='center' size='2' color='#000000'>+</t>", {},[],[["bg",BG_PALE_GREEN], ["h", 0.1]]],
+		["BUTTON", "<t align='center' size='2' color='#000000'>—</t>", {},[],[["bg",BG_PALE_RED], ["h", 0.1]]],
+		["BR"],
+		["LABEL", "",[["h",0.02]]], ["BR"],
+
+		["LABEL",
+		"1x 100Rnd 5.56mm STANAG Magazine<br/>2x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>3x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>4x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>5x 100Rnd 5.56mm (Green Tracer) STANAG Magazine",
+		[["tooltip", "lbl_magInfo"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
+		["BR"],
+
+		["LABEL"],
+		["BUTTON", "<t align='center'>Compose</t>", {}, [], [["w",0.25], ["bg", BG_PALE_GREEN]]]
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
@@ -722,7 +841,7 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		if ((_vals get "i_filter") == "") exitWith {};
 		private _filterBy = compile ((
 			(_vals get "i_filter") splitString ","
-		) apply { 
+		) apply {
 			format ["(_x select [0, count ""%1""] == ""%1"")", trim _x]
 		} joinString " || ");
 
@@ -732,14 +851,14 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		DBG_ "Filtered: %1", _kits EOL;
 
 		private _composed = [
-			_kits, 
+			_kits,
 			(_vals get "s_weaponCount") # 0,
 			(_vals get "s_magazineCount") # 0,
 			(_vals get "s_itemCount") # 0,
 			(_vals get "s_backpackCount") # 0
 		] call dzn_fnc_gear_editMode_composeCargoItemsFromKits;
 		private _exported = [
-			_vals getOrDefault ["i_name","cargo_kit_test"], 
+			_vals getOrDefault ["i_name","cargo_kit_test"],
 			_composed
 		] call dzn_fnc_gear_editMode_formatCargoKit;
 		copyToClipboard _exported;
@@ -760,10 +879,10 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		["BR"],
 		["LABEL", "<t size='0.9'>You also can enter several names using comma.</t>"],
 		["BR"],
-		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
+		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", BG_STEEL_BLUE]]],
 		["INPUT", "", [["tag", "i_filter"]]],
 		["BR"],
-		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
+		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", BG_STEEL_BLUE]]],
 		["INPUT", "cargo_kit_test", [["tag", "i_name"], ["tooltip", "Name of the generated cargo kit"]]],
 		["BR"],
 
@@ -796,90 +915,8 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		["BR"],
 
 		["LABEL"],["BR"],
-		["LABEL"], 
-		["BUTTON", "Compose", _onButtonClick, [],[["w", 0.25]]]
-	];
-	_menu call dzn_fnc_ShowAdvDialog2;
-};
-
-dzn_fnc_gear_editMode_showMenu_KitGetter = {
-	params ["_menuNavbar"];
-
-	private _menu = _menuNavbar + [
-		["LABEL", "<t size='0.9'>Kit name should be in format: kit_usmc_ar, where ""usmc"" is a key to faction and ""ar"" is a role."],
-		["BR"],
-		
-		["LABEL", "<t size='0.9'>On pressing ""GET"" button - formatted kit will be copied to the clipboard"],
-		["BR"],["LABEL"],["BR"],
-		
 		["LABEL"],
-		["LABEL", "Key"],
-		["LABEL", "Role"],
-		["BR"],
-
-		["LABEL", "Set kit by role: <t align='right'>kit_</t>"],
-		["INPUT", dzn_gear_kitKey, [["tag", "i_kitKey"]], [["mouseEnter", { params ["_event", "_cob", "_args"]; hint format ["%1", CBA_missionTime]; }, "Mouse Enter Event with Args!"]]],
-		["DROPDOWN", dzn_gear_kitRoles, 0, [["tag", "d_rolename"]], [["LBSelChanged", { params ["_event", "_cob", "_args"]; hint format ["%1", CBA_missionTime]; }, "Mouse Enter Event with Args!"]]],
-		["BR"],
-
-		["LABEL", "or"],
-		["BR"],
-
-		["LABEL", "Set custom name: <t align='right'>kit_</t>"],
-		["INPUT", "", [["tag", "i_customName"]]],
-		["LABEL", "<t size='0.8' color='#ff3333'>No special symbols/spaces!</t>"],
-		["BR"],["LABEL"],["BR"],
-
-		["LABEL", ""],
-		["BUTTON", "GET", {
-			params ["_ad"];
-			private _vals = _ad call ["GetTaggedValues"];
-			private _name = _vals get "i_customName";
-			if (_name == "") then {
-				DBG_ "Vals: %1", _vals EOL;
-				dzn_gear_kitKey = _vals get "i_kitKey";
-				_name = format [
-					"kit_%1_%2", 
-					dzn_gear_kitKey,
-					(_vals get "d_rolename") # 2
-				];
-			};
-			_ad call ["Close"];
-			_name call dzn_fnc_gear_editMode_createKit;
-		}, [], [["w",0.25]]]
-	];
-	
-	_menu call dzn_fnc_ShowAdvDialog2;
-};
-
-dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
-	/*
-		Menu to select ammo from current's unit gear or from given kit name 
-	*/
-	params ["_menuNavbar"];
-
-	private _menu = _menuNavbar + [
-		["LABEL", "Select kit"], 
-		["INPUT", ""],
-		["BR"],
-		
-		["LABEL"], ["BR"],
-
-		["LABEL", "Primary weapon magazines: 4", [["bg", [1,0.5,0,1]]]],
-		["BR"],
-		["DROPDOWN", ['100Rnd 5.56mm STANAG Magazine', '100Rnd 5.56mm (Green Tracer) STANAG Magazine'], 0, [["tag", "xx"],["w", 0.75]]],
-		["BUTTON", "<t align='center' color='#000000'>+</t>", {},[],[["bg",[0.66, 0.79, 0.37, 1]]]],
-		["BUTTON", "<t align='center' color='#000000'>-</t>", {},[],[["bg",[0.78, 0.49, 0.37, 1]]]],
-		["BR"],
-		["LABEL", "",[["h",0.02]]], ["BR"],
-
-		["LABEL", 
-		"1x 100Rnd 5.56mm STANAG Magazine<br/>2x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>3x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>4x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>5x 100Rnd 5.56mm (Green Tracer) STANAG Magazine", 
-		[["tooltip", "KEK-LOL"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
-		["BR"],
-
-		["LABEL"],
-		["BUTTON", "Compose", {}, [], [["w",0.25]]]
+		["BUTTON", "<t align='center'>Compose</t>", _onButtonClick, [],[["w", 0.25], ["bg", BG_PALE_GREEN]]]
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
@@ -890,9 +927,9 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 // *****************************
 dzn_fnc_gear_editMode_setOptions = {
 	/* [@Option] call dzn_fnc_gear_editMode_setOptions
-	 *	Options:	
+	 *	Options:
 	 *		UseStandardUniformItems
-	 *		UseStandardAssignedItems		
+	 *		UseStandardAssignedItems
 	 */
 	switch toLower(_this select 0) do {
 		case toLower("UseStandardUniformItems"): {
@@ -924,44 +961,44 @@ dzn_fnc_gear_editMode_showAmmoBearerGetterMenu = {
 		, [1, "INPUT"]
 	];
 	private _lineNo = 2;
-	dzn_gear_editMode_addMagazineTypes = [false,false];	
-	
+	dzn_gear_editMode_addMagazineTypes = [false,false];
+
 	if (primaryWeapon player != "") then {
 		_menu pushBack [_lineNo, "LABEL", "PRIMARY WEAPON MAGAZINES"];
 		_lineNo = _lineNo + 1;
-		
+
 		private _listOfMags = [""] + getArray(configFile >> "CfgWeapons" >> primaryWeapon player >> "magazines");
-		
-		for "_i" from 1 to 4 do {			
+
+		for "_i" from 1 to 4 do {
 			_menu = _menu + [
 				[ _lineNo, "LABEL", format ["<t align='right'>TYPE #%1</t>", _i]]
 				, [ _lineNo, "DROPDOWN", _listOfMags apply { _x call dzn_fnc_getItemDisplayName }, _listOfMags]
 				, [ _lineNo, "SLIDER", [0,8,0]]
 			];
-			_lineNo = _lineNo + 1;			
+			_lineNo = _lineNo + 1;
 		};
-		
+
 		dzn_gear_editMode_addMagazineTypes set [0, true];
 	};
-	
+
 	if (secondaryWeapon player != "") then {
 		_menu pushBack [_lineNo, "LABEL", "LAUNCHER MAGAZINES"];
 		_lineNo = _lineNo + 1;
-		
+
 		private _listOfMags = [""] +  getArray(configFile >> "CfgWeapons" >> secondaryWeapon player >> "magazines");
-	
-		for "_i" from 1 to 4 do {			
+
+		for "_i" from 1 to 4 do {
 			_menu = _menu + [
 				[ _lineNo, "LABEL", format ["<t align='right'>TYPE #%1</t>", _i]]
 				, [ _lineNo, "DROPDOWN", _listOfMags apply { _x call dzn_fnc_getItemDisplayName }, _listOfMags]
 				, [ _lineNo, "SLIDER", [0,8,0]]
 			];
-			_lineNo = _lineNo + 1;			
+			_lineNo = _lineNo + 1;
 		};
-		
+
 		dzn_gear_editMode_addMagazineTypes set [0, true];
 	};
-	
+
 	_menu = _menu + [
 		[_lineNo,"LABEL", ""]
 		,[_lineNo + 1,"BUTTON", "CANCEL", { closeDialog 2; }]
@@ -970,18 +1007,18 @@ dzn_fnc_gear_editMode_showAmmoBearerGetterMenu = {
 		,[_lineNo + 1,"BUTTON", "SAVE", {
 			private _name = (_this select 0) select 0;
 			private _magList = [];
-			
+
 			if (true in dzn_gear_editMode_addMagazineTypes) then {
 				for "_i" from 1 to (count _this) step 2 do {
-					if ((_this select _i) select 0 != 0) then {			
+					if ((_this select _i) select 0 != 0) then {
 						_magList pushBack [
 							((_this select _i) select 2) select ((_this select _i) select 0)
-							, ((_this select (_i + 1)) select 0)						
+							, ((_this select (_i + 1)) select 0)
 						];
 					};
 				};
 			};
-			
+
 			dzn_gear_editMode_ammoBearerItemsKits pushBack [
 				if (_name == "") then { format ["Bearer #%1", (count dzn_gear_editMode_ammoBearerItemsKits) + 1] } else { _name }
 				, _magList
@@ -990,15 +1027,15 @@ dzn_fnc_gear_editMode_showAmmoBearerGetterMenu = {
 			["BEARER_SAVED"] call dzn_fnc_gear_editMode_showNotif;
 		}]
 	];
-	
-	if (_lineNo == 2) then { 
+
+	if (_lineNo == 2) then {
 		_menu = [
 			[0, "HEADER", "GET AMMO BEARER ITEMS"]
 			, [1, "LABEL", "<t align='center'>NO WEAPONS</t>"]
 			, [1, "BUTTON", "CLOSE", { closeDialog 2; }]
 		];
-	};	
-	
+	};
+
 	_menu call dzn_fnc_ShowAdvDialog;
 };
 
@@ -1011,23 +1048,23 @@ dzn_fnc_gear_editMode_showAmmoBearerSetterMenu = {
 		, [2, "LABEL", ""]
 		, [3, "LABEL", ""]
 		, [4, "BUTTON", "CANCEL", { closeDialog 2; }]
-		, [4, "BUTTON", "COPY", { 
+		, [4, "BUTTON", "COPY", {
 			copyToClipboard str( ((dzn_gear_editMode_ammoBearerItemsKits select { (_x select 0) == (_this select 0) select 1 }) select 0) select 1 );
 			["BEARER_COPIED"] call dzn_fnc_gear_editMode_showNotif;
 		}]
 		, [4, "BUTTON", "APPLY", {
 			closeDialog 2;
 			if (backpack player == "") exitWith { hint "You have no backpack to add ammo set!"; };
-			
+
 			{ player removeItemFromBackpack _x; } forEach (backpackItems player);
 			private _mags = ((dzn_gear_editMode_ammoBearerItemsKits select { (_x select 0) == (_this select 0) select 1 }) select 0) select 1;
 			{
 				private _mag = _x select 0;
 				private _count = _x select 1;
-				
-				for "_i" from 1 to _count do { player addItemToBackpack _mag;	};				
+
+				for "_i" from 1 to _count do { player addItemToBackpack _mag;	};
 			} forEach _mags;
-			
+
 			["BEARER_ADDED"] call dzn_fnc_gear_editMode_showNotif;
 		}]
 	] call dzn_fnc_ShowAdvDialog;
@@ -1039,7 +1076,7 @@ dzn_fnc_gear_editMode_showAmmoBearerSetterMenu = {
 
 dzn_fnc_gear_editMode_composeCargoItemsFromKits = {
 	params [
-		["_kits", nil, [[]]], 
+		["_kits", nil, [[]]],
 		["_weaponCount", 1, [0]],
 		["_magazineCount", 1, [0]],
 		["_itemCount", 1, [0]],
@@ -1047,7 +1084,7 @@ dzn_fnc_gear_editMode_composeCargoItemsFromKits = {
 	];
 
 	private _items = [];
-	// -- Gather list of items all over the kits 
+	// -- Gather list of items all over the kits
 	{
 		DBG_ "(composeCargoItems) Kit=%1", _x EOL;
 		_x params [
@@ -1068,22 +1105,22 @@ dzn_fnc_gear_editMode_composeCargoItemsFromKits = {
 			// -- Add plain item declaration
 			_items pushBackUnique _x
 		} forEach [
-			// -- Backpack 
+			// -- Backpack
 			_equip # 3,
-			// -- Primary weapon and mag 
+			// -- Primary weapon and mag
 			_pw # 1, _pw # 2,
-			// -- Secondary weapon and mag 
+			// -- Secondary weapon and mag
 			_sw # 1, _sw # 2,
-			// -- Handgun magazine 
+			// -- Handgun magazine
 			_hw # 2
-		] 
+		]
 		// -- Items in uniform, vest and backpack
-		+ ((_uniform # 1) apply { _x # 0 }) 
-		+ ((_vest # 1) apply { _x # 0 }) 
+		+ ((_uniform # 1) apply { _x # 0 })
+		+ ((_vest # 1) apply { _x # 0 })
 		+ ((_backpack # 1) apply { _x # 0 });
 	} forEach _kits;
 
-	// -- Compose Cargo kit from it 
+	// -- Compose Cargo kit from it
 	private _cargoWeapons = [];
 	private _cargoMagazines = [];
 	private _cargoItems = [];
@@ -1121,15 +1158,15 @@ dzn_fnc_gear_editMode_showAsStructuredList = {
 	private["_arr","_item","_result"];
 	_arr = if (typename (_this select 0) == "STRING") then { [_this select 0] } else { _this  select 0 };
 	_result = "";
-	{		
+	{
 		_item = if (_this select 1) then { _x call dzn_fnc_gear_editMode_getItemName } else { _x };
 		_result = if (_forEachIndex == 0) then {
 			format ["%1", _item]
 		} else {
 			format ["%1<br />%2", _result, _item]
-		};	
+		};
 	} forEach _arr;
-	
+
 	_result
 };
 
@@ -1171,13 +1208,13 @@ dzn_fnc_gear_editMode_showGearTotals = {
 		, secondaryWeapon player
 		, handgunWeapon player
 	] apply { _x call dzn_fnc_gear_editMode_getItemName };
-	
+
 	private _wpnItems = [];
 	private _wpnItemTemplate = "<t color='#AAAAAA' align='left' size='0.8'>[%1] %2</t>";
 	{
 		private _arr = _x select 0;
 		private _label = _x select 1;
-		
+
 		_wpnItems = _wpnItems + (
 			_arr apply {
 				private _name = _x call dzn_fnc_gear_editMode_getItemName;
@@ -1185,16 +1222,16 @@ dzn_fnc_gear_editMode_showGearTotals = {
 					parseText (format [_wpnItemTemplate, _label, _name])
 				} else { "" }
 			}
-		);	
+		);
 	} forEach [
 		[ (primaryWeaponItems player), "Primary" ]
 		,[ (secondaryWeaponItems player), "Secondary" ]
 		,[ (handgunItems player), "Handgun" ]
 	];
-	
+
 	private _itemsAndMagazines = (((
 		(assignedItems player)
-		+ (itemsWithMagazines player) 
+		+ (itemsWithMagazines player)
 	) call bis_fnc_consolidateArray) apply {
 		private _name = (_x select 0) call dzn_fnc_gear_editMode_getItemName;
 		private _line = "";
@@ -1205,11 +1242,11 @@ dzn_fnc_gear_editMode_showGearTotals = {
 				parseText (format ["<t color='#AAAAAA' align='left' size='0.8'>%1</t>", _name])
 			}
 		};
-		
+
 		_line
 	});
-	
-	#define	IFNAME(X)	if ((_headlineItems select X) == "") then { "-no-" } else { _headlineItems select X }	
+
+	#define	IFNAME(X)	if ((_headlineItems select X) == "") then { "-no-" } else { _headlineItems select X }
 	private _stringsToShow = [
 		parseText "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
 		, parseText format ["<t color='#3F738F' align='left' size='0.8'>Uniform:</t><t align='right' size='0.8'>%1</t>", IFNAME(0) ]
@@ -1221,7 +1258,7 @@ dzn_fnc_gear_editMode_showGearTotals = {
 		, parseText format ["<t color='#059CED' align='left' size='0.8'>Secondary:</t><t align='right' size='0.8'>%1</t>", IFNAME(6)]
 		, parseText format ["<t color='#059CED' align='left' size='0.8'>Handgun:</t><t align='right' size='0.8'>%1</t>", IFNAME(7)]
 	];
-	
+
 	[
 		_stringsToShow + _wpnItems + _itemsAndMagazines - [""]
 		, [35.2,-7.1, 35, 0.03]
@@ -1236,9 +1273,9 @@ dzn_fnc_gear_editMode_showGearTotals = {
 // *****************************
 dzn_fnc_gear_editMode_showNotif = {
 	params ["_type", ["_msgParams", []]];
-	
+
 	private _msg = switch toUpper(_type) do {
-		case "OPTION_UNIFORM": { 
+		case "OPTION_UNIFORM": {
 			format ["<t align='right' font='PuristaBold' size='1'>Use Uniform Items override: <t color='#FFD000'>%1</t></t>", _msgParams select 0];
 		};
 		case "OPTION_ASSIGNED": {
@@ -1268,7 +1305,7 @@ dzn_fnc_gear_editMode_showNotif = {
 };
 
 dzn_fnc_gear_editMode_initialize = {
-	waitUntil { !(isNull (findDisplay 46)) }; 
+	waitUntil { !(isNull (findDisplay 46)) };
 	(findDisplay 46) displayAddEventHandler ["KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"];
 
 	dzn_gear_editMode_keyIsDown = false;
@@ -1302,15 +1339,15 @@ dzn_fnc_gear_editMode_initialize = {
 	dzn_gear_editMode_lastInventory = [];
 
 	bis_fnc_arsenal_fullArsenal = true;
-	//["Preload"] call BIS_fnc_arsenal; 
+	//["Preload"] call BIS_fnc_arsenal;
 
 	hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
-		<br /><br /><t size='1.35' color='#3793F0' underline='true'>EDIT MODE</t>	
-		<br /><t %1>This is an Edit mode where you can create gear kits for dzn_gear.</t>	
-		<br /><br /><t size='1.35' color='#3793F0' underline='true'>VIRTUAL ARSENAL</t>	
-		<br /><t %1>Use arsenal to choose your gear. Then Copy it and paste to dzn_gear_kits.sqf file.</t>
+		<br /><br /><t size='1.35' color='#3793F0' underline='true'>EDIT MODE</t>
+		<br /><t %1>This is an Edit mode where you can create gear kits for dzn_gear.</t>
+		<br /><br /><t size='1.35' color='#3793F0' underline='true'>WORKFLOW</t>
+		<br /><t %1>Use <t color='#3793F0'>[SPACE]</t> to access Arsenal and choose your gear. Then copy it via <t color='#3793F0'>[CTRL + SPACE]</t> and paste to dzn_gear_kits.sqf file.</t>
 		<br /><br /><t size='1.25' color='#3793F0' underline='true'>KEYBINDING</t>
-		<br /><t %1>Close ARSENAL and check keybinding of EDIT MODE by clicking [F1] button.</t>
+		<br /><t %1>Use <t color='#3793F0'>[F1]</t> button to see all keybinds.</t>
 		"
 		, "align='left' size='0.9'"
 	];
@@ -1322,30 +1359,30 @@ dzn_fnc_gear_editMode_initialize = {
 	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
 		dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
 			if !(isNil "ace_arsenal_currentAction") then {
-				// ACE arsenal opened				
+				// ACE arsenal opened
 				if (dzn_gear_editMode_canCheck_ArsenalDiff) then {
 					dzn_gear_editMode_canCheck_ArsenalDiff = false;
 					[] spawn dzn_gear_editMode_waitToCheck_ArsenalDiff;
 					[] spawn dzn_fnc_gear_editMode_showGearTotals;
 				};
-				
+
 				if (dzn_gear_editMode_controlsOverArsenalEH < 0) then {
 					with uiNamespace do {
 						private _handlerId = (findDisplay 1127001) displayAddEventHandler [
-							"KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"						
+							"KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"
 						];
-						
+
 						missionNamespace setVariable ["dzn_gear_editMode_controlsOverArsenalEH", _handlerId];
 					};
 				};
 			} else {
-				// ACE arsenal closed				
+				// ACE arsenal closed
 			};
 		}];
 	};
-	
-	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };	
-	
+
+	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };
+
 	dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
 		if !(isNull ( uinamespace getvariable "RSCDisplayArsenal")) then {
 			if !(dzn_gear_editMode_arsenalOpened) then {
@@ -1356,7 +1393,7 @@ dzn_fnc_gear_editMode_initialize = {
 				[] spawn dzn_gear_editMode_waitToCheck_ArsenalDiff;
 				call dzn_fnc_gear_editMode_showGearTotals;
 			};
-				
+
 			if (dzn_gear_editMode_controlsOverArsenalEH < 0) then {
 				dzn_gear_editMode_controlsOverArsenalEH = (uinamespace getvariable "RSCDisplayArsenal") displayAddEventHandler [
 					"KeyDown"

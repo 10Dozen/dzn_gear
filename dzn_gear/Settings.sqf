@@ -1,5 +1,5 @@
 /*
- *	GEAR 
+ *	GEAR
  *	SETTINGS
  */
 // Enable or disable a synchronization of unit's identity (face, voice)
@@ -36,16 +36,16 @@ dzn_gear_useACEArsenal			= true;
  *		EDIT MODE
  *		SETTINGS
  */
- 
+
 // Use ACE_Arsenal in edit mode
 dzn_gear_UseACEArsenalOnEdit = true;
- 
+
 /*
  *	Standard/Leader Items can be ARRAY or STRING (stringified array) of items that will replace corresponding line in the config
  *		ARRAY -- for item classnames only
  *		STRING - for both classnames and macrosses defined in Kits.sqf
  *
- *	Available modes:	"no", "standard", "leader" 
+ *	Available modes:	"no", "standard", "leader"
  */
 dzn_gear_UseStandardUniformItems		= "standard";
 // dzn_gear_StandardUniformItems		= ["<UNIFORM ITEMS >> ",[["ACE_fieldDressing",5],["ACE_packingBandage",5],["ACE_elasticBandage",5],["ACE_tourniquet",2],["ACE_morphine",2],["ACE_epinephrine",2],["ACE_quikclot",5],["ACE_CableTie",2],["ACE_Flashlight_XL50",1],["ACE_EarPlugs",1]]];
@@ -69,6 +69,7 @@ dzn_gear_GearTotalsBG_RGBA			= [0, 0, 0, .6];
 dzn_gear_ReplaceRHSStanagToDefault	= true;
 
 dzn_gear_kitKey = "";
+dzn_gear_kitRolesId = 0;
 dzn_gear_kitRoles = [
 	["Platoon Leader", "pl"]
 	,["Squad Leader", "sl"]
@@ -90,30 +91,30 @@ dzn_gear_kitRoles = [
 	,["Стрелок (ГП)", "gr"]
 	,["Стрелок", "r"]
 	,["Стрелок, вариация 2", "r2"]
-	,["Стрелок, вариация 3", "r3"]		
+	,["Стрелок, вариация 3", "r3"]
 	,["Снайпер", "snp"]
 	,["Взводный снайпер", "mm"]
 	,["Оператор ПТРК, первый номер", "atgm1"]
 	,["Оператор ПТРК, второй номер", "atgm2"]
-	,["Оператор безоткатного орудия, первый номер", "atg1"]  
-	,["Оператор безоткатного орудия, второй номер", "atg2"]  
-	,["Оператор тяжёлого пулемёта, первый номер", "hmg1"]  
+	,["Оператор безоткатного орудия, первый номер", "atg1"]
+	,["Оператор безоткатного орудия, второй номер", "atg2"]
+	,["Оператор тяжёлого пулемёта, первый номер", "hmg1"]
 	,["Оператор тяжёлого пулемёта, второй номер", "hmg2"]
-	,["Оператор АГС, первый номер", "ags1"]  
-	,["Оператор АГС, второй номер", "ags2"]  
-	,["Миномётчик, первый номер", "mort1"]    
+	,["Оператор АГС, первый номер", "ags1"]
+	,["Оператор АГС, второй номер", "ags2"]
+	,["Миномётчик, первый номер", "mort1"]
 	,["Миномётчик, второй номер", "mort2"]
 	,["Боец с ПЗРК", "aa"]
 	,["Пилот вертолёта", "helipilot"]
 	,["Оператор-наводчик вертолёта", "heligunner"]
-	,["Бортстрелок", "sidegunner"]	
+	,["Бортстрелок", "sidegunner"]
 	,["Пилот самолёта", "pilot"]
 	,["Штурмовик", "sttp"]
-	,["Штурмовик c дробовиком", "shg"]  
+	,["Штурмовик c дробовиком", "shg"]
 	,["Штурмовик со щитом", "shb"]
-	,["Боец ближнего боя", "melee"]  
+	,["Боец ближнего боя", "melee"]
 	,["Диверсант", "sbtr"]
-	,["Сапёр", "spr"]  
+	,["Сапёр", "spr"]
 	,["Огнемётчик", "fttr"]
 	,["Медик", "med"]
 	,["Командир роты", "cl"]
@@ -121,13 +122,13 @@ dzn_gear_kitRoles = [
 	,["Артиллерист", "arty"]
 	,["Боец расчёта", "gcrew"]
 	,["Подносчик боеприпасов", "aux"]
-	,["Инженер", "eng"]  
+	,["Инженер", "eng"]
 	,["Раненный", "inj"]
 	,["Радист", "rad"]
 	,["Оператор БПЛА", "uav"]
 	,["Старший оператор БПЛА", "uav1"]
 	,["Младший оператор БПЛА", "uav2"]
-	,["VIP", "vip"]		
+	,["VIP", "vip"]
 	,["", ""]
 ];
 
