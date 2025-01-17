@@ -2,7 +2,8 @@
 	[ok] - Export kit in missionNamespace
 	[ok] - highlight roles in list that already was used
 	- Finish ammo bearier exporter page
-
+		- Need to create component to track vars and stuff...
+	- Page with all copied kits / composed elements to extract it again
 */
 
 
@@ -13,12 +14,17 @@
 #define DBG_ diag_log format [DBG_PREFIX +
 #define EOL ]
 
+#define Q(X) #X
+#define _F(X) fnc_##X
+#define F(X) Q(F(X))
+
 #define BG_PALE_GREEN [0.54, 0.63, 0.44, 1]
 #define BG_PALE_RED   [0.63, 0.54, 0.44, 1]
 #define BG_STEEL_BLUE [0.24, 0.29, 0.34, 0.8]
 
 #define COLOR_DARK_GREEN [0.5, 0.7, 0.6, 1]
 #define COLOR_WHITE      [1,1,1,1]
+
 
 // ******************
 // Functions
@@ -629,10 +635,21 @@ dzn_fnc_gear_editMode_formatCargoKit = {
 // --- Menu
 dzn_fnc_gear_editMode_navBarIdx = 0;
 dzn_fnc_gear_editMode_navBarPages = [
-	["Main", 'dzn_fnc_gear_editMode_showMenu_Main'],
-	["Cargo Kit Composer", 'dzn_fnc_gear_editMode_showMenu_CargoKitComposer'],
-	["Ammo Bearer Composer", 'dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer']
-	// ["Settings", 'dzn_fnc_gear_editMode_showMenu_Settings']
+	createHashMapFromArray [
+		["title", "Main"],
+		["renderer", 'dzn_fnc_gear_editMode_showMenu_Main'],
+		["description", "Allows to export player or cursor unit/vehicle/box kit to clipboard."]
+	],
+	createHashMapFromArray [
+		["title", "Cargo Kit Composer"],
+		["renderer", 'dzn_fnc_gear_editMode_showMenu_CargoKitComposer'],
+		["description", "Tool to compose cargo kit from multiple personal kits."]
+	],
+	createHashMapFromArray [
+		["title", "Ammo Bearer Composer"], 
+		["renderer", 'dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer'],
+		["description", "Tool to prepare backpack loadout for ammo beariers based on current weapon or weapon from other kit."]
+	]
 ];
 
 dzn_fnc_gear_editMode_handleMenu = {
@@ -663,9 +680,17 @@ dzn_fnc_gear_editMode_handleMenu = {
 				params ["_ad"];
 				[-1] call dzn_fnc_gear_editMode_handleMenu;
 			}, [],
-			[["w", 0.25], ["size", 0.05], ["tooltip", _prevPage # 0]]
+			[["w", 0.25], ["size", 0.05], ["tooltip", _prevPage get "title"]]
 		],
-		["LABEL", format ["<t align='center'>%1</t>", _targetPage # 0], [["bg", [0,0,0,1]], ["size", 0.05]]],
+		[
+			"LABEL", 
+			format ["<t align='center'>%1</t>", _targetPage get "title"], 
+			[
+				["bg", [0,0,0,1]], 
+				["size", 0.05],
+				["tooltip", _targetPage get "description"]
+			]
+		],
 		[
 			"BUTTON",
 			"<t align='center'>&gt;</t>",
@@ -673,12 +698,12 @@ dzn_fnc_gear_editMode_handleMenu = {
 				params ["_ad"];
 				[+1] call dzn_fnc_gear_editMode_handleMenu;
 			}, [],
-			[["w", 0.25], ["size", 0.05], ["tooltip", _nextPage # 0]]
+			[["w", 0.25], ["size", 0.05], ["tooltip", _nextPage get "title"]]
 		],
 		["BR"]
 	];
 
-	[_menu] call (missionNamespace getVariable (_targetPage # 1));
+	[_menu] call (missionNamespace getVariable (_targetPage get "renderer"));
 };
 
 
@@ -791,43 +816,81 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 	/*
 		Menu to select ammo from current's unit gear or from given kit name
-
-
 	*/
 	params ["_menuNavbar"];
 
-	private _currentWeapon = primaryWeapon player;
-	private _allMags = (compatibleMagazines _currentWeapon) apply {
-		[
-			getText (configFile >> "CfgMagazines" >> _x >> "displayName"),
-			_x,
-			[["icon", getText (configFile >> "CfgMagazines" >> _x >> "picture")]]
-		]
-	};
-
-
 	private _menu = _menuNavbar + [
-		["LABEL", "Kit name (optional)"],
-		["INPUT", ""/* , [], [ TODO: EditChange handling]*/],
+		[
+			"INPUT", "", 
+			[
+				["tag", "i_kitname"], 
+				["tooltip", "(optional) Load kit's weapon/launcher. On loading empty - current gear will be used."]
+			], 
+			[
+				[
+					"EditChanged", 
+					{
+						params ["_eventData", "_dialogCOB", "_args"];
+						(_eventData # 0) ctrlSetTextColor (
+							[COLOR_WHITE, COLOR_DARK_GREEN] select (!isNil (_eventData # 1))
+						);
+					}
+				]
+			]
+		],
+		["BUTTON", "LOAD KIT", { 
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB, _kit]];
+		}],
 		["BR"],
 
 		["LABEL"], ["BR"],
 
-		["LABEL", "Primary weapon magazines: 4", [["bg", BG_STEEL_BLUE]]],
+		["BUTTON", "Primary Weapon", {
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 0]];
+		}, [], [["tag", "btn_primary"]]],
+		["BUTTON", "Launcher Weapon", {
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 1]];
+		}, [], [["tag", "btn_launcher"]]],
 		["BR"],
+
+		["LABEL", "Total magazines count: 0", [["bg", BG_STEEL_BLUE], ["tag", "lbl_magTotalCount"]]],
+		["BR"],
+
 		["DROPDOWN", _allMags, 0, [["tag", "d_maglist"],["w", 0.75], ["h", 0.1]]],
-		["BUTTON", "<t align='center' size='2' color='#000000'>+</t>", {},[],[["bg",BG_PALE_GREEN], ["h", 0.1]]],
-		["BUTTON", "<t align='center' size='2' color='#000000'>—</t>", {},[],[["bg",BG_PALE_RED], ["h", 0.1]]],
+		["BUTTON", "<t align='center' size='2' color='#000000'>+</t>", {
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onMagazineAdd), [_dialogCOB, 1]];
+		},[],[["bg",BG_PALE_GREEN], ["h", 0.1]]],
+		["BUTTON", "<t align='center' size='2' color='#000000'>—</t>", {
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onMagazineRemove), [_dialogCOB, 1]];
+		},[],[["bg",BG_PALE_RED], ["h", 0.1]]],
 		["BR"],
 		["LABEL", "",[["h",0.02]]], ["BR"],
 
-		["LABEL",
-		"1x 100Rnd 5.56mm STANAG Magazine<br/>2x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>3x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>4x 100Rnd 5.56mm (Green Tracer) STANAG Magazine<br/>5x 100Rnd 5.56mm (Green Tracer) STANAG Magazine",
-		[["tooltip", "lbl_magInfo"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
+		["LABEL","",[["tag", "lbl_magInfo"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
 		["BR"],
 
-		["LABEL"],
-		["BUTTON", "<t align='center'>Compose</t>", {}, [], [["w",0.25], ["bg", BG_PALE_GREEN]]]
+		["BUTTON", "<t align='center'>Clear</t>", { 
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onClear), [_dialogCOB]];
+		}, [], [["w",0.25], ["bg", BG_PALE_RED], ["tooltip", "Clears selected pool of magazines."]]]
+		
+		["BUTTON", "<t align='center'>Apply to self</t>", { 
+			dzn_gear_AmmoBearearComponent call [F(composeAndExport), [false]];
+		}, [], [["w",0.25], ["bg", BG_PALE_GREEN], ["tooltip", "Puts selected pool of magazines to your backpack."]]]
+
+		["BUTTON", "<t align='center'>Compose</t>", { 
+			dzn_gear_AmmoBearearComponent call [F(composeAndExport), [true]];
+		}, [], [["w",0.25], ["bg", BG_PALE_GREEN], ["tooltip", "Exports composed line to clipboard."]]],
+
+		["OnDraw", {
+			params ["_dialogCOB"];
+			dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB]];
+		}]
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
@@ -1293,9 +1356,6 @@ dzn_fnc_gear_editMode_showNotif = {
 		case "BEARER_ADDED": {
 			"<t align='right' font='PuristaBold' size='1'>Ammo Bearer Items were <t color='#FFD000'>set to backpack</t></t>";
 		};
-		case "BEARER_SAVED": {
-			"<t align='right' font='PuristaBold' size='1'>Ammo Bearer Items were <t color='#FFD000'>saved</t></t>";
-		};
 		case "KIT_COPIED": {
 			format ["<t align='right' font='PuristaBold' size='1.1'><t color='%2'>%1</t> kit copied</t>", _msgParams select 0, _msgParams select 1];
 		};
@@ -1303,6 +1363,245 @@ dzn_fnc_gear_editMode_showNotif = {
 
 	[parseText _msg, true, nil, 7, 0.2, 0] spawn BIS_fnc_textTiles;
 };
+
+
+// *****************************
+//	Initialization
+// *****************************
+dzn_gear_AmmoBearearComponent = createHashMapObject [
+	[Q(CurrentWeapons), []],
+	[Q(CurrentWeaponsMags), []],
+	[Q(CurrentMode), [false, false]],
+	[Q(CurrentMagPool), createHashMap],
+	[Q(TotalMagCount), 0],
+
+	// -- UI events 
+	[F(onKitLoad), {
+		params ["_dialogCOB"];
+		_self call [F(resetControls), [_dialogCOB]];
+
+		private _kitname = _dialogCOB call [F(GetValueByTag), "i_kitname"];
+		_self call [F(loadKitData), [_kitname]];
+
+		// -- Update UI 
+		_self call [F(renderWeaponTypeButtons), [_dialogCOB]];
+	}],
+	[F(onWeaponSelected), {
+		params ["_dialogCOB", "_weaponId"];
+
+		// -- Update state
+		private _mode = _self get [Q(CurrentMode), [false, false]];
+		_mode set [_weaponId, !(_mode get _weaponId)];
+
+		// -- Update UI 
+		_self call [F(renderWeaponTypeButtons), [_dialogCOB]];
+		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
+	}],
+	[F(onMagazineAdd), {
+		params ["_dialogCOB", "_count"];
+		private _magClass = (_dialogCOB call [F(GetValueByTag), "d_maglist"]) # 2;
+		_self call [F(addMagazine), [_magClass, _count]];
+		// -- Update UI
+		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
+		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+	}],
+	[F(onMagazineRemove), {
+		params ["_dialogCOB", "_count"];
+		private _magClass = (_dialogCOB call [F(GetValueByTag), "d_maglist"]) # 2;
+		_self call [F(removeMagazine), [_magClass, _count]];
+		// -- Update UI
+		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
+		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+	}],
+	[F(onClear), {
+		params ["_dialogCOB", "_count"];
+		_self call [F(clear), []];
+		// -- Update UI
+		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
+		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+	}],
+	[F(composeAndExport), {
+		params [["_applyToPlayer", false, [false]]]
+		private _data = (_self get Q(CurrentMagPool)) toArray false;
+		if (_applyToPlayer) then {
+			private _bp = backpackContainer player;
+			{ _bp addMagazineCargo _x; } forEach _data;
+		};
+
+		private _str = _data joinString ", "
+		
+		forceUnicode 0;
+		copyToClibpoard _str select [1, (count _str) - 2];
+		forceUnicode -1;
+
+		[["BEARER_COPIED", "BEARER_ADDED"] select _applyToPlayer]  call dzn_fnc_gear_editMode_showNotif;
+	}],
+
+	// -- UI render functions
+	[F(resetControls), {
+		params ["_dialogCOB"];
+		_self call [F(clear)];
+		_self set [Q(CurrentWeaponType), 0];
+		_self set [Q(CurrentWeapons), []];
+		_self set [Q(CurrentWeaponsMags), []];
+
+		{
+			private _btn = _dialogCOB call [F(GetByTag), _x];
+			_btn ctrlSetText "";
+			_btn ctrlSetTooltip "";
+			_btn ctrlSetBackgroundColor [0,0,0,1];
+		} forEach ["btn_primary", "btn_launcher"];
+
+		(_dialogCOB call [F(GetByTag), "lbl_magTotalCount"]) ctrlSetText "Total magazines count: 0";
+		(_dialogCOB call [F(GetByTag), "lbl_magInfo"]) ctrlSetText "";
+		private _magazinesListCtrl = _dialogCOB call [F(GetByTag), "d_maglist"];
+		lbClear (_magazinesListCtrl);
+		_magazinesListCtrl setVariable [Q(listValues), []];
+	}],
+	[F(renderWeaponTypeButtons), {
+		params ["_dialogCOB"];
+		(_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
+		(_self get Q(CurrentMode)) params ["_primarySelected", "_launcherSelected"];
+
+		{
+			_x params ["_tag", "_class", "_isSelected"];
+			private _cfg = configFile >> "CfgWeapons" >> _class;
+
+			private _btn = _dialogCOB call [F(GetByTag), _tag];
+			_btn ctrlSetText format ["<img size=2 image='%1' />", getText(_cfg >> "picture")];
+			_btn ctrlSetBackgroundColor [
+				[0,0,0,1],
+				[0.5, 0.5, 0.5, 1]
+			] select _isSelected;
+			_btn ctrlSetTooltip getText(_cfg >> "displayName");
+		} forEach [
+			["btn_primary", _primary, _primarySelected],
+			["btn_launcher", _launcher, _launcherSelected],
+		];
+	}],
+	[F(renderMagazinesListDropdown), {
+		params ["_dialogCOB"];
+		(_self get Q(CurrentMode)) params ["_addPrimaryMags", "_addLauncherMags"];
+		(_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
+		(_self get Q(CurrentWeaponsMags)) params ["_primaryPreferredMag", "_launcherPreferredMag"];
+
+		private _allMags = [];
+		if (_addPrimaryMags) then {
+			private _primaryMags = (compatibleMagazines _primary) - [_primaryPreferredMag];
+			_allMags pushBack _primaryPreferredMag;
+			_allMags append _primaryMags;
+		};
+		if (_addLauncherMags) then {
+			private _launcherMags = (compatibleMagazines _launcher) - [_launcherPreferredMag];
+			_allMags pushBack _launcherPreferredMag;
+			_allMags append _launcherMags;
+		};
+
+		private _currentSelectedMags = _self get Q(CurrentMagPool);
+		private _ctrl = _dialogCOB call [F(GetByTag), "d_maglist"];
+		private _currentSelectedItem = (_ctrl getVariable Q(listValues)) select (lbCurSel _ctrl);
+		lbClear _ctrl;
+		{
+			private _count = _currentSelectedMags getOrDefault [_x, 0];
+
+			_ctrl lbAdd format [
+				"%1%2", 
+				getText(configFile >> "CfgMagazines" >> _x >> "displayText"),
+				[format [" x%1", _count], ""] select (_count == 0)
+			];
+			_ctrl lbSetTooltip [_forEachIndex, _x];
+			_ctrl lbSetPicture getText(configFile >> "CfgMagazines" >> _x >> "picture");
+			_ctrl lbSetColor ([COLOR_DARK_GREEN, COLOR_WHITE] select (_count == 0));
+			if (_x == _currentSelectedItem) then {
+				_ctrl lbSetCurSel _forEachIndex;
+			};
+		} forEach _allMags;
+
+		// Update data for dialogCOB
+		_ctrl setVariable [Q(listValues), _allMags];
+	}],
+	[F(renderMagazinesInfoLabels), {
+		params ["_dialogCOB"];
+
+		private _totalMass = 0;
+		private _totalCount = 0;
+		private _lines = [];
+		{
+			_totalCount = _totalCount + _y;
+			_totalMass = _totalMass + getNumber(configFile >> "CfgMagazines" >> _x >> "ItemInfo" >> "mass");
+
+			_lines pushBack format [
+				"<img image='%1' /img><t color='%4'>%2</t> x%3", 
+				getText(configFile >> "CfgMagazines" >> _x >> "picture"),
+				getText(configFile >> "CfgMagazines" >> _x >> "displayName"),
+				_y,
+				["", "#ddffaa"] select (_x in (_self get Q(CurrentWeaponsMags)))  // TODO: Color
+			];
+		} forEach (_self get Q(CurrentMagPool));
+
+		(_dialogCOB call [F(GetByTag), "lbl_magTotalCount"]) ctrlSetText format [
+			"Total magazines count: %1 (%2 kg)",
+			_totalCount,
+			_totalMass * 0.0283 // ounce to kg
+		];
+		(_dialogCOB call [F(GetByTag), "lbl_magInfo"]) ctrlSetStructuredText parseText (_lines joinString "<br />");
+	}],
+
+	// --
+	[F(loadKitData), {
+		// Loads data from kit (if given and exists) or from current loadout (if kitname is empty). Does nothing if kitname not exists.
+		params ["_kitname"];
+		
+		private _weapons = [primaryWeapon player, secondaryWeapon player];
+		private _magazines = [primaryWeaponMagazine player, secondaryWeaponMagazine player];
+		if (_kitname != "") then {
+			private _kit = missionNamespace getVariable [_kitname, []];
+			if (_kit isEqualTo []) exitWith {};
+
+			// -- Weapon/magazine may be a randomized array, so pick first item
+			_weapons = [_kit # 1 # 1, _kit # 2 # 1] apply {
+				if (_x isEqualType []) then {
+					_x # 0
+				} else {
+					_x
+				}
+			};
+			_magazines = [_kit # 1 # 2, _kit # 2 # 2] apply {
+				if (_x isEqualType []) then {
+					_x # 0
+				} else {
+					_x
+				}
+			};
+		};
+
+		_self set [Q(CurrentWeapons), _weapons];
+		_self set [Q(CurrentWeaponsMags), _magazines];
+	}],
+	[F(clear), {
+		params [""];
+		_self set [Q(CurrentMagPool), createHashMap];
+		_self set [Q(TotalMagCount), 0];
+	}],
+	[F(addMagazine), {
+		params ["_magClass", "_count"];
+		private _pool = _self get Q(CurrentMagPool);
+		_pool set [_magClass, _count + (_pool getOrDefault [_magClass, 0])];
+		
+		_self set [Q(TotalMagCount), (_self get Q(TotalMagCount)) + _count];
+	}],
+	[F(removeMagazine), {
+		params ["_magClass", "_count"];
+		private _pool = _self get Q(CurrentMagPool);
+		private _currentCount = (_pool getOrDefault [_magClass, 0]) - _count;
+		if (_currentCount < 1) exitWith {
+			_pool deleteAt _magClass;
+		};
+		_pool set [_magClass, _currentCount];
+		_self set [Q(TotalMagCount), (_self get Q(TotalMagCount)) - _count];
+	}]
+];
+
 
 dzn_fnc_gear_editMode_initialize = {
 	waitUntil { !(isNull (findDisplay 46)) };
@@ -1332,7 +1631,8 @@ dzn_fnc_gear_editMode_initialize = {
 		dzn_gear_editMode_canCheck_ArsenalDiff = true;
 	};
 
-	dzn_gear_editMode_ammoBearerItemsKits = [];
+	dzn_gear_editMode_ammoBearerCurrentMags = createHashMap; // [MagName 2 Count map]
+	// dzn_gear_editMode_ammoBearerItemsKits = [];
 
 	dzn_gear_editMode_controlsOverArsenalEH = -1;
 	dzn_gear_editMode_notif_pos = [.9,0,.4,1];

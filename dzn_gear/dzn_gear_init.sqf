@@ -28,8 +28,7 @@ call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_functions.sqf";
 // EDIT MODE
 // **************************
 if (dzn_gear_editModeEnabled) then {
-	call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_editMode.sqf";
-	[] spawn dzn_fnc_gear_editMode_initialize;
+	[] call compileScript ["dzn_gear\fn\dzn_gear_editMode.sqf"];
 };
 
 // **************************
