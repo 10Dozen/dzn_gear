@@ -15,16 +15,20 @@
 #define EOL ]
 
 #define Q(X) #X
+#define SQ(X) 'X'
 #define _F(X) fnc_##X
-#define F(X) Q(F(X))
+#define F(X) Q(_F(X))
 
-#define BG_PALE_GREEN [0.54, 0.63, 0.44, 1]
-#define BG_PALE_RED   [0.63, 0.54, 0.44, 1]
-#define BG_STEEL_BLUE [0.24, 0.29, 0.34, 0.8]
+#define COLOR_PALE_GREEN [0.54, 0.63, 0.44, 1]
+#define COLOR_PALE_RED   [0.63, 0.54, 0.44, 1]
+#define COLOR_STEEL_BLUE [0.24, 0.29, 0.34, 0.8]
 
 #define COLOR_DARK_GREEN [0.5, 0.7, 0.6, 1]
 #define COLOR_WHITE      [1,1,1,1]
+#define COLOR_BLACK      [0,0,0,1]
+#define COLOR_GOLD       [0.92, 0.81, 0, 1]
 
+#define COLOR_HEX_GOLD   SQ(#FFD000)
 
 // ******************
 // Functions
@@ -646,7 +650,7 @@ dzn_fnc_gear_editMode_navBarPages = [
 		["description", "Tool to compose cargo kit from multiple personal kits."]
 	],
 	createHashMapFromArray [
-		["title", "Ammo Bearer Composer"], 
+		["title", "Ammo Bearer Composer"],
 		["renderer", 'dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer'],
 		["description", "Tool to prepare backpack loadout for ammo beariers based on current weapon or weapon from other kit."]
 	]
@@ -683,10 +687,10 @@ dzn_fnc_gear_editMode_handleMenu = {
 			[["w", 0.25], ["size", 0.05], ["tooltip", _prevPage get "title"]]
 		],
 		[
-			"LABEL", 
-			format ["<t align='center'>%1</t>", _targetPage get "title"], 
+			"LABEL",
+			format ["<t align='center'>%1</t>", _targetPage get "title"],
 			[
-				["bg", [0,0,0,1]], 
+				["bg", [0,0,0,1]],
 				["size", 0.05],
 				["tooltip", _targetPage get "description"]
 			]
@@ -725,7 +729,8 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 				"color", [
 					COLOR_WHITE, COLOR_DARK_GREEN
 				] select (!isNil format ["kit_%1_%2", dzn_gear_kitKey, _x # 1])
-			]
+			],
+			["tooltip", _x # 0]
 		]]
 	};
 
@@ -775,7 +780,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 		[
 			"LABEL",
 			"<t size='0.9'>Option to override ASSIGNED_ITEMS and UNIFORM_ITEMS by presets defined in Settings</t>",
-			[["bg", BG_STEEL_BLUE]]
+			[["bg", COLOR_STEEL_BLUE]]
 		],
 		["BR"],
 
@@ -796,8 +801,9 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 			dzn_gear_UseStandardUniformItems = (_vals get "l_uniformItems") # 2;
 			dzn_gear_kitRolesId = (_vals get "d_rolename") # 0;
 
-			private _name = _vals get "i_customName";
-			if (_name == "") then {
+			private _customName = _vals get "i_customName";
+			private _name = format ["kit_%1", _customName];
+			if (_customName == "") then {
 				dzn_gear_kitKey = _vals get "i_kitKey";
 				_name = format [
 					"kit_%1_%2",
@@ -807,7 +813,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 			};
 			_ad call ["Close"];
 			_name call dzn_fnc_gear_editMode_createKit;
-		}, [], [["w",0.25], ["bg", BG_PALE_GREEN]]]
+		}, [], [["w",0.25], ["bg", COLOR_PALE_GREEN]]]
 	];
 
 	_menu call dzn_fnc_ShowAdvDialog2;
@@ -820,15 +826,18 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 	params ["_menuNavbar"];
 
 	private _menu = _menuNavbar + [
+		["LABEL", "Find and load kit by name or use your current loadout"],
+		["BR"],
+
 		[
-			"INPUT", "", 
+			"INPUT", "",
 			[
-				["tag", "i_kitname"], 
+				["tag", "i_kitname"],
 				["tooltip", "(optional) Load kit's weapon/launcher. On loading empty - current gear will be used."]
-			], 
+			],
 			[
 				[
-					"EditChanged", 
+					"EditChanged",
 					{
 						params ["_eventData", "_dialogCOB", "_args"];
 						(_eventData # 0) ctrlSetTextColor (
@@ -838,10 +847,10 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 				]
 			]
 		],
-		["BUTTON", "LOAD KIT", { 
+		["BUTTON", "Load kit", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB, _kit]];
-		}],
+		}, [], [["bg", COLOR_STEEL_BLUE]]],
 		["BR"],
 
 		["LABEL"], ["BR"],
@@ -849,48 +858,50 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 		["BUTTON", "Primary Weapon", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 0]];
-		}, [], [["tag", "btn_primary"]]],
+		}, [], [["tag", "btn_primary"], ["h", 0.12]]],
 		["BUTTON", "Launcher Weapon", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 1]];
-		}, [], [["tag", "btn_launcher"]]],
+		}, [], [["tag", "btn_launcher"], ["h", 0.12]]],
 		["BR"],
 
-		["LABEL", "Total magazines count: 0", [["bg", BG_STEEL_BLUE], ["tag", "lbl_magTotalCount"]]],
+		["LABEL", "Total magazines count: 0", [["bg", COLOR_STEEL_BLUE], ["tag", "lbl_magTotalCount"]]],
 		["BR"],
 
 		["DROPDOWN", _allMags, 0, [["tag", "d_maglist"],["w", 0.75], ["h", 0.1]]],
 		["BUTTON", "<t align='center' size='2' color='#000000'>+</t>", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onMagazineAdd), [_dialogCOB, 1]];
-		},[],[["bg",BG_PALE_GREEN], ["h", 0.1]]],
+		},[],[["bg", COLOR_PALE_GREEN], ["h", 0.1]]],
 		["BUTTON", "<t align='center' size='2' color='#000000'>—</t>", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onMagazineRemove), [_dialogCOB, 1]];
-		},[],[["bg",BG_PALE_RED], ["h", 0.1]]],
+		},[],[["bg", COLOR_PALE_RED], ["h", 0.1]]],
 		["BR"],
 		["LABEL", "",[["h",0.02]]], ["BR"],
 
-		["LABEL","",[["tag", "lbl_magInfo"], ["h", 0.2], ["x",0.1], ["w",0.9]]],
+		["LABEL","",[["tag", "lbl_magInfo"], ["h", 0.23], ["x",0.1], ["w",0.9]]],
 		["BR"],
 
-		["BUTTON", "<t align='center'>Clear</t>", { 
+		["BUTTON", "<t align='center'>Clear</t>", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onClear), [_dialogCOB]];
-		}, [], [["w",0.25], ["bg", BG_PALE_RED], ["tooltip", "Clears selected pool of magazines."]]]
-		
-		["BUTTON", "<t align='center'>Apply to self</t>", { 
-			dzn_gear_AmmoBearearComponent call [F(composeAndExport), [false]];
-		}, [], [["w",0.25], ["bg", BG_PALE_GREEN], ["tooltip", "Puts selected pool of magazines to your backpack."]]]
+		}, [], [["bg", COLOR_PALE_RED], ["tooltip", "Clears selected pool of magazines."]]],
 
-		["BUTTON", "<t align='center'>Compose</t>", { 
+		["BUTTON", "<t align='center'>Apply to self</t>", {
 			dzn_gear_AmmoBearearComponent call [F(composeAndExport), [true]];
-		}, [], [["w",0.25], ["bg", BG_PALE_GREEN], ["tooltip", "Exports composed line to clipboard."]]],
+		}, [], [["bg", COLOR_PALE_GREEN], ["tooltip", "Puts selected pool of magazines to your backpack."]]],
 
+		["BUTTON", "<t align='center'>Compose</t>", {
+			dzn_gear_AmmoBearearComponent call [F(composeAndExport), [false]];
+		}, [], [["bg", COLOR_PALE_GREEN], ["tooltip", "Exports composed line to clipboard."]]],
+
+		["BR"],
 		["OnDraw", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB]];
 		}]
+
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
@@ -942,10 +953,10 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 		["BR"],
 		["LABEL", "<t size='0.9'>You also can enter several names using comma.</t>"],
 		["BR"],
-		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", BG_STEEL_BLUE]]],
+		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
 		["INPUT", "", [["tag", "i_filter"]]],
 		["BR"],
-		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", BG_STEEL_BLUE]]],
+		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
 		["INPUT", "cargo_kit_test", [["tag", "i_name"], ["tooltip", "Name of the generated cargo kit"]]],
 		["BR"],
 
@@ -979,7 +990,7 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 
 		["LABEL"],["BR"],
 		["LABEL"],
-		["BUTTON", "<t align='center'>Compose</t>", _onButtonClick, [],[["w", 0.25], ["bg", BG_PALE_GREEN]]]
+		["BUTTON", "<t align='center'>Compose</t>", _onButtonClick, [],[["w", 0.25], ["bg", COLOR_PALE_GREEN]]]
 	];
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
@@ -1368,151 +1379,226 @@ dzn_fnc_gear_editMode_showNotif = {
 // *****************************
 //	Initialization
 // *****************************
-dzn_gear_AmmoBearearComponent = createHashMapObject [
+
+dzn_gear_AmmoBearearComponent = createHashMapObject [[
 	[Q(CurrentWeapons), []],
 	[Q(CurrentWeaponsMags), []],
 	[Q(CurrentMode), [false, false]],
 	[Q(CurrentMagPool), createHashMap],
+	[Q(CurrentSelectedMagazine), ""],
 	[Q(TotalMagCount), 0],
 
-	// -- UI events 
+	// -- UI events
 	[F(onKitLoad), {
 		params ["_dialogCOB"];
+		DBG_ "(ABC.onKitLoad) Invoked" EOL;
 		_self call [F(resetControls), [_dialogCOB]];
 
-		private _kitname = _dialogCOB call [F(GetValueByTag), "i_kitname"];
+		private _kitname = _dialogCOB call ["GetValueByTag", "i_kitname"];
 		_self call [F(loadKitData), [_kitname]];
 
-		// -- Update UI 
-		_self call [F(renderWeaponTypeButtons), [_dialogCOB]];
+		// -- Update UI
+		_self call [F(render), [_dialogCOB]];
 	}],
 	[F(onWeaponSelected), {
 		params ["_dialogCOB", "_weaponId"];
+		DBG_ "(ABC.onWeaponSelected) Invoked. _weaponId=%1", _weaponId EOL;
 
 		// -- Update state
-		private _mode = _self get [Q(CurrentMode), [false, false]];
-		_mode set [_weaponId, !(_mode get _weaponId)];
+		private _mode = _self getOrDefault [Q(CurrentMode), [false, false]];
+		_mode set [_weaponId, !(_mode # _weaponId)];
+		DBG_ "(ABC.onWeaponSelected) Mode after = %1", _mode EOL;
 
-		// -- Update UI 
+		private _currentDropdwonItem = "";
+		private _lbCtrl = _dialogCOB call ["GetByTag", "d_maglist"];
+		private _lbCurSel = lbCurSel _lbCtrl;
+		if (_lbCurSel > -1 && (_lbCtrl getVariable Q(listValues)) isNotEqualTo []) then {
+			DBG_ "(ABC.onWeaponSelected) listValues = %1", _lbCtrl getVariable Q(listValues) EOL;
+			DBG_ "(ABC.onWeaponSelected) _lbCurSel = %1", _lbCurSel EOL;
+
+			_currentDropdwonItem = (_lbCtrl getVariable Q(listValues)) select _lbCurSel;
+		};
+		_self set [Q(CurrentSelectedMagazine), _currentDropdwonItem];
+		DBG_ "(ABC.onWeaponSelected) _currentDropdwonItem = %1", _currentDropdwonItem EOL;
+
+		// -- Update UI
 		_self call [F(renderWeaponTypeButtons), [_dialogCOB]];
 		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
 	}],
 	[F(onMagazineAdd), {
 		params ["_dialogCOB", "_count"];
-		private _magClass = (_dialogCOB call [F(GetValueByTag), "d_maglist"]) # 2;
+		DBG_ "(ABC.onMagazineAdd) Invoked. _count=%1", _count EOL;
+		private _magClass = (_dialogCOB call ["GetValueByTag", "d_maglist"]) # 2;
 		_self call [F(addMagazine), [_magClass, _count]];
+		_self set [Q(CurrentSelectedMagazine), _magClass];
 		// -- Update UI
-		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
-		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+		_self call [F(render), [_dialogCOB]];
 	}],
 	[F(onMagazineRemove), {
 		params ["_dialogCOB", "_count"];
-		private _magClass = (_dialogCOB call [F(GetValueByTag), "d_maglist"]) # 2;
+		DBG_ "(ABC.onMagazineRemove) Invoked. _count=%1", _count EOL;
+		private _magClass = (_dialogCOB call ["GetValueByTag", "d_maglist"]) # 2;
 		_self call [F(removeMagazine), [_magClass, _count]];
+		_self set [Q(CurrentSelectedMagazine), _magClass];
 		// -- Update UI
-		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
-		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+		_self call [F(render), [_dialogCOB]];
 	}],
 	[F(onClear), {
-		params ["_dialogCOB", "_count"];
+		params ["_dialogCOB"];
+		DBG_ "(ABC.onClear) Invoked" EOL;
 		_self call [F(clear), []];
 		// -- Update UI
-		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
-		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
+		_self call [F(render), [_dialogCOB]];
 	}],
 	[F(composeAndExport), {
-		params [["_applyToPlayer", false, [false]]]
+		params [["_applyToPlayer", false, [false]]];
+		DBG_ "(ABC.composeAndExport) Invoked. Params: %1", _this EOL;
 		private _data = (_self get Q(CurrentMagPool)) toArray false;
+
+		DBG_ "(ABC.composeAndExport) _data: %1", _data EOL;
 		if (_applyToPlayer) then {
+			DBG_ "(ABC.composeAndExport) Applying to player backpack" EOL;
 			private _bp = backpackContainer player;
 			{ _bp addMagazineCargo _x; } forEach _data;
 		};
 
-		private _str = _data joinString ", "
-		
+		private _str = _data joinString ", ";
+		DBG_ "(ABC.composeAndExport) String : %1", _str EOL;
+
 		forceUnicode 0;
-		copyToClibpoard _str select [1, (count _str) - 2];
+		copyToClipboard (_str);
 		forceUnicode -1;
 
-		[["BEARER_COPIED", "BEARER_ADDED"] select _applyToPlayer]  call dzn_fnc_gear_editMode_showNotif;
+		[["BEARER_COPIED", "BEARER_ADDED"] select _applyToPlayer] call dzn_fnc_gear_editMode_showNotif;
 	}],
 
 	// -- UI render functions
 	[F(resetControls), {
 		params ["_dialogCOB"];
-		_self call [F(clear)];
-		_self set [Q(CurrentWeaponType), 0];
+		DBG_ "(ABC.resetControls) Invoked" EOL;
 		_self set [Q(CurrentWeapons), []];
 		_self set [Q(CurrentWeaponsMags), []];
 
+		//_self call [F(clear)];
+		//_self set [Q(CurrentMode), [false, false]];
+		//_self set [Q(CurrentSelectedMagazine), ""];
+		// (_dialogCOB call ["GetByTag", "lbl_magTotalCount"]) ctrlSetText "Total magazines count: 0 (0 kg)";
+		// (_dialogCOB call ["GetByTag", "lbl_magInfo"]) ctrlSetText "";
+
 		{
-			private _btn = _dialogCOB call [F(GetByTag), _x];
+			private _btn = _dialogCOB call ["GetByTag", _x];
 			_btn ctrlSetText "";
 			_btn ctrlSetTooltip "";
 			_btn ctrlSetBackgroundColor [0,0,0,1];
 		} forEach ["btn_primary", "btn_launcher"];
 
-		(_dialogCOB call [F(GetByTag), "lbl_magTotalCount"]) ctrlSetText "Total magazines count: 0";
-		(_dialogCOB call [F(GetByTag), "lbl_magInfo"]) ctrlSetText "";
-		private _magazinesListCtrl = _dialogCOB call [F(GetByTag), "d_maglist"];
-		lbClear (_magazinesListCtrl);
+		private _magazinesListCtrl = _dialogCOB call ["GetByTag", "d_maglist"];
+		lbClear _magazinesListCtrl;
+		_magazinesListCtrl lbSetCurSel -1;
 		_magazinesListCtrl setVariable [Q(listValues), []];
+	}],
+	[F(render), {
+		params ["_dialogCOB"];
+		DBG_ "(ABC.render) Invoked" EOL;
+		_self call [F(renderWeaponTypeButtons), [_dialogCOB]];
+		_self call [F(renderMagazinesListDropdown), [_dialogCOB]];
+		_self call [F(renderMagazinesInfoLabels), [_dialogCOB]];
 	}],
 	[F(renderWeaponTypeButtons), {
 		params ["_dialogCOB"];
+		DBG_ "(ABC.renderWeaponTypeButtons) Invoked" EOL;
 		(_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
 		(_self get Q(CurrentMode)) params ["_primarySelected", "_launcherSelected"];
-
 		{
 			_x params ["_tag", "_class", "_isSelected"];
+			private _icon = "<t color='#333333' align='center' size='2.5'>N/A</t>";
+			private _text = "No launcher";
 			private _cfg = configFile >> "CfgWeapons" >> _class;
+			if (!isNull _cfg) then {
+				_icon = format [
+					"<t align='center'><img size=3 image='%1' /></t>",
+					getText(_cfg >> "picture")
+				];
+				_text = format [
+					"%1\nclass: %2",
+					getText(_cfg >> "displayName"),
+					_class
+				];
+			};
 
-			private _btn = _dialogCOB call [F(GetByTag), _tag];
-			_btn ctrlSetText format ["<img size=2 image='%1' />", getText(_cfg >> "picture")];
-			_btn ctrlSetBackgroundColor [
-				[0,0,0,1],
-				[0.5, 0.5, 0.5, 1]
-			] select _isSelected;
-			_btn ctrlSetTooltip getText(_cfg >> "displayName");
+			private _btn = _dialogCOB call ["GetByTag", _tag];
+			_btn ctrlSetStructuredText parseText _icon;
+			_btn ctrlSetTooltip _text;
+			_btn ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select _isSelected);
 		} forEach [
 			["btn_primary", _primary, _primarySelected],
-			["btn_launcher", _launcher, _launcherSelected],
+			["btn_launcher", _launcher, _launcherSelected]
 		];
 	}],
 	[F(renderMagazinesListDropdown), {
 		params ["_dialogCOB"];
+		DBG_ "(ABC.renderMagazinesListDropdown) Invoked" EOL;
 		(_self get Q(CurrentMode)) params ["_addPrimaryMags", "_addLauncherMags"];
 		(_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
 		(_self get Q(CurrentWeaponsMags)) params ["_primaryPreferredMag", "_launcherPreferredMag"];
 
-		private _allMags = [];
+		private _selectedMags = keys (_self get Q(CurrentMagPool));
+		DBG_ "(ABC.renderMagazinesListDropdown) Prefered mags=%1", (_self get Q(CurrentWeaponsMags)) EOL;
+
+		private _allMags = _selectedMags;
 		if (_addPrimaryMags) then {
-			private _primaryMags = (compatibleMagazines _primary) - [_primaryPreferredMag];
-			_allMags pushBack _primaryPreferredMag;
+			private _primaryMags = (compatibleMagazines _primary) - [_primaryPreferredMag] - _selectedMags;
+			if (_primaryPreferredMag isNotEqualTo "" && !(_primaryPreferredMag in _selectedMags)) then {
+				_allMags pushBack _primaryPreferredMag;
+			};
 			_allMags append _primaryMags;
 		};
 		if (_addLauncherMags) then {
-			private _launcherMags = (compatibleMagazines _launcher) - [_launcherPreferredMag];
-			_allMags pushBack _launcherPreferredMag;
+			private _launcherMags = (compatibleMagazines _launcher) - [_launcherPreferredMag] - _selectedMags;;
+			if (_launcherPreferredMag isNotEqualTo "" && !(_launcherPreferredMag in _selectedMags)) then {
+				_allMags pushBack _launcherPreferredMag;
+			};
 			_allMags append _launcherMags;
 		};
 
+		DBG_ "(ABC.renderMagazinesListDropdown) _allMags=%1", _allMags EOL;
+
 		private _currentSelectedMags = _self get Q(CurrentMagPool);
-		private _ctrl = _dialogCOB call [F(GetByTag), "d_maglist"];
-		private _currentSelectedItem = (_ctrl getVariable Q(listValues)) select (lbCurSel _ctrl);
+		private _ctrl = _dialogCOB call ["GetByTag", "d_maglist"];
+
+		private _currentSelectedItem = _self get Q(CurrentSelectedMagazine);
+		/*if (lbCurSel _ctrl > -1 && (_ctrl getVariable Q(listValues)) isNotEqualTo []) then {
+			_currentSelectedItem = (_ctrl getVariable Q(listValues)) select (lbCurSel _ctrl);
+		};
+		*/
+		DBG_ "(ABC.renderMagazinesListDropdown) _currentSelectedItem: %1", _currentSelectedItem EOL;
 		lbClear _ctrl;
 		{
 			private _count = _currentSelectedMags getOrDefault [_x, 0];
+			DBG_ "(ABC.renderMagazinesListDropdown) _x: %1, _count: %2", _x, _count EOL;
 
 			_ctrl lbAdd format [
-				"%1%2", 
-				getText(configFile >> "CfgMagazines" >> _x >> "displayText"),
+				"%1%2",
+				getText(configFile >> "CfgMagazines" >> _x >> "displayName"),
 				[format [" x%1", _count], ""] select (_count == 0)
 			];
 			_ctrl lbSetTooltip [_forEachIndex, _x];
-			_ctrl lbSetPicture getText(configFile >> "CfgMagazines" >> _x >> "picture");
-			_ctrl lbSetColor ([COLOR_DARK_GREEN, COLOR_WHITE] select (_count == 0));
-			if (_x == _currentSelectedItem) then {
+			_ctrl lbSetPicture [
+				_forEachIndex,
+				getText(configFile >> "CfgMagazines" >> _x >> "picture")
+			];
+			_ctrl lbSetColor [
+				_forEachIndex,
+				[
+					COLOR_DARK_GREEN,
+					[
+						COLOR_WHITE, COLOR_GOLD
+					] select (_x in (_self get Q(CurrentWeaponsMags)))
+				] select (_count == 0)
+			];
+			if (_x isEqualTo _currentSelectedItem) then {
+
+				DBG_ "(ABC.renderMagazinesListDropdown) %3) _x vs _currentSelectedItem = %1 vs %2", _x, _currentSelectedItem, _forEachIndex EOL;
 				_ctrl lbSetCurSel _forEachIndex;
 			};
 		} forEach _allMags;
@@ -1522,41 +1608,55 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [
 	}],
 	[F(renderMagazinesInfoLabels), {
 		params ["_dialogCOB"];
+		DBG_ "(ABC.renderMagazinesInfoLabels) Invoked" EOL;
 
 		private _totalMass = 0;
 		private _totalCount = 0;
 		private _lines = [];
 		{
 			_totalCount = _totalCount + _y;
-			_totalMass = _totalMass + getNumber(configFile >> "CfgMagazines" >> _x >> "ItemInfo" >> "mass");
+			_totalMass = _totalMass + _y * getNumber(configFile >> "CfgMagazines" >> _x >> "mass");
 
 			_lines pushBack format [
-				"<img image='%1' /img><t color='%4'>%2</t> x%3", 
+				"<t color='%4'>x%3</t> <img image='%1' /img><t color='%4'>%2</t>",
 				getText(configFile >> "CfgMagazines" >> _x >> "picture"),
 				getText(configFile >> "CfgMagazines" >> _x >> "displayName"),
 				_y,
-				["", "#ddffaa"] select (_x in (_self get Q(CurrentWeaponsMags)))  // TODO: Color
+				["", COLOR_HEX_GOLD] select (_x in (_self get Q(CurrentWeaponsMags)))
 			];
 		} forEach (_self get Q(CurrentMagPool));
 
-		(_dialogCOB call [F(GetByTag), "lbl_magTotalCount"]) ctrlSetText format [
+		(_dialogCOB call ["GetByTag", "lbl_magTotalCount"]) ctrlSetText format [
 			"Total magazines count: %1 (%2 kg)",
 			_totalCount,
-			_totalMass * 0.0283 // ounce to kg
+			[_totalMass * 0.1 * 0.453592, 2] call BIS_fnc_cutDecimals
 		];
-		(_dialogCOB call [F(GetByTag), "lbl_magInfo"]) ctrlSetStructuredText parseText (_lines joinString "<br />");
+		(_dialogCOB call ["GetByTag", "lbl_magInfo"]) ctrlSetStructuredText parseText (_lines joinString "<br />");
 	}],
 
 	// --
 	[F(loadKitData), {
 		// Loads data from kit (if given and exists) or from current loadout (if kitname is empty). Does nothing if kitname not exists.
 		params ["_kitname"];
-		
+		DBG_ "(ABC.loadKitData) Invoked. Params: %1", _this EOL;
+
 		private _weapons = [primaryWeapon player, secondaryWeapon player];
-		private _magazines = [primaryWeaponMagazine player, secondaryWeaponMagazine player];
+		private _magazines = ["", ""];
+
+		private _primaryMagArr = primaryWeaponMagazine player;
+		if (_primaryMagArr isNotEqualTo []) then {
+			_magazines set [0, _primaryMagArr # 0];
+		};
+
+		private _secondaryMagArr = secondaryWeaponMagazine player;
+		if (_secondaryMagArr isNotEqualTo []) then {
+			_magazines set [1, _secondaryMagArr # 0];
+		};
+
 		if (_kitname != "") then {
 			private _kit = missionNamespace getVariable [_kitname, []];
 			if (_kit isEqualTo []) exitWith {};
+			DBG_ "(ABC.loadKitData) Using Kit weapons" EOL;
 
 			// -- Weapon/magazine may be a randomized array, so pick first item
 			_weapons = [_kit # 1 # 1, _kit # 2 # 1] apply {
@@ -1579,18 +1679,21 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [
 		_self set [Q(CurrentWeaponsMags), _magazines];
 	}],
 	[F(clear), {
-		params [""];
+		params [];
+		DBG_ "(ABC.clear) Invoked. Params: %1", _this EOL;
 		_self set [Q(CurrentMagPool), createHashMap];
 		_self set [Q(TotalMagCount), 0];
 	}],
 	[F(addMagazine), {
+		DBG_ "(ABC.addMagazine) Invoked. Params: %1", _this EOL;
 		params ["_magClass", "_count"];
 		private _pool = _self get Q(CurrentMagPool);
 		_pool set [_magClass, _count + (_pool getOrDefault [_magClass, 0])];
-		
+
 		_self set [Q(TotalMagCount), (_self get Q(TotalMagCount)) + _count];
 	}],
 	[F(removeMagazine), {
+		DBG_ "(ABC.removeMagazine) Invoked. Params: %1", _this EOL;
 		params ["_magClass", "_count"];
 		private _pool = _self get Q(CurrentMagPool);
 		private _currentCount = (_pool getOrDefault [_magClass, 0]) - _count;
@@ -1600,7 +1703,7 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [
 		_pool set [_magClass, _currentCount];
 		_self set [Q(TotalMagCount), (_self get Q(TotalMagCount)) - _count];
 	}]
-];
+]];
 
 
 dzn_fnc_gear_editMode_initialize = {
@@ -1708,3 +1811,5 @@ dzn_fnc_gear_editMode_initialize = {
 		};
 	}];
 };
+
+[] spawn dzn_fnc_gear_editMode_initialize;
