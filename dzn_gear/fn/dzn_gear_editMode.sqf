@@ -29,6 +29,11 @@
 #define COLOR_GOLD       [0.92, 0.81, 0, 1]
 
 #define COLOR_HEX_GOLD   SQ(#FFD000)
+#define COLOR_HEX_LIGHT_BLUE SQ(#84b0f0)
+#define COLOR_HEX_LIGHT_GREEN SQ(#acdb8b)
+#define COLOR_HEX_LIME SQ(#7bbf37)
+#define COLOR_HEX_AQUA SQ(#12C4FF)
+#define COLOR_HEX_BRICK_RED SQ(#eb4f34)
 
 // ******************
 // Functions
@@ -536,35 +541,27 @@ dzn_fnc_gear_editMode_createKit = {
 	};
 
 	private _formatAndCopyKit = {
-		/* @Kit call _formatAndCopyKit
-		 * Format of output
+		/* [@Kit(ARRAY), @Name(STRING)] call _formatAndCopyKit
+		 * Formats and exports kit to copypaste into Kits.sqf
 		 */
+		params ["_kit", "_name"];
+		private _newLine = "," + toString[10,32,32,32,32];
+		private _str = format [
+			"%1 = [" + toString[10,32,32,32,32] + "%2" + toString[10] + "];",
+			_name,
+			(_kit joinString _newLine)
+		];
 
-		_this pushBack "];";		// closing bracket
-		private _lastItemNo = count(_this) - 1;
-		private _formatedString = format ["%1 = [", _name];
-		{
-			_formatedString = format [
-				"%1" + toString[10] + "%2%3%4"
-				, _formatedString
-				, ["", "    "] select (_forEachIndex != _lastItemNo) // if (_forEachIndex != _lastItemNo) then { "	" } else { "" }
-				, _x
-				, ["", ","] select (_forEachIndex < _lastItemNo - 1) // if (_forEachIndex < _lastItemNo - 1) then { "," } else { "" }
-			];
-		} forEach _this;
-
-		copyToClipboard _formatedString;
+		copyToClipboard _str;
 	};
 
 	private _copyUnitKit = {
 		params ["_title", "_kit", "_name", "_colorString"];
 
 		_kit call _replaceDefaultMagazines;
-
-		[_name, _colorString, _kit + []] call _addKitAction;
-
+		[_name, _colorString, +_kit] call _addKitAction;
 		_kit call _useStandardItems;
-		_kit call _formatAndCopyKit;
+		[_kit, _name] call _formatAndCopyKit;
 
 		missionNamespace setVariable [_name, _kit];
 
@@ -730,7 +727,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 					COLOR_WHITE, COLOR_DARK_GREEN
 				] select (!isNil format ["kit_%1_%2", dzn_gear_kitKey, _x # 1])
 			],
-			["tooltip", _x # 0]
+			["tooltip", _x # 1]
 		]]
 	};
 
@@ -762,7 +759,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 						] select (!isNil format ["kit_%1_%2", _eventData # 1, _x # 1])
 					];
 				} forEach dzn_gear_kitRoles;
-			}, callbackArgs]
+			}]
 		]],
 		["DROPDOWN", _roles /* dzn_gear_kitRoles */, dzn_gear_kitRolesId, [["tag", "d_rolename"]]],
 		["BR"],
@@ -949,14 +946,23 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 	#define MENU_CARGO_COMPOSER_WIDTH 0.3
 	#define MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH 0.075
 	private _menu = _menuNavbar + [
-		["LABEL", "<t size='0.9'>Enter full name of the personal kit name or prefix (like ""kit_usmc_"") to generate cargo kit.</t>"],
+		["LABEL", "<t size='0.9'>Enter full name of the personal kit or prefix (like ""kit_usmc_"") to generate cargo kit.</t>"],
 		["BR"],
-		["LABEL", "<t size='0.9'>You also can enter several names using comma.</t>"],
+		["LABEL", "<t size='0.9'>You can also enter several names using comma.</t>"],
 		["BR"],
-		["LABEL", "<t color='#ff3333'>Filter (personal kits)*</t>", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
+		["LABEL", format [
+			"<t size='0.9'><t color='%1'>Note:</t> Uniform items will be ignored for session-generated kits.</t>",
+			COLOR_HEX_BRICK_RED
+		]],
+		["BR"],
+
+		["LABEL", format [
+			"<t color='%1'>Filter (personal kits)*</t>",
+			COLOR_HEX_LIGHT_BLUE
+		], [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
 		["INPUT", "", [["tag", "i_filter"]]],
 		["BR"],
-		["LABEL", "Name", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
+		["LABEL", "Export name", [["w", MENU_CARGO_COMPOSER_WIDTH], ["bg", COLOR_STEEL_BLUE]]],
 		["INPUT", "cargo_kit_test", [["tag", "i_name"], ["tooltip", "Name of the generated cargo kit"]]],
 		["BR"],
 
@@ -1169,6 +1175,12 @@ dzn_fnc_gear_editMode_composeCargoItemsFromKits = {
 		DBG_ "(composeCargoItems) Equip=%1", _equip EOL;
 		DBG_ "(composeCargoItems) _pw=%1", _pw EOL;
 		DBG_ "(composeCargoItems) _sw=%1", _sw EOL;
+		DBG_ "(composeCargoItems) _sw=%1", _sw EOL;
+
+		// In case kit created and accessed in runtime and uniform items macro was used
+		if (_uniform isEqualType "") then {
+			_uniform = ["",[]];
+		};
 
 		{
 			// -- Handle randomized items declaration
@@ -1478,12 +1490,6 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [[
 		DBG_ "(ABC.resetControls) Invoked" EOL;
 		_self set [Q(CurrentWeapons), []];
 		_self set [Q(CurrentWeaponsMags), []];
-
-		//_self call [F(clear)];
-		//_self set [Q(CurrentMode), [false, false]];
-		//_self set [Q(CurrentSelectedMagazine), ""];
-		// (_dialogCOB call ["GetByTag", "lbl_magTotalCount"]) ctrlSetText "Total magazines count: 0 (0 kg)";
-		// (_dialogCOB call ["GetByTag", "lbl_magInfo"]) ctrlSetText "";
 
 		{
 			private _btn = _dialogCOB call ["GetByTag", _x];
