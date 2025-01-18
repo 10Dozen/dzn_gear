@@ -1,9 +1,12 @@
 /* TODO:
 	[ok] - Export kit in missionNamespace
 	[ok] - highlight roles in list that already was used
-	- Finish ammo bearier exporter page
+	[ok] - Finish ammo bearier exporter page
 		- Need to create component to track vars and stuff...
-	- Page with all copied kits / composed elements to extract it again
+	[ok] - Page with all copied kits / composed elements to extract it again
+	[ok]	- Cargo Kit history
+	[ok]	- Ammo Bearer composed
+	[ok]	- Cargo kit composed
 */
 
 
@@ -18,6 +21,10 @@
 #define SQ(X) 'X'
 #define _F(X) fnc_##X
 #define F(X) Q(_F(X))
+
+#define HISTORY_PERSONAL_KIT "PERSONAL_KIT"
+#define HISTORY_CARGO_KIT "CARGO_KIT"
+#define HISTORY_COMPOSED "COMPOSED"
 
 #define COLOR_PALE_GREEN [0.54, 0.63, 0.44, 1]
 #define COLOR_PALE_RED   [0.63, 0.54, 0.44, 1]
@@ -552,6 +559,12 @@ dzn_fnc_gear_editMode_createKit = {
 			(_kit joinString _newLine)
 		];
 
+		dzn_gear_HistoryComponent call [F(add), [
+			"PERSONAL_KIT",
+			_name,
+			_str
+		]];
+
 		copyToClipboard _str;
 	};
 
@@ -564,43 +577,19 @@ dzn_fnc_gear_editMode_createKit = {
 		[_kit, _name] call _formatAndCopyKit;
 
 		missionNamespace setVariable [_name, _kit];
-
 		["KIT_COPIED", [_title, _colorString]] call dzn_fnc_gear_editMode_showNotif;
 	};
 
 	private _copyCargoKit = {
 		params ["_title", "_kit", "_name", "_colorString"];
 
-		// Format of output
-		private _str = str(_kit);
-		private _formatedString = "";
-		private _lastId = 0;
-		for "_i" from 0 to ((count _str) - 1) do {
-			if (_str select [_i,2] in ["[[","[]"]) then {
-				_formatedString = format[
-						"%1
-	%2"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-				_lastId = _i;
-			};
+		private _kitStr = [_name, _kit] call dzn_fnc_gear_editMode_formatCargoKit;
+		// format ["cargo_%1 = %2", _name, [_formatedString,4] call BIS_fnc_trimString];
+		copyToClipboard _kitStr;
 
-			if (_i == ((count _str) - 1)) then {
-				_formatedString = format[
-					"%1
-	%2
-];"
-					, _formatedString
-					, _str select [_lastId, _i - _lastId]
-				];
-			};
-		};
+		dzn_gear_HistoryComponent call [F(add), [HISTORY_CARGO_KIT, _name, _kitStr]];
 
-		_formatedString = format ["cargo_%1 = %2", _name, [_formatedString,4] call BIS_fnc_trimString];
-		copyToClipboard _formatedString;
-
-		[_colorString, _kit] call _addCargoKitAction;
+		[_colorString, +_kit] call _addCargoKitAction;
 		["KIT_COPIED", ["Cargo", _colorString]] call dzn_fnc_gear_editMode_showNotif;
 	};
 
@@ -625,9 +614,9 @@ dzn_fnc_gear_editMode_formatCargoKit = {
 
 	private _output = [
 		format ["%1 = [", _name],
-        	(_kit apply { format ["    %1", _x] }) joinString toString[44,13,10],
-        	 "];"
-        ];
+        (_kit apply { format ["    %1", _x] }) joinString toString[44,13,10],
+        "];"
+    ];
 
 	_output joinString toString[10]
 };
@@ -645,6 +634,11 @@ dzn_fnc_gear_editMode_navBarPages = [
 		["title", "Cargo Kit Composer"],
 		["renderer", 'dzn_fnc_gear_editMode_showMenu_CargoKitComposer'],
 		["description", "Tool to compose cargo kit from multiple personal kits."]
+	],
+	createHashMapFromArray [
+		["title", "History"],
+		["renderer", 'dzn_fnc_gear_editMode_showMenu_History'],
+		["description", "Re-copy kits created during current session"]
 	],
 	createHashMapFromArray [
 		["title", "Ammo Bearer Composer"],
@@ -707,7 +701,6 @@ dzn_fnc_gear_editMode_handleMenu = {
 	[_menu] call (missionNamespace getVariable (_targetPage get "renderer"));
 };
 
-
 dzn_fnc_gear_editMode_showMenu_Main = {
 	params ["_menuNavbar"];
 
@@ -719,13 +712,26 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 	private _assignedItemsCurSel = _options findIf {dzn_gear_UseStandardAssignedItems == _x # 1};
 	private _uniformItemsCurSel = _options findIf {dzn_gear_UseStandardUniformItems == _x # 1};
 
+	// Current target
+	private _targetName = "(player)";
+	private _kitPrefix = "kit_";
+	if (!isNull cursorTarget) then {
+		_targetName = format [
+			"%1 (%2)",
+			cursorTarget,
+			getText(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "displayName")
+		];
+
+		_kitPrefix = ["cargo_kit_", "kit_"] select (cursorTarget isKindOf "CAManBase");
+	};
+
 	// -- Higlight kits that already exists with current key + role
 	private _roles = dzn_gear_kitRoles apply {
 		[_x # 0, _x # 1, [
 			[
 				"color", [
 					COLOR_WHITE, COLOR_DARK_GREEN
-				] select (!isNil format ["kit_%1_%2", dzn_gear_kitKey, _x # 1])
+				] select (!isNil format ["%1%2_%3", _kitPrefix, dzn_gear_kitKey, _x # 1])
 			],
 			["tooltip", _x # 1]
 		]]
@@ -739,14 +745,18 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 		["BR"],
 
 		["LABEL", "<t size='0.9'>On pressing ""GET"" button - formatted kit will be copied to the clipboard"],
-		["BR"],["LABEL"],["BR"],
+		["BR"],
+		["LABEL", format [
+			"<t align='center'><t color='%2'>Target:</t> %1</t>", _targetName, COLOR_HEX_LIME
+		]],
+		["BR"],
 
 		["LABEL"],
 		["LABEL", "Key"],
 		["LABEL", "Role"],
 		["BR"],
 
-		["LABEL", "Set kit by role: <t align='right'>kit_</t>"],
+		["LABEL", format ["Set kit by role: <t align='right'>%1</t>", _kitPrefix]],
 		["INPUT", dzn_gear_kitKey, [["tag", "i_kitKey"]], [
 			["EditChanged", {
 				params ["_eventData", "_dialogCOB", "_args"];
@@ -767,7 +777,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 		["LABEL", "or"],
 		["BR"],
 
-		["LABEL", "Set custom name: <t align='right'>kit_</t>"],
+		["LABEL", format ["Set custom name: <t align='right'>%1</t>", _kitPrefix]],
 		["INPUT", "", [["tag", "i_customName"]]],
 		["LABEL", "<t size='0.8' color='#ff3333'>No special symbols/spaces!</t>"],
 		["BR"],
@@ -791,7 +801,7 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 
 		["LABEL", ""],
 		["BUTTON", "<t align='center'>GET</t>", {
-			params ["_ad"];
+			params ["_ad", "_prefix"];
 			private _vals = _ad call ["GetTaggedValues"];
 
 			dzn_gear_UseStandardAssignedItems = (_vals get "l_assignedItems") # 2;
@@ -799,18 +809,19 @@ dzn_fnc_gear_editMode_showMenu_Main = {
 			dzn_gear_kitRolesId = (_vals get "d_rolename") # 0;
 
 			private _customName = _vals get "i_customName";
-			private _name = format ["kit_%1", _customName];
+			private _name = format ["%1%2", _prefix, _customName];
 			if (_customName == "") then {
 				dzn_gear_kitKey = _vals get "i_kitKey";
 				_name = format [
-					"kit_%1_%2",
+					"%1%2_%3",
+					_prefix,
 					dzn_gear_kitKey,
 					(_vals get "d_rolename") # 2
 				];
 			};
 			_ad call ["Close"];
 			_name call dzn_fnc_gear_editMode_createKit;
-		}, [], [["w",0.25], ["bg", COLOR_PALE_GREEN]]]
+		}, _kitPrefix, [["w",0.25], ["bg", COLOR_PALE_GREEN]]]
 	];
 
 	_menu call dzn_fnc_ShowAdvDialog2;
@@ -870,7 +881,7 @@ dzn_fnc_gear_editMode_showMenu_AmmoCarrierComposer = {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onMagazineAdd), [_dialogCOB, 1]];
 		},[],[["bg", COLOR_PALE_GREEN], ["h", 0.1]]],
-		["BUTTON", "<t align='center' size='2' color='#000000'>—</t>", {
+		["BUTTON", "<t align='center' size='2' color='#000000'>–</t>", {
 			params ["_dialogCOB"];
 			dzn_gear_AmmoBearearComponent call [F(onMagazineRemove), [_dialogCOB, 1]];
 		},[],[["bg", COLOR_PALE_RED], ["h", 0.1]]],
@@ -928,11 +939,11 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 			(_vals get "s_itemCount") # 0,
 			(_vals get "s_backpackCount") # 0
 		] call dzn_fnc_gear_editMode_composeCargoItemsFromKits;
-		private _exported = [
-			_vals getOrDefault ["i_name","cargo_kit_test"],
-			_composed
-		] call dzn_fnc_gear_editMode_formatCargoKit;
+		private _name = _vals getOrDefault ["i_name","cargo_kit_test"];
+		private _exported = [_name, _composed ] call dzn_fnc_gear_editMode_formatCargoKit;
 		copyToClipboard _exported;
+
+		dzn_gear_HistoryComponent call [F(add), [HISTORY_COMPOSED, _name, _exported]];
 
 		["KIT_COPIED", ["Cargo", "#FFCC00"]] call dzn_fnc_gear_editMode_showNotif;
 	};
@@ -1001,6 +1012,69 @@ dzn_fnc_gear_editMode_showMenu_CargoKitComposer = {
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
 
+dzn_fnc_gear_editMode_showMenu_History = {
+	params ["_menuNavbar"];
+
+	private _currentFilters = dzn_gear_HistoryComponent get Q(Filters);
+
+	private _menu = _menuNavbar + [
+		["LABEL", "Filter by:", [["w", 0.25], ["bg", COLOR_STEEL_BLUE]]],
+		["CHECKBOX", "Personal kits", _currentFilters get "PERSONAL_KIT",
+			[["tag", "cb_personalKit"], ["bg", COLOR_STEEL_BLUE]], [
+			[
+				"MouseButtonClick",
+				{
+					params["", "_dialogCOB"];
+					dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+				}
+			]
+		]],
+		["CHECKBOX", "Cargo kits", _currentFilters get "CARGO_KIT",
+			[["tag", "cb_cargoKit"], ["bg", COLOR_STEEL_BLUE]], [
+			[
+				"MouseButtonClick",
+				{
+					params["", "_dialogCOB"];
+					hint "XXX";
+					dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+				}
+			]
+		]],
+		["CHECKBOX", "Composed", _currentFilters get "COMPOSED",
+			[["tag", "cb_composed"], ["bg", COLOR_STEEL_BLUE]], [
+			[
+				"MouseButtonClick",
+				{
+					params["", "_dialogCOB"];
+					dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+				}
+			]
+		]],
+		["BR"],
+
+		["LABEL", "", [["h", 0.02], ["size", 0.02]]],["BR"],
+		["DROPDOWN", [], 0, [["tag", "d_entities"], ["h", 0.06]]],
+		["BUTTON", "<t size='1'>Show</t>", {
+			params ["_dialogCOB"];
+			dzn_gear_HistoryComponent call [F(onShow), [_dialogCOB]];
+		}, [], [["w", 0.25], ["h", 0.06], ["bg", COLOR_PALE_GREEN]]],
+		["BR"],
+
+		["INPUT_AREA", "", [["tag", "ia_content"], ["h", 0.5]]],
+		["BR"],
+		["LABEL", ""],
+		["BUTTON", "Copy", {
+			params ["_dialogCOB"];
+			dzn_gear_HistoryComponent call [F(onCopy), [_dialogCOB]];
+		}, [], [["w", 0.25],["bg", COLOR_PALE_GREEN]]],
+		["OnDraw", {
+			params["_dialogCOB"];
+			dzn_gear_HistoryComponent call [F(renderEntitiesList), [_dialogCOB]];
+		}]
+	];
+
+	_menu call dzn_fnc_ShowAdvDialog2;
+};
 
 // *****************************
 //	Options
@@ -1382,6 +1456,9 @@ dzn_fnc_gear_editMode_showNotif = {
 		case "KIT_COPIED": {
 			format ["<t align='right' font='PuristaBold' size='1.1'><t color='%2'>%1</t> kit copied</t>", _msgParams select 0, _msgParams select 1];
 		};
+		case "HISTORY_COPIED": {
+			"<t align='right' font='PuristaBold' size='1.1'><t color='#FFD000'>Data</t> was copied</t>";
+		};
 	};
 
 	[parseText _msg, true, nil, 7, 0.2, 0] spawn BIS_fnc_textTiles;
@@ -1479,6 +1556,8 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [[
 
 		forceUnicode 0;
 		copyToClipboard (_str);
+
+		dzn_gear_HistoryComponent call [F(add), [HISTORY_COMPOSED, "Ammo bearer composition", _str]];
 		forceUnicode -1;
 
 		[["BEARER_COPIED", "BEARER_ADDED"] select _applyToPlayer] call dzn_fnc_gear_editMode_showNotif;
@@ -1708,6 +1787,107 @@ dzn_gear_AmmoBearearComponent = createHashMapObject [[
 		};
 		_pool set [_magClass, _currentCount];
 		_self set [Q(TotalMagCount), (_self get Q(TotalMagCount)) - _count];
+	}]
+]];
+
+dzn_gear_HistoryComponent = createHashMapObject [[
+	[Q(History), []],
+	[Q(Filters), createHashMapFromArray[
+		[HISTORY_PERSONAL_KIT, true],
+		[HISTORY_CARGO_KIT, true],
+		[HISTORY_COMPOSED, true]
+	]],
+	[Q(TypeNames), createHashMapFromArray[
+		[HISTORY_PERSONAL_KIT, ["Personal kit", COLOR_PALE_GREEN]],
+		[HISTORY_CARGO_KIT, ["Cargo kit", COLOR_DARK_GREEN]],
+		[HISTORY_COMPOSED, ["Composed", COLOR_STEEL_BLUE]]
+	]],
+
+	// -- UI events
+	[F(onFilterChange), {
+		DBG_ "(HC.onFilterChange) Invoked" EOL;
+		params ["_dialogCOB"];
+		private _allVals = _dialogCOB call ["GetTaggedValues"];
+		_self call [F(setFilters), [
+			_allVals get "cb_personalKit",
+			_allVals get "cb_cargoKit",
+			_allVals get "cb_composed"
+		]];
+		// -- Update UI
+		_self call [F(renderEntitiesList), [_dialogCOB]];
+	}],
+	[F(onShow), {
+		DBG_ "(HC.onShow) Invoked" EOL;
+		params ["_dialogCOB"];
+		(_dialogCOB call ["GetValueByTag", "d_entities"]) params ["","","_content"];
+		(_dialogCOB call ["GetByTag", "ia_content"]) ctrlSetText _content;
+	}],
+	[F(onCopy), {
+		DBG_ "(HC.onCopy) Invoked" EOL;
+		params ["_dialogCOB"];
+		private _content = _dialogCOB call ["GetValueByTag", "ia_content"];
+		DBG_ "(HC.onCopy) Content to copy: %1", _content EOL;
+
+		forceUnicode 1;
+		copyToClipboard _content;
+		forceUnicode -1;
+
+		["HISTORY_COPIED"] call dzn_fnc_gear_editMode_showNotif;
+	}],
+
+	// --
+	[F(renderEntitiesList), {
+		DBG_ "(HC.renderEntitiesList) Invoked" EOL;
+		params ["_dialogCOB"];
+		private _filters = _self get Q(Filters);
+		DBG_ "(HC.renderEntitiesList) _filters=%1", _filters EOL;
+
+		private _ctrl = _dialogCOB call ["GetByTag", "d_entities"];
+		lbClear _ctrl;
+
+		private _values = [];
+		{
+			_x params ["_type", "_title", "_time", "_content"];
+
+			DBG_ "(HC.renderEntitiesList) _x=%1", _x EOL;
+
+			if !(_filters get _type) then {
+				DBG_ "(HC.renderEntitiesList) Fileted out!", _x EOL;
+				continue;
+			};
+			(_self get Q(TypeNames) get _type) params ["_typeName", "_typeColor"];
+
+			_values pushBack _content;
+
+			DBG_ "(HC.renderEntitiesList) Adding entity!", _x EOL;
+			private _idx = _ctrl lbAdd format [
+				"%1 > %2",
+				[_time/3600, "HH:MM:SS"] call BIS_fnc_timeToString,
+				_title
+			];
+			_ctrl lbSetTextRight [_idx, _typeName];
+			_ctrl lbSetColorRight [_idx, _typeColor];
+		} forEach (_self get Q(History));
+		_ctrl lbSetCurSel -1;
+
+		DBG_ "(HC.renderEntitiesList) _values=%1", _values EOL;
+
+		_ctrl setVariable [Q(listValues), _values];
+	}],
+	// -- Logic
+	[F(setFilters), {
+		DBG_ "(HC.setFilters) Invoked. Params: %1", _this EOL;
+		params ["_personal", "_cargo", "_composed"];
+		private _filters = _self get Q(Filters);
+		_filters set ["PERSONAL_KIT", _personal];
+		_filters set ["CARGO_KIT", _cargo];
+		_filters set ["COMPOSED", _composed];
+		DBG_ "(HC.setFilters) Filters after: %1", _self get Q(Filters) EOL;
+	}],
+	[F(add), {
+		DBG_ "(HC.add) Invoked. Params: %1", _this EOL;
+		params ["_type", "_title", "_content"];
+		(_self get Q(History)) pushBack [_type, _title, CBA_missionTime, _content];
 	}]
 ]];
 
