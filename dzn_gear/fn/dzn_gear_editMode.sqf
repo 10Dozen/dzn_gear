@@ -7,6 +7,7 @@
 	[ok]	- Cargo Kit history
 	[ok]	- Ammo Bearer composed
 	[ok]	- Cargo kit composed
+	[  ]    - Handle Arsenal and add BUTTONS!
 */
 
 
@@ -104,17 +105,6 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			call dzn_fnc_gear_editMode_showKeybinding;
 			SET_HANDLED;
 		};
-		// F2 button
-		case 60: {
-			SET_KEYDOWN;
-			if (_ctrl) then {
-				[] spawn dzn_fnc_gear_editMode_showAmmoBearerGetterMenu;
-			} else {
-				[] spawn dzn_fnc_gear_editMode_showAmmoBearerSetterMenu;
-			};
-			SET_HANDLED;
-		};
-
 		// Space
 		case 57: {
 			SET_KEYDOWN;
@@ -208,20 +198,6 @@ dzn_fnc_gear_editMode_onKeyPress = {
 			if (_ctrl) then {
 				call dzn_fnc_gear_editMode_getCurrentIdentity;
 			};
-			SET_HANDLED;
-		};
-
-		// PGUP
-		case 201: {
-			SET_KEYDOWN;
-			["UseStandardUniformItems"] call dzn_fnc_gear_editMode_setOptions;
-			SET_HANDLED;
-		};
-
-		// PGDOWN
-		case 209: {
-			SET_KEYDOWN;
-			["UseStandardAssignedItems"] call dzn_fnc_gear_editMode_setOptions;
 			SET_HANDLED;
 		};
 
@@ -1076,153 +1052,6 @@ dzn_fnc_gear_editMode_showMenu_History = {
 	_menu call dzn_fnc_ShowAdvDialog2;
 };
 
-// *****************************
-//	Options
-// *****************************
-dzn_fnc_gear_editMode_setOptions = {
-	/* [@Option] call dzn_fnc_gear_editMode_setOptions
-	 *	Options:
-	 *		UseStandardUniformItems
-	 *		UseStandardAssignedItems
-	 */
-	switch toLower(_this select 0) do {
-		case toLower("UseStandardUniformItems"): {
-			dzn_gear_UseStandardUniformItems = switch (toLower(dzn_gear_UseStandardUniformItems)) do {
-				case "no": {"standard"};
-				case "standard": {"leader"};
-				case "leader": {"no"};
-			};
-			["OPTION_UNIFORM", [toUpper(dzn_gear_UseStandardUniformItems)]] call dzn_fnc_gear_editMode_showNotif;
-		};
-		case toLower("UseStandardAssignedItems"): {
-			dzn_gear_UseStandardAssignedItems = switch (toLower(dzn_gear_UseStandardAssignedItems)) do {
-				case "no": {"standard"};
-				case "standard": {"leader"};
-				case "leader": {"no"};
-			};
-			["OPTION_ASSIGNED", [toUpper(dzn_gear_UseStandardAssignedItems)]] call dzn_fnc_gear_editMode_showNotif;
-		};
-	};
-};
-
-// *****************************
-//	Ammo Bearer Items
-// *****************************
-dzn_fnc_gear_editMode_showAmmoBearerGetterMenu = {
-	private _menu = [
-		[0, "HEADER", "GET AMMO BEARER ITEMS"]
-		, [1, "LABEL", "NAME"]
-		, [1, "INPUT"]
-	];
-	private _lineNo = 2;
-	dzn_gear_editMode_addMagazineTypes = [false,false];
-
-	if (primaryWeapon player != "") then {
-		_menu pushBack [_lineNo, "LABEL", "PRIMARY WEAPON MAGAZINES"];
-		_lineNo = _lineNo + 1;
-
-		private _listOfMags = [""] + getArray(configFile >> "CfgWeapons" >> primaryWeapon player >> "magazines");
-
-		for "_i" from 1 to 4 do {
-			_menu = _menu + [
-				[ _lineNo, "LABEL", format ["<t align='right'>TYPE #%1</t>", _i]]
-				, [ _lineNo, "DROPDOWN", _listOfMags apply { _x call dzn_fnc_getItemDisplayName }, _listOfMags]
-				, [ _lineNo, "SLIDER", [0,8,0]]
-			];
-			_lineNo = _lineNo + 1;
-		};
-
-		dzn_gear_editMode_addMagazineTypes set [0, true];
-	};
-
-	if (secondaryWeapon player != "") then {
-		_menu pushBack [_lineNo, "LABEL", "LAUNCHER MAGAZINES"];
-		_lineNo = _lineNo + 1;
-
-		private _listOfMags = [""] +  getArray(configFile >> "CfgWeapons" >> secondaryWeapon player >> "magazines");
-
-		for "_i" from 1 to 4 do {
-			_menu = _menu + [
-				[ _lineNo, "LABEL", format ["<t align='right'>TYPE #%1</t>", _i]]
-				, [ _lineNo, "DROPDOWN", _listOfMags apply { _x call dzn_fnc_getItemDisplayName }, _listOfMags]
-				, [ _lineNo, "SLIDER", [0,8,0]]
-			];
-			_lineNo = _lineNo + 1;
-		};
-
-		dzn_gear_editMode_addMagazineTypes set [0, true];
-	};
-
-	_menu = _menu + [
-		[_lineNo,"LABEL", ""]
-		,[_lineNo + 1,"BUTTON", "CANCEL", { closeDialog 2; }]
-		,[_lineNo + 1,"LABEL", ""]
-		,[_lineNo + 1,"LABEL", ""]
-		,[_lineNo + 1,"BUTTON", "SAVE", {
-			private _name = (_this select 0) select 0;
-			private _magList = [];
-
-			if (true in dzn_gear_editMode_addMagazineTypes) then {
-				for "_i" from 1 to (count _this) step 2 do {
-					if ((_this select _i) select 0 != 0) then {
-						_magList pushBack [
-							((_this select _i) select 2) select ((_this select _i) select 0)
-							, ((_this select (_i + 1)) select 0)
-						];
-					};
-				};
-			};
-
-			dzn_gear_editMode_ammoBearerItemsKits pushBack [
-				if (_name == "") then { format ["Bearer #%1", (count dzn_gear_editMode_ammoBearerItemsKits) + 1] } else { _name }
-				, _magList
-			];
-			closeDIalog 2;
-			["BEARER_SAVED"] call dzn_fnc_gear_editMode_showNotif;
-		}]
-	];
-
-	if (_lineNo == 2) then {
-		_menu = [
-			[0, "HEADER", "GET AMMO BEARER ITEMS"]
-			, [1, "LABEL", "<t align='center'>NO WEAPONS</t>"]
-			, [1, "BUTTON", "CLOSE", { closeDialog 2; }]
-		];
-	};
-
-	_menu call dzn_fnc_ShowAdvDialog;
-};
-
-dzn_fnc_gear_editMode_showAmmoBearerSetterMenu = {
-	[
-		[0, "HEADER", "SET AMMO BEARER ITEMS"]
-		, [1, "LABEL", "BEARER ITEMS LIST"]
-		, [2, "LABEL", ""]
-		, [2, "DROPDOWN", dzn_gear_editMode_ammoBearerItemsKits apply { _x select 0 }, []]
-		, [2, "LABEL", ""]
-		, [3, "LABEL", ""]
-		, [4, "BUTTON", "CANCEL", { closeDialog 2; }]
-		, [4, "BUTTON", "COPY", {
-			copyToClipboard str( ((dzn_gear_editMode_ammoBearerItemsKits select { (_x select 0) == (_this select 0) select 1 }) select 0) select 1 );
-			["BEARER_COPIED"] call dzn_fnc_gear_editMode_showNotif;
-		}]
-		, [4, "BUTTON", "APPLY", {
-			closeDialog 2;
-			if (backpack player == "") exitWith { hint "You have no backpack to add ammo set!"; };
-
-			{ player removeItemFromBackpack _x; } forEach (backpackItems player);
-			private _mags = ((dzn_gear_editMode_ammoBearerItemsKits select { (_x select 0) == (_this select 0) select 1 }) select 0) select 1;
-			{
-				private _mag = _x select 0;
-				private _count = _x select 1;
-
-				for "_i" from 1 to _count do { player addItemToBackpack _mag;	};
-			} forEach _mags;
-
-			["BEARER_ADDED"] call dzn_fnc_gear_editMode_showNotif;
-		}]
-	] call dzn_fnc_ShowAdvDialog;
-};
 
 // *****************************
 //	Cargo kit composer menu
@@ -1468,6 +1297,9 @@ dzn_fnc_gear_editMode_showNotif = {
 // *****************************
 //	Initialization
 // *****************************
+
+
+
 
 dzn_gear_AmmoBearearComponent = createHashMapObject [[
 	[Q(CurrentWeapons), []],
@@ -1891,7 +1723,6 @@ dzn_gear_HistoryComponent = createHashMapObject [[
 	}]
 ]];
 
-
 dzn_fnc_gear_editMode_initialize = {
 	waitUntil { !(isNull (findDisplay 46)) };
 	(findDisplay 46) displayAddEventHandler ["KeyDown", "_handled = _this call dzn_fnc_gear_editMode_onKeyPress"];
@@ -1920,9 +1751,6 @@ dzn_fnc_gear_editMode_initialize = {
 		dzn_gear_editMode_canCheck_ArsenalDiff = true;
 	};
 
-	dzn_gear_editMode_ammoBearerCurrentMags = createHashMap; // [MagName 2 Count map]
-	// dzn_gear_editMode_ammoBearerItemsKits = [];
-
 	dzn_gear_editMode_controlsOverArsenalEH = -1;
 	dzn_gear_editMode_notif_pos = [.9,0,.4,1];
 	dzn_gear_editMode_lastInventory = [];
@@ -1946,6 +1774,23 @@ dzn_fnc_gear_editMode_initialize = {
 	nil call dzn_fnc_ShowMessage;
 
 	if (dzn_gear_UseACEArsenalOnEdit) exitWith {
+		dzn_gear_ArsenalComponent set [
+			Q(ACEOpenedEH),
+			["ace_arsenal_displayOpened", {
+				params ["_display"];
+				dzn_gear_ArsenalComponent call [F(OnACEArsenalOpened), [_display]];
+			}] call CBA_fnc_addEventHandler
+		];
+
+		dzn_gear_ArsenalComponent set [
+			Q(ACEClosedEH),
+			["ace_arsenal_displayClosed", {
+				dzn_gear_ArsenalComponent call [F(OnACEArsenalClosed), [_display]];
+			}] call CBA_fnc_addEventHandler
+		];
+
+
+		/*
 		dzn_gear_arsenalEventHandlerID = addMissionEventHandler ["EachFrame", {
 			if !(isNil "ace_arsenal_currentAction") then {
 				// ACE arsenal opened
@@ -1968,6 +1813,7 @@ dzn_fnc_gear_editMode_initialize = {
 				// ACE arsenal closed
 			};
 		}];
+		*/
 	};
 
 	waitUntil { isNull ( uinamespace getvariable "RSCDisplayArsenal") };

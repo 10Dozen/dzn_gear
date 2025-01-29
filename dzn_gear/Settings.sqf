@@ -7,6 +7,11 @@
 dzn_gear_enableIdentitySync			= false;
 
 // Plugins
+dzn_gear_Plugins = [
+	"Editor"
+];
+
+
 /*
 	Gear Assignment according to units/slot Role Description.
 	Use it to apply gear on players in multiplayer, 100% JIP compatible

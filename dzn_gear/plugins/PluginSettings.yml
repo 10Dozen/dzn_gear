@@ -1,0 +1,24 @@
+
+Editor:
+    UseACEArsenal: true
+    ReplaceRHSStanagsToBISMags: false
+
+    UniformItemsOverride:
+        Standard: '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS]]'
+        Leader: '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS_L]]'
+
+    AssignedItemsOverride:
+        Standard: '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS]'
+        Leader: '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS_L]'
+
+    Roles:
+        Platoon Leader: "pl"
+        Squad Leader: "sl"
+        Fireteam Leader: "ftl"
+        Automatic Rifleman: "ar"
+        Grenadier: "gr"
+        Rifleman: "r"
+        Section Leader: "sl"
+        2IC: "2ic"
+        Командир Взвода: "pl"
+

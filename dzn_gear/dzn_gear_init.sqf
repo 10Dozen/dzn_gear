@@ -27,9 +27,11 @@ call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_functions.sqf";
 // **************************
 // EDIT MODE
 // **************************
+/*
 if (dzn_gear_editModeEnabled) then {
 	[] call compileScript ["dzn_gear\fn\dzn_gear_editMode.sqf"];
 };
+*/
 
 // **************************
 // GEARS
@@ -44,6 +46,10 @@ if (_timeout > 0) then {
 	waitUntil { time > _timeout };
 };
 
+
+
+
+/*
 if (dzn_gear_enableGearAssignementTable) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\AssignementTable.sqf"; };
 if (dzn_gear_enableGearNotes) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\GearNotes.sqf"; };
 if (dzn_gear_enableZeusCompatibility) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\ZeusCompatibility.sqf"; };
@@ -54,5 +60,18 @@ if (
 ) then {
 	call dzn_fnc_gear_nullifyUnusedVars;
 };
+*/
+
 
 [] call dzn_fnc_gear_initialize;
+
+// **************************
+// PLUGINS
+// **************************
+
+dzn_gear_PluginSettings = ["dzn_gear\plugins\PluginSettings.yml"] call dzn_fnc_parseSFML;
+{
+    private _name = _x;
+    private _path = format ["dzn_gear\plugins\%1\init.sqf", _name];
+	[dzn_gear_PluginSettings get _name] call compileScript [_path];
+} forEach dzn_gear_Plugins;
