@@ -1,5 +1,4 @@
 #include "defines.h"
-
 #define DBG_FUNC_PREFIX "onArsenalOpened"
 
 params ["_display"];
