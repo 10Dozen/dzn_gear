@@ -4,12 +4,21 @@
 #define COMPONENT_PATH dzn_gear\plugins\Editor
 
 #define INIT_COMPONENT(NAME) [] call compileScript ['COMPONENT_PATH\NAME\Component.sqf']
+#define INIT_COMPONENT_WITH_ARGS(NAME,ARGS) [ARGS] call compileScript ['COMPONENT_PATH\NAME\Component.sqf']
 
 // -- Shared defines
 #define HISTORY_PERSONAL_KIT "PERSONAL_KIT"
 #define HISTORY_CARGO_KIT "CARGO_KIT"
 #define HISTORY_COMPOSED "COMPOSED"
 
+#define NO_OVERRIDE ""
+#define OVERRIDE_STANDARD "Standard"
+#define OVERRIDE_LEADER "Leader"
+
+#define NOTIF_KIT_COPIED 0
+#define NOTIF_HISTORY_COPIED 1
+#define NOTIF_BEARER_COPIED 10
+#define NOTIF_BEARER_ADDED 11
 
 // -- Palette
 #define COLOR_PALE_GREEN [0.54, 0.63, 0.44, 1]

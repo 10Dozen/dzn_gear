@@ -1,7 +1,6 @@
 
 Editor:
     UseACEArsenal: true
-    ReplaceRHSStanagsToBISMags: false
 
     UniformItemsOverride:
         Standard: '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS]]'
