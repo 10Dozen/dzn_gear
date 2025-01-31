@@ -7,7 +7,7 @@ private _declaration = [
 	[Q(OverrideUniformItems), ""],
 	[Q(OverrideAssignedItems), ""],
 
-	[Q(TotalsShown), false],
+	[Q(TotalsTargetDisplay), displayNull],
 
     // -- Public
     PREP_COMPONENT_FUNCTION(Notify),
@@ -15,11 +15,9 @@ private _declaration = [
 
 	PREP_COMPONENT_FUNCTION(CreateKit),
 	PREP_COMPONENT_FUNCTION(FormatKit),
+	PREP_COMPONENT_FUNCTION(ShowTotals), 
 
-	//PREP_COMPONENT_FUNCTION(initEvents), // TBD
-
-	PREP_COMPONENT_FUNCTION(showTotals), // TBD
-
+	PREP_COMPONENT_FUNCTION(initEvents), 
 	PREP_COMPONENT_FUNCTION(composeUnitKit),
 	PREP_COMPONENT_FUNCTION(composeCargoKit)
 ];

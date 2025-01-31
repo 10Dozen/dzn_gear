@@ -1,5 +1,5 @@
 #include "defines.h"
-#define DBG_FUNC_PREFIX "showTotals"
+#define DBG_FUNC_PREFIX "ShowTotals"
 
 params [["_display", findDisplay 46]];
 
@@ -37,7 +37,6 @@ private ["_item", "_color"];
     [handgunWeapon player, handgunItems player, "Handgun"]
 ];
 
-
 // -- Misc
 {
     _x params ["_item","_title"];
@@ -47,7 +46,6 @@ private ["_item", "_color"];
 	[headgear player, "Headgear"],
 	[goggles player, "Facewear"]
 ];
-
 
 // -- Uni, Vest & Backpack
 {
@@ -76,24 +74,21 @@ _lines pushBack format [
 
 private _totalText = _lines joinString "<br/>";
 
-if (_self get Q(TotalsShown)) exitWith {
-    // Update
-    DBG_ "Modify!" EOL;
-    ["MODIFY", _display, TOTALS_LABEL_TAG, [
-        ["title", _totalText]
-    ]] call dzn_fnc_HandleControl;
+if (isNull (_self get Q(TotalsTargetDisplay))) exitWith {
+    _self set [Q(TotalsTargetDisplay), _display];
+    [
+        "ADD",_display, TOTALS_LABEL_TAG,
+        ["LABEL", _totalText, [
+            ["h", 2],
+            ["w", 0.4],
+            ["x", 0.8],
+            ["y", -0.1],
+            ["bg", [0,0,0,0.75]]
+        ]]
+    ] call dzn_fnc_HandleControl;
 };
 
-DBG_ "Show!" EOL;
-[
-    "ADD",_display, TOTALS_LABEL_TAG,
-    ["LABEL", _totalText, [
-        ["h", 2],
-        ["w", 0.4],
-        ["x", 0.8],
-        ["y", -0.1],
-        ["bg", [0,0,0,0.75]]
-    ]]
-] call dzn_fnc_HandleControl;
-
-_self set [Q(TotalsShown), true];
+["MODIFY", _display, TOTALS_LABEL_TAG, [
+    ["title", _totalText]
+]] call dzn_fnc_HandleControl;
+    

@@ -6,6 +6,9 @@ _self set [Q(Display), _display];
 
 ["RESET", _display] call dzn_fnc_HandleControl;
 
+// -- Show gear totals 
+dzn_gear_CoreComponent call [F(ShowTotals), [_display]];
+
 // -- Buttons
 #define BTN_FORMAT "<t align='center' size=2>%1</t>"
 private _showBtn = [
