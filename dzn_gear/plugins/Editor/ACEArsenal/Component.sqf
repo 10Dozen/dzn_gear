@@ -39,6 +39,8 @@ private _declaration = [
 		[3004, ["Alt.Magazine",   { CFG_MAGAZINE_PATH }]]
 	]],
 
+    PREP_COMPONENT_FUNCTION(Open),
+
     PREP_COMPONENT_FUNCTION(initEvents),
     PREP_COMPONENT_FUNCTION(onArsenalOpened),
 

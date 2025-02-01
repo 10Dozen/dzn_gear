@@ -1,0 +1,9 @@
+#include "defines.h"
+
+NOTIF_BEARER_COPIED: "<t align='right' font='PuristaBold' size='1'>Ammo Bearer Items were <t color='#FFD000'>copied</t></t>"
+NOTIF_BEARER_ADDED: "<t align='right' font='PuristaBold' size='1'>Ammo Bearer Items were <t color='#FFD000'>set to backpack</t></t>"
+NOTIF_KIT_COPIED: "<t align='right' font='PuristaBold' size='1.1'><t color='%2'>%1</t> kit copied</t>"
+NOTIF_HISTORY_COPIED: "<t align='right' font='PuristaBold' size='1.1'><t color='#FFD000'>Data</t> was copied</t>"
+NOTIF_GEAR_CLEAR: "<t align='right' font='PuristaBold' size='1.1'>All items was removed</t>"
+NOTIF_GEAR_REMOVE: "<t align='right' font='PuristaBold' size='1.1'>Gear was removed</t>"
+NOTIF_GEAR_VEHICLE_REMOVE: "<t align='right' font='PuristaBold' size='1.1'>Vehicle's gear was removed</t>"

@@ -1,8 +1,16 @@
 #include "defines.h"
+/*
+	Handles menu open/change.
+
+	Params:
+	0: _paginationDirection -- direction of pagination. Optional, defaults to 0 (stay on last page).
+
+	Returns:
+	nothing
+*/
 
 params [["_paginationDirection", 0]];
 
-private _targetPageIdx = _self get Q(PageIdx) + _paginationDirection;
 private _maxIdx = count (_self get Q(Pages)) - 1;
 private _getInRangeIndex = {
 	params ["_idx"];
@@ -12,11 +20,13 @@ private _getInRangeIndex = {
 	] select (_idx < 0)
 };
 
-_self set [Q(PageIdx), [_targetPageIdx] call _getInRangeIndex];
 
-private _targetPage = (_self get Q(Pages)) # (_self get Q(PageIdx));
-private _prevPage =  (_self get Q(Pages)) # ([_self get Q(PageIdx) - 1] call _getInRangeIndex);
-private _nextPage =  (_self get Q(Pages)) # ([_self get Q(PageIdx) + 1] call _getInRangeIndex);
+private _targetPageIdx = [(_self get Q(PageIdx)) + _paginationDirection] call _getInRangeIndex;
+_self set [Q(PageIdx), _targetPageIdx];
+
+private _targetPage = (_self get Q(Pages)) # _targetPageIdx;
+private _prevPage =  (_self get Q(Pages)) # ([_targetPageIdx - 1] call _getInRangeIndex);
+private _nextPage =  (_self get Q(Pages)) # ([_targetPageIdx + 1] call _getInRangeIndex);
 
 private _menu = [
 	["HEADER", "dzn_Gear Menu"],

@@ -6,5 +6,7 @@ params ["_pluginSettings"];
 
 [
     { !isNull findDisplay 46 && time > 0},
-    { dzn_gear_ArsenalComponent call [F(initEvents)]; }
+    {
+        ECOB(Editor,Core) call [F(InitEvents)];
+    }
 ] call CBA_fnc_waitUntilAndExecute;

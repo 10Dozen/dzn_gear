@@ -3,7 +3,7 @@
 #define DBG_PREFIX "(dzn_gear.Editor.ACEArsenal) "
 
 
-#define ThisCOB dzn_gear_ArsenalComponent
+#define ThisCOB ECOB(Editor,Arsenal)
 #define COMPONENT_PATH dzn_gear\plugins\Editor\ACEArsenal
 
 

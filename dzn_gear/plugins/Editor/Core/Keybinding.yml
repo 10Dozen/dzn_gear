@@ -1,0 +1,26 @@
+#include "defines.h"
+#include "\a3\ui_f\hpp\definedikcodes.inc"
+
+// Keys are dik_keycodes - see https://community.bistudio.com/wiki/DIK_KeyCodes
+// Modifiers are:
+// - ctrl
+// - alt
+// - shift
+// - ctrl+shift+alt, ctrl+alt, ctrl+shift, shift+alt
+
+DIK_F1:
+|    // Show keybind
+|    key: { ECOB(Editor,Core) call [F(ShowKeybinds)] }
+
+DIK_SPACE:
+|    // Open Arsenal
+|    key: { ECOB(Editor,Arsenal) call [F(Open)]; }
+|    // Open dzn_gear Editor menu
+|    ctrl: { ECOB(Editor,Menu) call [F(HandleMenu), []] }
+
+DIK_DELETE:
+|    // Clear player's containers
+|    key: { ECOB(Editor,Core) call [F(ClearGear), [false]] }
+|    // Strip player's gear
+|    ctrl: { ECOB(Editor,Core) call [F(ClearGear), [true]] }
+

@@ -2,8 +2,10 @@
 
 params ["_pluginSettings"];
 
-dzn_gear_CoreComponent = INIT_COMPONENT_WITH_ARGS(Core,_pluginSettings);
-dzn_gear_ArsenalComponent = INIT_COMPONENT(ACEArsenal);
-dzn_gear_HistoryComponent = INIT_COMPONENT(History);
-dzn_gear_AmmoBearerComponent = INIT_COMPONENT(AmmoBearer);
-dzn_gear_CargoComposerComponent = INIT_COMPONENT(CargoComposer);
+// dzn_gear_Editor_CoreComponent
+ECOB(Editor,Core) = INIT_COMPONENT_WITH_ARGS(Core,_pluginSettings);
+ECOB(Editor,Menu) = INIT_COMPONENT(Menu);
+ECOB(Editor,Arsenal) = INIT_COMPONENT(ACEArsenal);
+ECOB(Editor,History) = INIT_COMPONENT(History);
+ECOB(Editor,AmmoBearer) = INIT_COMPONENT(AmmoBearer);
+ECOB(Editor,CargoComposer) = INIT_COMPONENT(CargoComposer);

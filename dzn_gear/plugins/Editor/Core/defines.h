@@ -2,7 +2,8 @@
 
 #define DBG_PREFIX "(dzn_gear.Editor.Core) "
 
-#define ThisCOB dzn_gear_CoreComponent
+#define ThisCOB dzn_gear_Editor_CoreComponent
+
 #define COMPONENT_PATH dzn_gear\plugins\Editor\Core
 
 #define NEWLINE_AND_TAB toString[10,32,32,32,32]

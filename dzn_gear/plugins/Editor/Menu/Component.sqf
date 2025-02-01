@@ -21,18 +21,16 @@ private _declaration = [
         createHashMapFromArray [
             ["title", "Ammo Bearer Composer"],
             ["renderer", F(showAmmoCarrierMenu)],
-
-            ["renderer", [F(render)] F(showAmmoCarrierMenu) */],
             ["description", "Tool to prepare backpack loadout for ammo beariers based on current weapon or weapon from other kit."]
         ]
-    ]]
+    ]],
 
     PREP_COMPONENT_FUNCTION(HandleMenu),
 
     PREP_COMPONENT_FUNCTION(showMainMenu),
     PREP_COMPONENT_FUNCTION(showAmmoCarrierMenu),
     PREP_COMPONENT_FUNCTION(showCargoComposerMenu),
-    PREP_COMPONENT_FUNCTION(showHistoryMenu),
+    PREP_COMPONENT_FUNCTION(showHistoryMenu)
 ];
 
 private _cob = createHashMapObject [_declaration];

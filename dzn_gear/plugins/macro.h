@@ -11,6 +11,7 @@
 #define F(X) Q(_F(X))
 
 #define COB dzn_gear_GenericComponent
+#define ECOB(PLUGIN,NAME) dzn_gear_##PLUGIN##_##NAME##Component
 #define COMPONENT_PATH dzn_gear\plugins
 
 #define PREP_COMPONENT_FUNCTION(NAME) [F(NAME), compileScript ['COMPONENT_PATH\fnc_##NAME##.sqf']]
