@@ -29,6 +29,7 @@ private _prevPage =  (_self get Q(Pages)) # ([_targetPageIdx - 1] call _getInRan
 private _nextPage =  (_self get Q(Pages)) # ([_targetPageIdx + 1] call _getInRangeIndex);
 
 private _menu = [
+	["DIALOG", [["dialogShowTime", 0]]], // TBD: If already opened - set to 0, otherswise use default 0.15
 	["HEADER", "dzn_Gear Menu"],
 	[
 		"BUTTON",

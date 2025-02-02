@@ -7,45 +7,9 @@ _self set [Q(Display), _display];
 ["RESET", _display] call dzn_fnc_HandleControl;
 
 // -- Show gear totals
-ECOB(Editor,Core) call [F(ShowTotals), [_display]];
-
-// -- Buttons
-#define BTN_FORMAT "<t align='center' size=2>%1</t>"
-private _showBtn = [
-	"ADD", _display, "btnCategoryShow", [
-		"BUTTON",
-		format [BTN_FORMAT, "S"],
-		{ ThisCOB call [F(onShowButtonClick), []]; }, [],
-		[["pos", [0, 0.2, 0.1, 0.1]], ["tooltip", "Show item pool"]]
-    ]
-] call dzn_fnc_HandleControl;
-
-private _addBtn = [
-	"ADD", _display, "btnCategoryAdd", [
-		"BUTTON",
-		format [BTN_FORMAT, "+"],
-		{ ThisCOB call [F(onAddButtonClick), []]; }, [],
-		[["pos", [0, 0.3, 0.1, 0.1]], ["tooltip", "Adds item to pool!"]]
-    ]
-] call dzn_fnc_HandleControl;
-
-private _resetBtn = [
-	"ADD", _display, "btnCategoryReset", [
-		"BUTTON",
-		format [BTN_FORMAT, "R"],
-		{ ThisCOB call [F(onResetButtonClick), []]; }, [],
-		[["pos", [0, 0.4, 0.1, 0.1]], ["tooltip", "Reset item pool!"]]
-    ]
-] call dzn_fnc_HandleControl;
-
-private _exportBtn = [
-	"ADD", _display, "btnCategoryExport", [
-		"BUTTON",
-		format [BTN_FORMAT, "E"],
-		{ ThisCOB call [F(onExportButtonClick), []]; }, [],
-		[["pos", [0, 0.5, 0.1, 0.1]], ["tooltip", "Export item pool!"]]
-    ]
-] call dzn_fnc_HandleControl;
+ECOB(Editor,Core) call [F(InitKeybinds), [_display]];
+ECOB(Editor,Core) call [F(SetCurrentDisplay), [_display]];
+ECOB(Editor,Core) call [F(ShowTotals), []];
 
 // -- Event handlers
 (_display displayCtrl IDC_leftTabContent) ctrlAddEventHandler ["LBSelChanged", {
@@ -83,3 +47,41 @@ private _exportBtn = [
 		ThisCOB get Q(CurrentItemSelected)
 	EOL;
 }];
+
+// -- Render buttons
+#define BTN_FORMAT "<t align='center' size=2>%1</t>"
+private _showBtn = [
+	"ADD", _display, "btnCategoryShow", [
+		"BUTTON",
+		format [BTN_FORMAT, "S"],
+		{ ThisCOB call [F(onShowButtonClick), []]; }, [],
+		[["pos", [0, 0.2, 0.1, 0.1]], ["tooltip", "Show item pool"]]
+    ]
+] call dzn_fnc_HandleControl;
+
+private _addBtn = [
+	"ADD", _display, "btnCategoryAdd", [
+		"BUTTON",
+		format [BTN_FORMAT, "+"],
+		{ ThisCOB call [F(onAddButtonClick), []]; }, [],
+		[["pos", [0, 0.3, 0.1, 0.1]], ["tooltip", "Adds item to pool!"]]
+    ]
+] call dzn_fnc_HandleControl;
+
+private _resetBtn = [
+	"ADD", _display, "btnCategoryReset", [
+		"BUTTON",
+		format [BTN_FORMAT, "R"],
+		{ ThisCOB call [F(onResetButtonClick), []]; }, [],
+		[["pos", [0, 0.4, 0.1, 0.1]], ["tooltip", "Reset item pool!"]]
+    ]
+] call dzn_fnc_HandleControl;
+
+private _exportBtn = [
+	"ADD", _display, "btnCategoryExport", [
+		"BUTTON",
+		format [BTN_FORMAT, "E"],
+		{ ThisCOB call [F(onExportButtonClick), []]; }, [],
+		[["pos", [0, 0.5, 0.1, 0.1]], ["tooltip", "Export item pool!"]]
+    ]
+] call dzn_fnc_HandleControl;

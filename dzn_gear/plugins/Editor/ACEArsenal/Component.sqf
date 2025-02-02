@@ -40,8 +40,8 @@ private _declaration = [
 	]],
 
     PREP_COMPONENT_FUNCTION(Open),
+    PREP_COMPONENT_FUNCTION(InitEvents),
 
-    PREP_COMPONENT_FUNCTION(initEvents),
     PREP_COMPONENT_FUNCTION(onArsenalOpened),
 
     PREP_COMPONENT_FUNCTION(onShowButtonClick),

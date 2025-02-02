@@ -17,7 +17,7 @@ private _execKey = [
 ] select { _x != "" } joinString "+";
 if (_execKey == "") then { _execKey = "key"; };
 
-DBG_ "_execKey=%1", _execKey EOL;
+DBG_ "_execKey=%1, exec=%2", _execKey, _binding get _execKey EOL;
 [] call (_binding get _execKey);
 
 true

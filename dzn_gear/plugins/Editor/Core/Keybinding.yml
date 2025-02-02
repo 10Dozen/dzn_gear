@@ -12,6 +12,10 @@ DIK_F1:
 |    // Show keybind
 |    key: { ECOB(Editor,Core) call [F(ShowKeybinds)] }
 
+DIK_F2:
+|    // Show totals
+|    key: { ECOB(Editor,Core) call [F(toggleTotals), []]}
+
 DIK_SPACE:
 |    // Open Arsenal
 |    key: { ECOB(Editor,Arsenal) call [F(Open)]; }

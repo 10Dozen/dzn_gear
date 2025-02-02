@@ -25,14 +25,23 @@ private _declaration = [
 	[Q(Settings), _settings],
 	[Q(OverrideUniformItems), ""],
 	[Q(OverrideAssignedItems), ""],
+	[Q(CurrentDisplay), displayNull],
 
-	[Q(TotalsTargetDisplay), displayNull],
+	[Q(TotalsShow), false],
+	[Q(TotalsRenderSettings), [
+		// Main display
+		[["x", 0.9], ["y", -0.15]],
+		// Arsenal
+		[["x", 0.6], ["y", -0.15]]
+	]],
 
 	[Q(Keybinds), _keybinds],
 	[Q(Messages), _messages],
 
     // -- Public
 	PREP_COMPONENT_FUNCTION(InitEvents),
+	PREP_COMPONENT_FUNCTION(InitKeybinds),
+	PREP_COMPONENT_FUNCTION(SetCurrentDisplay),
 
     PREP_COMPONENT_FUNCTION(Notify),
 	PREP_COMPONENT_FUNCTION(ShowKeybinds),
@@ -44,7 +53,8 @@ private _declaration = [
 
 	PREP_COMPONENT_FUNCTION(onKeyPressed),
 	PREP_COMPONENT_FUNCTION(composeUnitKit),
-	PREP_COMPONENT_FUNCTION(composeCargoKit)
+	PREP_COMPONENT_FUNCTION(composeCargoKit),
+	PREP_COMPONENT_FUNCTION(toggleTotals)
 ];
 
 private _cob = createHashMapObject [_declaration];

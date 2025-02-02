@@ -1,23 +1,43 @@
 #include "defines.h"
-#define DBG_FUNC_PREFIX "ShowTotals"
+#define DBG_FUNC_PREFIX "fnc_showTotals"
 
-params [["_display", findDisplay 46]];
+params [];
 
-#define COLOR_ITEM "#aaaaaa"
-#define COLOR_MAG "#959c7b"
+#define COLOR_ITEM "#cccccc"
+#define COLOR_MAG "#a7b37b"
+#define COLOR_MAG_FAV "#96ad3e"
+#define COLOR_THROWABLE "#d9b5a0"
 
-#define FMT_MARK "<t color='#059CED' align='left' size='0.8'>%2:</t><t align='right' size='0.8'>%1</t>"
-#define FMT_MARK2 "<t color='#3F738F' align='left' size='0.8'>%2:</t><t align='right' size='0.8'>%1</t>"
+#define FMT_MARK "<t color='#059CED' align='left' size='0.8'>%2:</t><t align='right' size='0.8' color='#a0d0eb'>%1</t>"
+#define FMT_MARK2 "<t color='#0270ab' align='left' size='0.8'>%2:</t><t align='right' size='0.8' color='#a0d0eb'>%1</t>"
 
 #define FMT_TITLE(X,TITLE) format [FMT_MARK, X call dzn_fnc_getItemDisplayName, TITLE]
 #define FMT_TITLE2(X,TITLE) format [FMT_MARK2, X call dzn_fnc_getItemDisplayName, TITLE]
-#define FMT_LINE(X) format ["<t color='#aaaaaa' size='0.8'>    %1</t>", X call dzn_fnc_getItemDisplayName]
+#define FMT_LINE(X) format ["<t color='#cccccc' size='0.8'>    %1</t>", X call dzn_fnc_getItemDisplayName]
+#define FMT_PREFIX_LINE(PREFIX,X) \
+    format [\
+        "<t color='#cccccc' size='0.8'>    <t size='0.6' color='#888888'>%2</t> <t align='right'>%1</t></t>",\
+        X call dzn_fnc_getItemDisplayName, PREFIX\
+    ]
+#define FMT_PREFIX_MAG_LINE(X) \
+    format [ \
+        "<t color='" + COLOR_MAG_FAV + "' size='0.8'>    <t size='0.6'>MAG</t> <t align='right'>%1</t></t>",\
+        X call dzn_fnc_getItemDisplayName\
+    ]
 #define FMT_COUNT_LINE(X,COUNT,COLOR) \
     format [\
-        "<t color='#aaaaaa' size='0.8'>    %2x <t color='%3'>%1</t></t>", \
-        X call dzn_fnc_getItemDisplayName, COUNT, COLOR \
+        "<t color='#cccccc' size='0.8'>    %2x <t color='%3'>%1</t></t>", \
+        X, COUNT, COLOR \
     ]
 
+DBG_ "Params: %1", _this EOL;
+if !(_self get Q(TotalsShow)) exitWith {
+    DBG_ "Totals are disabled - no render" EOL;
+    ["REMOVE", _self get Q(CurrentDisplay), TOTALS_LABEL_TAG] call dzn_fnc_HandleControl;
+};
+
+// -- Prepare content
+private _favoriteMags = ["","",""];
 private _lines = [
     "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
 ];
@@ -26,15 +46,28 @@ private ["_item", "_color"];
 
 // -- Guns
 {
-    _x params ["_item", "_attaches", "_title"];
+    _x params ["_title", "_item", "_attaches", "_mag"];
     if (_item == "") then { continue; };
 
     _lines pushBack FMT_TITLE(_item,_title);
-    { _lines pushBack FMT_LINE(_x); } forEach (_attaches select { _x != "" });
+
+    if (_mag isNotEqualTo []) then {
+        _lines pushBack FMT_PREFIX_MAG_LINE(_mag select 0);
+        _favoriteMags set [_forEachIndex, (_mag select 0)];
+    };
+
+    private "_attach";
+    {
+        private _attach = _attaches # _forEachIndex;
+        if (_attach == "") then { continue };
+        _lines pushBack FMT_PREFIX_LINE(_x,_attach);
+    } forEach ["MZL", "PTR", "OPT", "BPD"];
+
+    // { _lines pushBack FMT_PREFIX_LINE(_x); } forEach (_attaches select { _x != "" });
 } forEach [
-    [primaryWeapon player, primaryWeaponItems player, "Primary"],
-    [secondaryWeapon player, secondaryWeaponItems player, "Launcher"],
-    [handgunWeapon player, handgunItems player, "Handgun"]
+    ["Primary", primaryWeapon player, primaryWeaponItems player, primaryWeaponMagazine player],
+    ["Launcher", secondaryWeapon player, secondaryWeaponItems player, secondaryWeaponMagazine player],
+    ["Handgun", handgunWeapon player, handgunItems player, handgunMagazine player]
 ];
 
 // -- Misc
@@ -53,11 +86,37 @@ private ["_item", "_color"];
     if (_item == "") then { continue; };
 
     _lines pushBack FMT_TITLE2(_item,_title);
+    private "_color";
     {
         _x params ["_classname", "_count"];
-        (_classname call BIS_fnc_itemType) params ["_category"];
-        _color = [COLOR_ITEM, COLOR_MAG] select (_category == "Magazine");
-        _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);
+
+        (_classname call BIS_fnc_itemType) params ["_category", "_subcategory"];
+        _color = COLOR_ITEM;
+
+        if (_category isEqualTo "Magazine") then {
+            private _favedMagIdx = _favoriteMags find (_x # 0);
+            DBG_ "Fav mags: %1, _x=%2, _favedMagIdx=%3", _favoriteMags, _x , _favedMagIdx EOL;
+
+            _color = [
+                [COLOR_MAG, COLOR_MAG_FAV] select (_favedMagIdx > -1),
+                COLOR_THROWABLE
+            ] select (_subcategory isEqualTo "Grenade");
+
+            if (_favedMagIdx == -1) then {
+                _classname = _classname call dzn_fnc_getItemDisplayName;
+            } else {
+                _classname = [
+                    "<PRIMARY MAG",
+                    "SECONDARY MAG",
+                    "HANDGUN MAG"
+                ] select _favedMagIdx;
+            };
+
+            _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);
+            continue;
+        };
+
+        _lines pushBack FMT_COUNT_LINE(_classname call dzn_fnc_getItemDisplayName,_count,_color);
     } forEach (_itemList call bis_fnc_consolidateArray);
 } forEach [
     [uniform player, uniformItems player, "Uniform"],
@@ -66,7 +125,7 @@ private ["_item", "_color"];
 ];
 
 // -- Assigned items
-_lines pushBack format [FMT_MARK2, "", "Assigned items:"];
+_lines pushBack format [FMT_MARK2, "", "Assigned items"];
 _lines pushBack format [
     "<t color='#aaaaaa' size='0.8'>    %1</t>",
     ((assignedItems player) apply { _x call dzn_fnc_getItemDisplayName }) joinString ", "
@@ -74,21 +133,24 @@ _lines pushBack format [
 
 private _totalText = _lines joinString "<br/>";
 
-if (isNull (_self get Q(TotalsTargetDisplay))) exitWith {
-    _self set [Q(TotalsTargetDisplay), _display];
+// -- Render
+private _display = _self get Q(CurrentDisplay);
+DBG_ "Target dispaly: %1", _display EOL;
+DBG_ "Controls exist?: %1", ["EXISTS", _display, TOTALS_LABEL_TAG] call dzn_fnc_HandleControl EOL;
+
+if !(["EXISTS", _display, TOTALS_LABEL_TAG] call dzn_fnc_HandleControl) exitWith {
+    DBG_ "Create new", _this EOL;
+    private _positionAttrs = (_self get Q(TotalsRenderSettings)) select (_display isNotEqualTo (findDisplay 46));
     [
         "ADD",_display, TOTALS_LABEL_TAG,
         ["LABEL", _totalText, [
-            ["h", 2],
+            ["bg", [0,0,0,0.65]],
+            // ["h", 2],
             ["w", 0.4],
-            ["x", 0.8],
-            ["y", -0.1],
-            ["bg", [0,0,0,0.75]]
-        ]]
+            ["adjustHeight", true]
+        ] + _positionAttrs]
     ] call dzn_fnc_HandleControl;
 };
 
-["MODIFY", _display, TOTALS_LABEL_TAG, [
-    ["title", _totalText]
-]] call dzn_fnc_HandleControl;
-    
+DBG_ "Modify existing", _this EOL;
+["MODIFY", _display, TOTALS_LABEL_TAG, [["title", _totalText]]] call dzn_fnc_HandleControl;
