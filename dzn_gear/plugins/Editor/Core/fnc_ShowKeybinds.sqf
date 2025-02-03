@@ -3,7 +3,10 @@
 
 hint parseText format["<t size='2' color='#FFD000' shadow='1'>dzn_gear</t>
     <br /><br /><t size='1.45' color='#3793F0' underline='true'>Keybinding:</t>
-    <br /><br /><t %1>[F1]</t><t %2> - Show keybinding</t>
+    <br />
+    <br /><t %1>[F1]</t><t %2> - Show keybinding</t>
+    <br /><t %1>[F2]</t><t %2> - Show Gear Totals</t>
+    <br />
     <br />
     <br /><t %1>[SPACE]</t><t %2> - Open Arsenal</t>
     <br /><t %1>[CTRL + SPACE]</t><t %2> - Copy gear of player or cursorTarget and add it to action list</t>

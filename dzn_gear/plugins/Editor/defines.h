@@ -11,9 +11,6 @@
 #define HISTORY_CARGO_KIT "CARGO_KIT"
 #define HISTORY_COMPOSED "COMPOSED"
 
-#define NO_OVERRIDE ""
-#define OVERRIDE_STANDARD "Standard"
-#define OVERRIDE_LEADER "Leader"
 
 #define NOTIF_KIT_COPIED 0
 #define NOTIF_GEAR_CLEAR 1

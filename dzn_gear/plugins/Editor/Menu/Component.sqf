@@ -1,6 +1,9 @@
 #include "defines.h"
 
+params ["_settings"];
+
 private _declaration = [
+    [Q(Settings), _settings],
     [Q(PageIdx), 0],
     [Q(Pages), [
         createHashMapFromArray [
@@ -24,6 +27,12 @@ private _declaration = [
             ["description", "Tool to prepare backpack loadout for ammo beariers based on current weapon or weapon from other kit."]
         ]
     ]],
+
+    [Q(MainMenu_KitKey), ""],
+    [Q(MainMenu_KitRole), -1],
+    [Q(MainMenu_AssignedItemsOverrideMode), OVERRIDE_STANDARD],
+    [Q(MainMenu_UniformItemsOverrideMode), OVERRIDE_STANDARD],
+
 
     PREP_COMPONENT_FUNCTION(HandleMenu),
 
