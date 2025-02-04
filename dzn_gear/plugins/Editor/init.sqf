@@ -3,14 +3,15 @@
 /*
     TODO:
 
-    - Add F2 keybind for Toggle Totals
+    + Show totals -- show estimated weight
+    + Add F2 keybind for Toggle Totals
     - DEL to Delete vehicle/box container
     - Main menu
-        - Remove dialog animation?
-        - Unit kit creation
-            - Assigned/Uniform items override
-            - Store key
-            - Roles options
+        + Remove dialog animation?
+        + Unit kit creation
+            + Assigned/Uniform items override
+            + Store key
+            + Roles options
 
         - Vehicle kit creation
         - Copycat kit creation

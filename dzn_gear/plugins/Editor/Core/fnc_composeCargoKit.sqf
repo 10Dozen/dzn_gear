@@ -1,6 +1,6 @@
 #include "defines.h"
 
-params ["_title", "_kit", "_name", "_colorString"];
+params ["_title", "_name", "_colorString", "_kit"];
 
 // -- Save kit to namespace
 missionNamespace setVariable [_name, _kit];

@@ -29,7 +29,7 @@ private _prevPage =  (_self get Q(Pages)) # ([_targetPageIdx - 1] call _getInRan
 private _nextPage =  (_self get Q(Pages)) # ([_targetPageIdx + 1] call _getInRangeIndex);
 
 private _menu = [
-    ["DIALOG", [["dialogShowTime", [0.15, 0] select (_paginationDirection == 0)]]],
+    ["DIALOG", [["dialogShowTime", [0, 0.15] select (_paginationDirection == 0)]]],
     ["HEADER", "dzn_Gear Menu"],
     [
         "BUTTON",

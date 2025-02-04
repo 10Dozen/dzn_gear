@@ -1,6 +1,14 @@
 #include "defines.h"
+#define DBG_FUNC_PREFIX "fnc_composeUnitKit"
 
-params ["_title", "_kit", "_name", "_colorString"];
+params [
+	"_title",
+	"_name",
+	"_colorString",
+	"_kit",
+    ["_overrideAssignedItems", NO_OVERRIDE],
+    ["_overrideUniformItems", NO_OVERRIDE]
+];
 
 // -- Save kit to namespace
 missionNamespace setVariable [_name, _kit];
@@ -26,14 +34,16 @@ player addAction [
 ];
 
 // -- Items override
-private _assignedItemsOverride = _self get Q(OverrideAssignedItems);
-if (_assignedItemsOverride != NO_OVERRIDE) then {
-    _kit set [4, _self get Q(Settings) get "AssignedItemsOverride" get _assignedItemsOverride]
+DBG_ "Override assigned items = %1", _overrideAssignedItems EOL;
+DBG_ "Override assigned items = %1", _self get Q(Settings) get "AssignedItemsOverride" get _overrideAssignedItems EOL;
+if (_overrideAssignedItems != NO_OVERRIDE) then {
+    _kit set [4, _self get Q(Settings) get "AssignedItemsOverride" get _overrideAssignedItems]
 };
 
-private _uniformItemsOverride = _self get Q(OverrideUniformItems);
-if (_uniformItemsOverride != NO_OVERRIDE) then {
-    _kit set [5, _self get Q(Settings) get "UniformItemsOverride" get _uniformItemsOverride]
+DBG_ "Override assigned items = %1", _overrideUniformItems EOL;
+DBG_ "Override assigned items = %1", _self get Q(Settings) get "UniformItemsOverride" get _overrideUniformItems EOL;
+if (_overrideUniformItems != NO_OVERRIDE) then {
+    _kit set [5, _self get Q(Settings) get "UniformItemsOverride" get _overrideUniformItems]
 };
 
 // -- Format and copy

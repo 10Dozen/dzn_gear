@@ -38,11 +38,18 @@ if !(_self get Q(TotalsShow)) exitWith {
 
 // -- Prepare content
 private _favoriteMags = ["","",""];
-private _lines = [
-    "<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"
-];
+private _lines = ["<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"];
 
-private ["_item", "_color"];
+// -- Total weights
+private _load = MASS_TO_KG(loadAbs player);
+_lines pushBack format [
+    "<t color='%2' align='center' size='1'>%1 kg total</t>",
+    _load,
+    [
+        ["#ff564a", "#fae38e"] select (_load <= 35),
+        "#cccccc"
+    ] select (_load <= 30)
+];
 
 // -- Guns
 {
@@ -106,7 +113,7 @@ private ["_item", "_color"];
                 _classname = _classname call dzn_fnc_getItemDisplayName;
             } else {
                 _classname = [
-                    "<PRIMARY MAG",
+                    "PRIMARY MAG",
                     "SECONDARY MAG",
                     "HANDGUN MAG"
                 ] select _favedMagIdx;

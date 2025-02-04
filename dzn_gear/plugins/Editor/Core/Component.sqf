@@ -23,8 +23,6 @@ private _messages = (["dzn_gear\plugins\Editor\Core\Messages.yml","PREPROCESS_FI
 
 private _declaration = [
 	[Q(Settings), _settings],
-	[Q(OverrideUniformItems), ""],
-	[Q(OverrideAssignedItems), ""],
 	[Q(CurrentDisplay), displayNull],
 
 	[Q(TotalsShow), false],

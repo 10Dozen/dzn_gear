@@ -11,5 +11,4 @@
 
 #define COLOR_POOL selectRandom ["F","C","B","3","6","9"]
 
-
 #define TOTALS_LABEL_TAG "dzn_Gear_TotalsLbl"

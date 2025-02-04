@@ -33,13 +33,16 @@ private _declaration = [
     [Q(MainMenu_AssignedItemsOverrideMode), OVERRIDE_STANDARD],
     [Q(MainMenu_UniformItemsOverrideMode), OVERRIDE_STANDARD],
 
-
     PREP_COMPONENT_FUNCTION(HandleMenu),
 
     PREP_COMPONENT_FUNCTION(showMainMenu),
     PREP_COMPONENT_FUNCTION(showAmmoCarrierMenu),
     PREP_COMPONENT_FUNCTION(showCargoComposerMenu),
-    PREP_COMPONENT_FUNCTION(showHistoryMenu)
+    PREP_COMPONENT_FUNCTION(showHistoryMenu),
+
+    PREP_COMPONENT_FUNCTION(onMainMenuGetButtonClick)
+
+
 ];
 
 private _cob = createHashMapObject [_declaration];

@@ -7,10 +7,13 @@
 #define INIT_COMPONENT_WITH_ARGS(NAME,ARGS) [ARGS] call compileScript ['COMPONENT_PATH\NAME\Component.sqf']
 
 // -- Shared defines
+#define NO_OVERRIDE ""
+#define OVERRIDE_STANDARD "Standard"
+#define OVERRIDE_LEADER "Leader"
+
 #define HISTORY_PERSONAL_KIT "PERSONAL_KIT"
 #define HISTORY_CARGO_KIT "CARGO_KIT"
 #define HISTORY_COMPOSED "COMPOSED"
-
 
 #define NOTIF_KIT_COPIED 0
 #define NOTIF_GEAR_CLEAR 1
@@ -37,4 +40,6 @@
 #define COLOR_HEX_AQUA SQ(#12C4FF)
 #define COLOR_HEX_BRICK_RED SQ(#eb4f34)
 
+// -- Converts
+#define MASS_TO_KG(X) [X * 0.1 * 0.453592, 2] call BIS_fnc_cutDecimals
 

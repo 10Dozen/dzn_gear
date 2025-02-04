@@ -23,7 +23,6 @@ private _lines = [];
 (_dialogCOB call ["GetByTag", "lbl_magTotalCount"]) ctrlSetText format [
 	"Total magazines count: %1 (%2 kg)",
 	_totalCount,
-	[_totalMass * 0.1 * 0.453592, 2] call BIS_fnc_cutDecimals
+	MASS_TO_KG(_totalMass)
 ];
 (_dialogCOB call ["GetByTag", "lbl_magInfo"]) ctrlSetStructuredText parseText (_lines joinString "<br />");
-	

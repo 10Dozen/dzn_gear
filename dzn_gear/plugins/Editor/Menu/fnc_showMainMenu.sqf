@@ -1,11 +1,12 @@
 #include "defines.h"
+#define DBG_FUNC_PREFIX "fnc_showMainMenu"
 
 params ["_menuNavbar"];
 
 private _options = [
-    ["None", "no", [["tooltip", "No overrides"]]],
-    ["Standard", "standard", [["tooltip", "Overrides with standard items (defined in Settings file)"]]],
-    ["Squad Leader", "leader", [["tooltip", "Overrides with leader items (defined in Settings file)"]]]
+    ["None", NO_OVERRIDE, [["tooltip", "No overrides"]]],
+    ["Standard", OVERRIDE_STANDARD, [["tooltip", "Overrides with standard items (defined in Settings file)"]]],
+    ["Squad Leader", OVERRIDE_LEADER, [["tooltip", "Overrides with leader items (defined in Settings file)"]]]
 ];
 private _assignedItemsCurSel = _options findIf {_self get Q(MainMenu_AssignedItemsOverrideMode) == _x # 1};
 private _uniformItemsCurSel = _options findIf {_self get Q(MainMenu_UniformItemsOverrideMode) == _x # 1};
@@ -25,16 +26,17 @@ if (!isNull cursorTarget) then {
 
 // -- Higlight kits that already exists with current key + role
 private _kitKey = _self get Q(MainMenu_KitKey);
-private _kitRoles = _self get Q(Settings) get Q(Roles);
+private _kitRoles = (_self get Q(Settings) get Q(Roles)) toArray false;
+_kitRoles sort true;
 private _kitRolesLastSelectedId = _self get Q(MainMenu_KitRole);
 private _roles = _kitRoles apply {
-    [_x, _y, [
+    [_x # 0, _x # 1, [
         [
             "color", [
                 COLOR_WHITE, COLOR_DARK_GREEN
-            ] select (!isNil format ["%1%2_%3", _kitPrefix, _kitKey, _y])
+            ] select (!isNil format ["%1%2_%3", _kitPrefix, _kitKey, _x # 1])
         ],
-        ["tooltip", _y]
+        ["tooltip", _x # 1]
     ]]
 };
 
@@ -61,16 +63,18 @@ private _menu = _menuNavbar + [
     ["INPUT", _kitKey, [["tag", "i_kitKey"]], [
         ["EditChanged", {
             params ["_eventData", "_dialogCOB", "_args"];
+            _args params ["_kitPrefix", "_kitRoles"];
             private _ctrl = _dialogCOB call ["GetByTag", "d_rolename"];
             {
+                DBG_ "%1 :: %2 = %3", _x # 1, format ["kit_%1_%2", _eventData # 1, _x # 1], !isNil format ["kit_%1_%2", _eventData # 1, _x # 1] EOL;
                 _ctrl lbSetColor [
                     _forEachIndex,
                     [
                         COLOR_WHITE, COLOR_DARK_GREEN
-                    ] select (!isNil format ["kit_%1_%2", _eventData # 1, _y])
+                    ] select (!isNil format ["%1%2_%3", _kitPrefix, _eventData # 1, _x # 1])
                 ];
             } forEach _kitRoles;
-        }]
+        }, [_kitPrefix, _kitRoles]]
     ]],
     ["DROPDOWN", _roles, _kitRolesLastSelectedId, [["tag", "d_rolename"]]],
     ["BR"],
@@ -103,26 +107,8 @@ private _menu = _menuNavbar + [
     ["LABEL", ""],
     ["BUTTON", "<t align='center'>GET</t>", {
         params ["_ad", "_prefix"];
-        private _vals = _ad call ["GetTaggedValues"];
-
-        _self set [Q(MainMenu_AssignedItemsOverrideMode), (_vals get "l_assignedItems") # 2];
-        _self set [Q(MainMenu_UniformItemsOverrideMode), (_vals get "l_uniformItems") # 2];
-
-        private _customName = _vals get "i_customName";
-        private _name = format ["%1%2", _prefix, _customName];
-        if (_customName == "") then {
-            _self set [Q(MainMenu_KitRole), (_vals get "d_rolename") # 0];
-            _self set [Q(MainMenu_KitKey), _vals get "i_kitKey"];
-
-            _name = format [
-                "%1%2_%3",
-                _prefix,
-                _vals get "i_kitKey",
-                (_vals get "d_rolename") # 2
-            ];
-        };
+        ThisCOB call [F(onMainMenuGetButtonClick), [_prefix, _ad call ["GetTaggedValues"]]];
         _ad call ["Close"];
-        ECOB(Editor,Core) call [F(CreateKit), [_name, cursorTarget]];
     }, _kitPrefix, [["w",0.25], ["bg", COLOR_PALE_GREEN]]]
 ];
 
