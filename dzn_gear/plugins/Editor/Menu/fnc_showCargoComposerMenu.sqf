@@ -1,8 +1,6 @@
 #include "defines.h"
 
-
 params ["_menuNavbar"];
-
 
 #define MENU_CARGO_COMPOSER_WIDTH 0.3
 #define MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH 0.075
@@ -30,33 +28,43 @@ private _menu = _menuNavbar + [
     ["LABEL", "Weapons count", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
     ["LABEL", "<t align='right'>x2</t>", [["tag", "l_counterW"], ["w", MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH]]],
     ["SLIDER", [1,30,1], 2, [["tag", "s_weaponCount"], ["tooltip", "Number of weapons in generated kit"]], [
-        ["SliderPosChanged", _onSliderChanged, "l_counterW"]
+        ["SliderPosChanged", {
+            ECOB(Editor,CargoComposer) call [F(onSliderChange), _this];
+        }, "l_counterW"]
     ]],
     ["BR"],
 
     ["LABEL", "Magazines count", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
     ["LABEL", "<t align='right'>x20</t>", [["tag", "l_counterM"], ["w", MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH]]],
     ["SLIDER", [1,30,1], 20, [["tag", "s_magazineCount"], ["tooltip", "Number of magazines in generated kit"]], [
-        ["SliderPosChanged", _onSliderChanged, "l_counterM"]
+        ["SliderPosChanged", {
+            ECOB(Editor,CargoComposer) call [F(onSliderChange), _this];
+        }, "l_counterM"]
     ]],
     ["BR"],
 
     ["LABEL", "Item count", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
     ["LABEL", "<t align='right'>x10</t>", [["tag", "l_counterI"], ["w", MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH]]],
     ["SLIDER", [1,30,1], 10, [["tag", "s_itemCount"], ["tooltip", "Number of items in generated kit"]], [
-        ["SliderPosChanged", _onSliderChanged, "l_counterI"]
+        ["SliderPosChanged", {
+            ECOB(Editor,CargoComposer) call [F(onSliderChange), _this];
+        }, "l_counterI"]
     ]],
     ["BR"],
 
     ["LABEL", "Backpack count", [["w", MENU_CARGO_COMPOSER_WIDTH]]],
     ["LABEL", "<t align='right'>x1</t>", [["tag", "l_counterB"], ["w", MENU_CARGO_COMPOSER_SLIDER_INDICATOR_WIDTH]]],
     ["SLIDER", [1,30,1], 1, [["tag", "s_backpackCount"], ["tooltip", "Number of backpacks in generated kit"]], [
-        ["SliderPosChanged", _onSliderChanged, "l_counterB"]
+        ["SliderPosChanged", {
+            ECOB(Editor,CargoComposer) call [F(onSliderChange), _this];
+        }, "l_counterB"]
     ]],
     ["BR"],
 
     ["LABEL"],["BR"],
     ["LABEL"],
-    ["BUTTON", "<t align='center'>Compose</t>", _onButtonClick, [],[["w", 0.25], ["bg", COLOR_PALE_GREEN]]]
+    ["BUTTON", "<t align='center'>Compose</t>", {
+        ECOB(Editor,CargoComposer) call [F(onButtonClick), _this];
+    }, [],[["w", 0.25], ["bg", COLOR_PALE_GREEN]]]
 ];
 _menu call dzn_fnc_ShowAdvDialog2;

@@ -14,9 +14,9 @@ private _lbCtrl = _dialogCOB call ["GetByTag", "d_maglist"];
 private _lbCurSel = lbCurSel _lbCtrl;
 
 if (_lbCurSel > -1 && (_lbCtrl getVariable Q(listValues)) isNotEqualTo []) then {
-	DBG_ "listValues = %1", _lbCtrl getVariable Q(listValues) EOL;
-	DBG_ "_lbCurSel = %1", _lbCurSel EOL;
-	_currentDropdwonItem = (_lbCtrl getVariable Q(listValues)) select _lbCurSel;
+    DBG_ "listValues = %1", _lbCtrl getVariable Q(listValues) EOL;
+    DBG_ "_lbCurSel = %1", _lbCurSel EOL;
+    _currentDropdwonItem = (_lbCtrl getVariable Q(listValues)) select _lbCurSel;
 };
 
 _self set [Q(CurrentSelectedMagazine), _currentDropdwonItem];

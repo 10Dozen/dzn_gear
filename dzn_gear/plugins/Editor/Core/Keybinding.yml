@@ -24,7 +24,9 @@ DIK_SPACE:
 
 DIK_DELETE:
 |    // Clear player's containers
-|    key: { ECOB(Editor,Core) call [F(ClearGear), [false]] }
+|    key: { ECOB(Editor,Core) call [F(ClearGear), [WIPE_CONTAINERS]] }
 |    // Strip player's gear
-|    ctrl: { ECOB(Editor,Core) call [F(ClearGear), [true]] }
+|    ctrl: { ECOB(Editor,Core) call [F(ClearGear), [WIPE_ALL]] }
+|    // Clear backpack items
+|    alt: { ECOB(Editor,Core) call [F(ClearGear), [WIPE_BACKPACK]]}
 

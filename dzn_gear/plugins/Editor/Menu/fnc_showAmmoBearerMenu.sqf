@@ -29,7 +29,7 @@ private _menu = _menuNavbar + [
     ],
     ["BUTTON", "Load kit", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB, _kit]];
+        ECOB(Editor,AmmoBearer) call [F(onKitLoad), [_dialogCOB, _kit]];
     }, [], [["bg", COLOR_STEEL_BLUE]]],
     ["BR"],
 
@@ -37,11 +37,11 @@ private _menu = _menuNavbar + [
 
     ["BUTTON", "Primary Weapon", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 0]];
+        ECOB(Editor,AmmoBearer) call [F(onWeaponSelected), [_dialogCOB, 0]];
     }, [], [["tag", "btn_primary"], ["h", 0.12]]],
     ["BUTTON", "Launcher Weapon", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onWeaponSelected), [_dialogCOB, 1]];
+        ECOB(Editor,AmmoBearer) call [F(onWeaponSelected), [_dialogCOB, 1]];
     }, [], [["tag", "btn_launcher"], ["h", 0.12]]],
     ["BR"],
 
@@ -51,11 +51,11 @@ private _menu = _menuNavbar + [
     ["DROPDOWN", _allMags, 0, [["tag", "d_maglist"],["w", 0.75], ["h", 0.1]]],
     ["BUTTON", "<t align='center' size='2' color='#000000'>+</t>", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onMagazineAdd), [_dialogCOB, 1]];
+        ECOB(Editor,AmmoBearer) call [F(onMagazineAdd), [_dialogCOB, 1]];
     },[],[["bg", COLOR_PALE_GREEN], ["h", 0.1]]],
     ["BUTTON", "<t align='center' size='2' color='#000000'>–</t>", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onMagazineRemove), [_dialogCOB, 1]];
+        ECOB(Editor,AmmoBearer) call [F(onMagazineRemove), [_dialogCOB, 1]];
     },[],[["bg", COLOR_PALE_RED], ["h", 0.1]]],
     ["BR"],
     ["LABEL", "",[["h",0.02]]], ["BR"],
@@ -65,22 +65,21 @@ private _menu = _menuNavbar + [
 
     ["BUTTON", "<t align='center'>Clear</t>", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onClear), [_dialogCOB]];
+        ECOB(Editor,AmmoBearer) call [F(onClear), [_dialogCOB]];
     }, [], [["bg", COLOR_PALE_RED], ["tooltip", "Clears selected pool of magazines."]]],
 
     ["BUTTON", "<t align='center'>Apply to self</t>", {
-        dzn_gear_AmmoBearearComponent call [F(composeAndExport), [true]];
+        ECOB(Editor,AmmoBearer) call [F(composeAndExport), [true]];
     }, [], [["bg", COLOR_PALE_GREEN], ["tooltip", "Puts selected pool of magazines to your backpack."]]],
 
     ["BUTTON", "<t align='center'>Compose</t>", {
-        dzn_gear_AmmoBearearComponent call [F(composeAndExport), [false]];
+        ECOB(Editor,AmmoBearer) call [F(composeAndExport), [false]];
     }, [], [["bg", COLOR_PALE_GREEN], ["tooltip", "Exports composed line to clipboard."]]],
 
     ["BR"],
     ["OnDraw", {
         params ["_dialogCOB"];
-        dzn_gear_AmmoBearearComponent call [F(onKitLoad), [_dialogCOB]];
+        ECOB(Editor,AmmoBearer) call [F(onKitLoad), [_dialogCOB]];
     }]
-
 ];
 _menu call dzn_fnc_ShowAdvDialog2;

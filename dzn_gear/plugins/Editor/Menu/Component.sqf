@@ -23,7 +23,7 @@ private _declaration = [
         ],
         createHashMapFromArray [
             ["title", "Ammo Bearer Composer"],
-            ["renderer", F(showAmmoCarrierMenu)],
+            ["renderer", F(showAmmoBearerMenu)],
             ["description", "Tool to prepare backpack loadout for ammo beariers based on current weapon or weapon from other kit."]
         ]
     ]],
@@ -36,7 +36,7 @@ private _declaration = [
     PREP_COMPONENT_FUNCTION(HandleMenu),
 
     PREP_COMPONENT_FUNCTION(showMainMenu),
-    PREP_COMPONENT_FUNCTION(showAmmoCarrierMenu),
+    PREP_COMPONENT_FUNCTION(showAmmoBearerMenu),
     PREP_COMPONENT_FUNCTION(showCargoComposerMenu),
     PREP_COMPONENT_FUNCTION(showHistoryMenu),
 

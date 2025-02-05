@@ -5,9 +5,9 @@ DBG_ "Invoked" EOL;
 params ["_dialogCOB"];
 private _allVals = _dialogCOB call ["GetTaggedValues"];
 _self call [F(setFilters), [
-	_allVals get "cb_personalKit",
-	_allVals get "cb_cargoKit",
-	_allVals get "cb_composed"
+    _allVals get "cb_personalKit",
+    _allVals get "cb_cargoKit",
+    _allVals get "cb_composed"
 ]];
 
 // -- Update UI

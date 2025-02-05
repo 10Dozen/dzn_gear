@@ -2,18 +2,18 @@
 
 private _declaration = [
     [Q(History), []],
-	[Q(Filters), createHashMapFromArray[
-		[HISTORY_PERSONAL_KIT, true],
-		[HISTORY_CARGO_KIT, true],
-		[HISTORY_COMPOSED, true]
-	]],
-	[Q(TypeNames), createHashMapFromArray[
-		[HISTORY_PERSONAL_KIT, ["Personal kit", COLOR_PALE_GREEN]],
-		[HISTORY_CARGO_KIT, ["Cargo kit", COLOR_DARK_GREEN]],
-		[HISTORY_COMPOSED, ["Composed", COLOR_STEEL_BLUE]]
-	]],
+    [Q(Filters), createHashMapFromArray[
+        [HISTORY_PERSONAL_KIT, true],
+        [HISTORY_CARGO_KIT, true],
+        [HISTORY_COMPOSED, true]
+    ]],
+    [Q(TypeNames), createHashMapFromArray[
+        [HISTORY_PERSONAL_KIT, ["Personal kit", COLOR_PALE_GREEN]],
+        [HISTORY_CARGO_KIT, ["Cargo kit", COLOR_DARK_GREEN]],
+        [HISTORY_COMPOSED, ["Composed", COLOR_STEEL_BLUE]]
+    ]],
 
-    // -- Public 
+    // -- Public
     PREP_COMPONENT_FUNCTION(Add),
 
     PREP_COMPONENT_FUNCTION(onFilterChange),

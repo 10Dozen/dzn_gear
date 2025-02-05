@@ -25,8 +25,8 @@ private _targetPageIdx = [(_self get Q(PageIdx)) + _paginationDirection] call _g
 _self set [Q(PageIdx), _targetPageIdx];
 
 private _targetPage = (_self get Q(Pages)) # _targetPageIdx;
-private _prevPage =  (_self get Q(Pages)) # ([_targetPageIdx - 1] call _getInRangeIndex);
-private _nextPage =  (_self get Q(Pages)) # ([_targetPageIdx + 1] call _getInRangeIndex);
+private _prevPage = (_self get Q(Pages)) # ([_targetPageIdx - 1] call _getInRangeIndex);
+private _nextPage = (_self get Q(Pages)) # ([_targetPageIdx + 1] call _getInRangeIndex);
 
 private _menu = [
     ["DIALOG", [["dialogShowTime", [0, 0.15] select (_paginationDirection == 0)]]],

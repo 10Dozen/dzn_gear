@@ -1,12 +1,12 @@
 #include "defines.h"
 
 private _declaration = [
-	[Q(CurrentWeapons), []],
-	[Q(CurrentWeaponsMags), []],
-	[Q(CurrentMode), [false, false]],
-	[Q(CurrentMagPool), createHashMap],
-	[Q(CurrentSelectedMagazine), ""],
-	[Q(TotalMagCount), 0],
+    [Q(CurrentWeapons), []],
+    [Q(CurrentWeaponsMags), []],
+    [Q(CurrentMode), [false, false]],
+    [Q(CurrentMagPool), createHashMap],
+    [Q(CurrentSelectedMagazine), ""],
+    [Q(TotalMagCount), 0],
 
     PREP_COMPONENT_FUNCTION(onKitLoad),
     PREP_COMPONENT_FUNCTION(onWeaponSelected),
@@ -15,16 +15,16 @@ private _declaration = [
     PREP_COMPONENT_FUNCTION(onClear),
     PREP_COMPONENT_FUNCTION(composeAndExport),
 
-	PREP_COMPONENT_FUNCTION(resetControls),
-	PREP_COMPONENT_FUNCTION(render),
-	PREP_COMPONENT_FUNCTION(renderWeaponTypeButtons),
-	PREP_COMPONENT_FUNCTION(renderMagazinesListDropdown),
-	PREP_COMPONENT_FUNCTION(renderMagazinesInfoLabels),
+    PREP_COMPONENT_FUNCTION(resetControls),
+    PREP_COMPONENT_FUNCTION(render),
+    PREP_COMPONENT_FUNCTION(renderWeaponTypeButtons),
+    PREP_COMPONENT_FUNCTION(renderMagazinesListDropdown),
+    PREP_COMPONENT_FUNCTION(renderMagazinesInfoLabels),
 
-	PREP_COMPONENT_FUNCTION(loadKitData),
-	PREP_COMPONENT_FUNCTION(clear),
-	PREP_COMPONENT_FUNCTION(addMagazine),
-	PREP_COMPONENT_FUNCTION(removeMagazine)
+    PREP_COMPONENT_FUNCTION(loadKitData),
+    PREP_COMPONENT_FUNCTION(clear),
+    PREP_COMPONENT_FUNCTION(addMagazine),
+    PREP_COMPONENT_FUNCTION(removeMagazine)
 ];
 
 private _cob = createHashMapObject [_declaration];

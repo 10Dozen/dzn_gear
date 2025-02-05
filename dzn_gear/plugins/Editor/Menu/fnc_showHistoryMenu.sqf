@@ -3,7 +3,7 @@
 
 params ["_menuNavbar"];
 
-private _currentFilters = dzn_gear_HistoryComponent get Q(Filters);
+private _currentFilters = ECOB(Editor,History) get Q(Filters);
 
 private _menu = _menuNavbar + [
     ["LABEL", "Filter by:", [["w", 0.25], ["bg", COLOR_STEEL_BLUE]]],
@@ -13,7 +13,7 @@ private _menu = _menuNavbar + [
             "MouseButtonClick",
             {
                 params["", "_dialogCOB"];
-                dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+                ECOB(Editor,History) call [F(onFilterChange), [_dialogCOB]];
             }
         ]
     ]],
@@ -23,8 +23,7 @@ private _menu = _menuNavbar + [
             "MouseButtonClick",
             {
                 params["", "_dialogCOB"];
-                hint "XXX";
-                dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+                ECOB(Editor,History) call [F(onFilterChange), [_dialogCOB]];
             }
         ]
     ]],
@@ -34,7 +33,7 @@ private _menu = _menuNavbar + [
             "MouseButtonClick",
             {
                 params["", "_dialogCOB"];
-                dzn_gear_HistoryComponent call [F(onFilterChange), [_dialogCOB]];
+                ECOB(Editor,History) call [F(onFilterChange), [_dialogCOB]];
             }
         ]
     ]],
@@ -44,7 +43,7 @@ private _menu = _menuNavbar + [
     ["DROPDOWN", [], 0, [["tag", "d_entities"], ["h", 0.06]]],
     ["BUTTON", "<t size='1'>Show</t>", {
         params ["_dialogCOB"];
-        dzn_gear_HistoryComponent call [F(onShow), [_dialogCOB]];
+        ECOB(Editor,History) call [F(onShow), [_dialogCOB]];
     }, [], [["w", 0.25], ["h", 0.06], ["bg", COLOR_PALE_GREEN]]],
     ["BR"],
 
@@ -53,11 +52,11 @@ private _menu = _menuNavbar + [
     ["LABEL", ""],
     ["BUTTON", "Copy", {
         params ["_dialogCOB"];
-        dzn_gear_HistoryComponent call [F(onCopy), [_dialogCOB]];
+        ECOB(Editor,History) call [F(onCopy), [_dialogCOB]];
     }, [], [["w", 0.25],["bg", COLOR_PALE_GREEN]]],
     ["OnDraw", {
         params["_dialogCOB"];
-        dzn_gear_HistoryComponent call [F(renderEntitiesList), [_dialogCOB]];
+        ECOB(Editor,History) call [F(renderEntitiesList), [_dialogCOB]];
     }]
 ];
 

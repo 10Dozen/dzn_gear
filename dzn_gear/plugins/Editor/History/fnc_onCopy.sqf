@@ -9,4 +9,4 @@ forceUnicode 1;
 copyToClipboard _content;
 forceUnicode -1;
 
-["HISTORY_COPIED"] call dzn_fnc_gear_editMode_showNotif;
+ECOB(Editor,Core) call [F(Notify), [NOTIF_HISTORY_COPIED]];

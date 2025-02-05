@@ -13,7 +13,7 @@ private _color = [
 ] joinString "";
 
 if (isNull _target) exitWith {
-	_self call [
+    _self call [
         F(composeUnitKit),
         [
             "Player's", _name, _color,

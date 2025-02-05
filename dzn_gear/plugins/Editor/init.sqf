@@ -12,11 +12,10 @@
             + Assigned/Uniform items override
             + Store key
             + Roles options
-
-        - Vehicle kit creation
-        - Copycat kit creation
-    - Cargo kit composer
+        + Vehicle kit creation
+        + Copycat kit creation
     - AmmoBearer composer
+    - Cargo kit composer
     - History
 
     - ControlHandler -- reset all displays on mission restart (check tSF Chatter for details)
