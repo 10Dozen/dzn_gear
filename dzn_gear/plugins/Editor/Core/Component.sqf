@@ -29,8 +29,8 @@ private _declaration = [
     [Q(TotalsRenderSettings), [
         // Main display
         [["x", 0.9], ["y", -0.15]],
-        // Arsenal
-        [["x", 0.6], ["y", -0.15]]
+        // Arsenal - right
+        [["x", 0.52], ["y", -0.15]]
     ]],
 
     [Q(Keybinds), _keybinds],

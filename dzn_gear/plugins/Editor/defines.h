@@ -7,6 +7,8 @@
 #define INIT_COMPONENT_WITH_ARGS(NAME,ARGS) [ARGS] call compileScript ['COMPONENT_PATH\NAME\Component.sqf']
 
 // -- Shared defines
+#define TOTALS_LABEL_TAG "dzn_Gear_TotalsLbl"
+
 #define NO_OVERRIDE ""
 #define OVERRIDE_STANDARD "Standard"
 #define OVERRIDE_LEADER "Leader"
@@ -42,5 +44,5 @@
 #define COLOR_HEX_BRICK_RED SQ(#eb4f34)
 
 // -- Converts
-#define MASS_TO_KG(X) [X * 0.1 * 0.453592, 2] call BIS_fnc_cutDecimals
+#define MASS_TO_KG(X) (X * 0.1 * 0.453592) toFixed 2
 

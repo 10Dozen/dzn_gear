@@ -1,10 +1,10 @@
 // ***********************************
-// Gear Kits 
+// Gear Kits
 // ***********************************
 // ******** GEAR CLASSES **********
 //
 //	Maptools		"ACE_MapTools"	["ACE_MapTools",1]
-//	Binocular		"Binocular"	["Binocular",1]		
+//	Binocular		"Binocular"	["Binocular",1]
 //
 // 	Map			"ItemMap"
 //	Compass			"ItemCompass"
@@ -53,7 +53,14 @@
 
 kit_test1 = [
 	["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],
-	["<PRIMARY WEAPON   >> ","SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","","",""]],
+
+	// Randomized weapon pattern
+	["<PRIMARY WEAPON   >> ",[
+		["arifle_MX_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
+		["arifle_MX_GL_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
+		["SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","",["optic_Aco", ""],""]]
+	]],
+
 	["<LAUNCHER WEAPON  >> ","","",["","","",""]],
 	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
 	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],

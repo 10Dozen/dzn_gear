@@ -14,15 +14,17 @@ dzn_fnc_gear_assignKit = {
 	params ["_unit","_kits",["_isCargo", false]];
 	private ["_kitName","_kit"];
 
-	_kitName = if (typename _kits == "ARRAY") then { selectRandom _kits } else { _kits };
+	_kitName = if (_kits isEqualType []) then { selectRandom _kits } else { _kits };
 
 	if (isNil {call compile _kitName}) exitWith {
 		diag_log format ["There is no kit with name %1", (_kitName)];
 		systemChat format ["There is no kit with name %1", (_kitName)];
 	};
 
-	_kit = call compile _kitName;
-	if (typename (_kit select 0) != "ARRAY") exitWith {
+	_kit = missionNamespace getVariable _kitName;
+	if !((_kit select 0) isEqualType []) exitWith {
+	// if (typename (_kit select 0) != "ARRAY") exitWith {
+		// -- Kit of kits (???)
 		[_unit, _kit] call dzn_fnc_gear_assignKit;
 	};
 
@@ -40,7 +42,7 @@ dzn_fnc_gear_assignKit = {
 // ******************************
 #define SET_CAT(CIDX) _ctg = _gear select CIDX
 #define cItem(IDX)    (_ctg select IDX)
-#define IsItem(ITEM)  (typename (ITEM) == "STRING")
+#define IsItem(ITEM)  ((ITEM) isEqualType "")
 #define getItem(ITEM) if IsItem(ITEM) then {ITEM} else {selectRandom (ITEM)}
 
 dzn_fnc_gear_assignGear = {
@@ -69,30 +71,44 @@ dzn_fnc_gear_assignGear = {
 	_magClasses = [];
 
 	for "_i" from 1 to 3 do {
-		SET_CAT(_i);
-		_r = if IsItem(cItem(1)) then { -1 } else { round(random((count cItem(1) - 1))) };
+		_ctg = _gear # _i;
+		_weaponDescriptor = _ctg select [1, 3];
+		if (count (_ctg) == 2) then {
+			// -- Radnomized preset
+			_weaponDescriptor = selectRandom (_ctg # 1);
+		};
+		_weaponDescriptor params ["_weapon", "_mag", "_attaches"];
 
-		if (_r == -1) then {
-			_unit addMagazine cItem(2);
-			_unit addWeaponGlobal cItem(1);
-			_magClasses pushBack cItem(2);
-		} else {
-			_unit addMagazine (cItem(2) select _r);
-			_unit addWeaponGlobal (cItem(1) select _r);
-			_magClasses pushBack (cItem(2) select _r);
+		// -- Check for randomized weapon-mag combo
+		if ((_weaponDescriptor # 0) isEqualType []) then {
+			_r = round random (count (_weaponDescriptor # 0) - 1);
+			_weapon = _weapon # _r;
+			// -- If array of mags - select with same idx
+			//    otherwise use same mag for all options
+			if (_mag isEqualType []) then {
+				_mag = _mag # _r;
+			};
 		};
 
+		// Save "PRIMARY MAG"-like template value
+		_magClasses pushBack _mag;
+
+		_unit addWeaponGlobal _weapon;
+
+		_attaches pushBack _mag;
 		{
-			call compile format [
-				"_unit %1 '%2';"
-				, switch (_i) do {
-					case 1: { "addPrimaryWeaponItem" };
-					case 2: { "addSecondaryWeaponItem" };
-					case 3: { "addHandgunItem" };
-				}
-				, getItem(_x)
-			];
-		} forEach cItem(3);
+			private _item = _x;
+			// -- Randomized attachment option
+			if (_item isEqualType []) then {
+				_item = selectRandom _x;
+			};
+
+			switch (_i) do {
+				case 1: { _unit addPrimaryWeaponItem _item };
+				case 2: { _unit addSecondaryWeaponItem _item };
+				case 3: { _unit addHandgunItem _item };
+			};
+		} forEach _attaches;
 	};
 	removeBackpack _unit;
 
@@ -490,55 +506,58 @@ dzn_fnc_gear_initialize = {
 		waitUntil { !isNull player && { local player} };
 	};
 
-	private["_crewKit","_synKit","_logic","_par","_id","_kit"];
+	private["_crewKit","_cargoKit","_synKit","_logic","_par","_id","_kit"];
+
+	// -- Game logics
 	{
 		_logic = _x;
 		{
-			_par 		= _x select 0;
-			_id 		= _x select 1;
-			_kit 		= "";
+			_varname = _x;
+			_kit = "";
 
-			if (!isNil { _logic getVariable _par } || [_par, str(_logic), false] call BIS_fnc_inString) then {
-				_kit = if (!isNil {_logic getVariable _par}) then {_logic getVariable _par} else {str(_logic) select [_id]};
-				{
-					if (local _x) then {
-						if (isNil {_x getVariable _par}) then {
-							_x setVariable [ _par, _kit, true ];
-						};
-					};
-				} forEach (synchronizedObjects _logic);
-			};
-		} forEach [ ["dzn_gear", 9], ["dzn_gear_cargo", 15] ];
+			_kit = _logic getVariable [_varname, ""];
+			if (_kit == "") then { continue; };
+
+			{
+				if (!local _x) then { continue; };
+				_x setVariable [_varname, _kit, true];
+			} forEach (synchronizedObjects _logic);
+		} forEach [
+			"dzn_gear",
+			"dzn_gear_cargo"
+		];
 	} forEach (entities "Logic");
 
-	// Vehicles
+	// -- Variable on Vehicles
 	{
-		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {
-			// Crew Kit
-			if (!isNil { _x getVariable "dzn_gear" }) then {
-			_crewKit = _x getVariable "dzn_gear";
-				{_x setVariable ["dzn_gear", _crewKit, true];} forEach (crew _x);
-			};
-
-			// Cargo Kit
-			if (!isNil { _x getVariable "dzn_gear_cargo" }) then {
-				// From Variable
-				[_x, _x getVariable "dzn_gear_cargo", true] call dzn_fnc_gear_assignKit;
-			};
+		_crewKit = _x getVariable ["dzn_gear", ""];
+		if (_crewKit != "") then {
+			{ _x setVariable ["dzn_gear", _crewKit, true]; } forEach (crew _x);
 		};
-	} forEach (vehicles);
 
-	// Units
+		_cargoKit = _x getVariable ["dzn_gear_cargo", ""];
+		if (_cargoKit == "") then { continue; };
+		[_x, _cargoKit, true] call dzn_fnc_gear_assignKit;
+	} forEach ((vehicles) select {
+		local _x
+		&& !(_x getVariable ["dzn_gear_done", false])
+		&& (_x getVariable ["dzn_gear", ""] != "" || _x getVariable ["dzn_gear_cargo", ""] != "")
+	});
+
+	// -- Variable on Units
 	{
-		if (local _x && { !(_x getVariable ["dzn_gear_done", false]) }) then {
-			if (!isNil { _x getVariable "dzn_gear" }) then {// From Variable
-				[_x, _x getVariable "dzn_gear"] call dzn_fnc_gear_assignKit;
-			} else {
-				// TBD: Uncomment
-				// if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
-			};
+		_kit = _x getVariable ["dzn_gear", ""];
+		if (_kit != "") then {
+			[_x,_kit] call dzn_fnc_gear_assignKit;
+			continue;
 		};
-	} forEach (allUnits);
+
+		// TBD: Uncomment
+		// if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
+	} forEach (allUnits) select {
+		local _x
+		&& !(_x getVariable ["dzn_gear_done", false])
+	};
 
 	dzn_gear_initDone = true;
 	if (isServer) then { dzn_gear_serverInitDone = true; publicVariable "dzn_gear_serverInitDone"; };
@@ -546,7 +565,7 @@ dzn_fnc_gear_initialize = {
 	if (hasInterface && dzn_gear_enableIdentitySync) then {
 		[] spawn {
 			waitUntil { time > 5 };
-			call dzn_fnc_gear_startLocalIdentityLoop;
+			[] call dzn_fnc_gear_startLocalIdentityLoop;
 		};
 	};
 };

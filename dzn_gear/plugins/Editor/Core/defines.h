@@ -11,8 +11,6 @@
 
 #define COLOR_POOL selectRandom ["F","C","B","3","6","9"]
 
-#define TOTALS_LABEL_TAG "dzn_Gear_TotalsLbl"
-
 #define WIPE_ALL 0
 #define WIPE_CONTAINERS 1
 #define WIPE_BACKPACK 2

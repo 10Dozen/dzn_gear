@@ -31,6 +31,7 @@ params [];
     ]
 
 DBG_ "Params: %1", _this EOL;
+
 if !(_self get Q(TotalsShow)) exitWith {
     DBG_ "Totals are disabled - no render" EOL;
     ["REMOVE", _self get Q(CurrentDisplay), TOTALS_LABEL_TAG] call dzn_fnc_HandleControl;
@@ -41,14 +42,14 @@ private _favoriteMags = ["","",""];
 private _lines = ["<t color='#FFD000' size='1' align='center'>GEAR TOTALS</t>"];
 
 // -- Total weights
-private _load = MASS_TO_KG(loadAbs player);
+private _load = parseNumber (MASS_TO_KG(loadAbs player));
 _lines pushBack format [
     "<t color='%2' align='center' size='1'>%1 kg total</t>",
     _load,
     [
-        ["#ff564a", "#fae38e"] select (_load <= 35),
+        ["#ff564a", "#fae38e"] select (_load <= 36),
         "#cccccc"
-    ] select (_load <= 30)
+    ] select (_load <= 33)
 ];
 
 // -- Guns
