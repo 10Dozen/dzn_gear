@@ -1,0 +1,16 @@
+
+# Lines in format -- @UnitName: @Kitname or @RoleDescription: @Kitname
+
+# Applies to any unit with rolename
+Platoon Leader: kit_sec_pl
+
+# Applies only to BLUFOR(west) side AND with rolename
+# Sides: WEST, EAST, GUER, CIV
+WEST:
+    Rifleman: kit_sec_r 
+    1'2 Squad Leader: kit_sec_sl
+
+    # Applies only to BLUFOR(west) side AND in group 1'2 AND with rolename
+    1'2:
+        Rifleman: kit_sec_r2
+

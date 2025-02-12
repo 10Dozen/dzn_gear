@@ -2,21 +2,27 @@
  *	GEAR
  *	SETTINGS
  */
+
+dzn_gear_kits = "dzn_gear\Kits.sqf";
+
 // Enable or disable a synchronization of unit's identity (face, voice)
 // from applied kit (in multiplayer)
 dzn_gear_enableIdentitySync			= false;
 
-// Plugins
+// Plugins - comment line with unwanted plugin to disable
 dzn_gear_Plugins = [
-	"Editor"
+	/*
+		Provides powefull GUI tools to create kits.
+	*/
+	"Editor",
+
+	/*
+		Gear Assignment according to units/slot Role Description.
+		Use it to apply gear on players in multiplayer, 100% JIP compatible
+	*/
+	"GearAssignmentTable"
 ];
 
-
-/*
-	Gear Assignment according to units/slot Role Description.
-	Use it to apply gear on players in multiplayer, 100% JIP compatible
-*/
-dzn_gear_enableGearAssignementTable		= true;
 
 /*
 	Gear information displayed in Briefing topic.

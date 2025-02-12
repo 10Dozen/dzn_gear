@@ -502,10 +502,6 @@ dzn_fnc_gear_startLocalIdentityLoop = {
 
 dzn_fnc_gear_initialize = {
 	// Wait until player initialized in multiplayer
-	if (isMultiplayer && hasInterface) then {
-		waitUntil { !isNull player && { local player} };
-	};
-
 	private["_crewKit","_cargoKit","_synKit","_logic","_par","_id","_kit"];
 
 	// -- Game logics
@@ -551,9 +547,6 @@ dzn_fnc_gear_initialize = {
 			[_x,_kit] call dzn_fnc_gear_assignKit;
 			continue;
 		};
-
-		// TBD: Uncomment
-		// if (dzn_gear_enableGearAssignementTable) then { _x call dzn_fnc_gear_plugin_assignByTable; };
 	} forEach (allUnits) select {
 		local _x
 		&& !(_x getVariable ["dzn_gear_done", false])
