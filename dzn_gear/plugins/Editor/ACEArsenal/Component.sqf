@@ -3,6 +3,8 @@
 private _declaration = [
     [Q(OpenedEH), -1],
 	[Q(ClosedEH), -1],
+    [Q(MainMenuOpenedEH), -1],
+    [Q(MainMenuClosedEH), -1],
 
 	[Q(SkipSelChangeEvent), true],
 
@@ -47,6 +49,10 @@ private _declaration = [
     PREP_COMPONENT_FUNCTION(InitEvents),
 
     PREP_COMPONENT_FUNCTION(onArsenalOpened),
+    PREP_COMPONENT_FUNCTION(onArsenalClosed),
+
+    PREP_COMPONENT_FUNCTION(onMainMenuOpened),
+    PREP_COMPONENT_FUNCTION(onMainMenuClosed),
 
     PREP_COMPONENT_FUNCTION(onTabSwitch),
     PREP_COMPONENT_FUNCTION(onShowButtonClick),

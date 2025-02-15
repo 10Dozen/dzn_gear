@@ -14,37 +14,33 @@ dzn_gear_version = "v2.11";
 // *************************
 //	SETTINGS
 // **************************
-call compile preprocessFileLineNumbers "dzn_gear\Settings.sqf";
+[] call compileScript ["dzn_gear\Settings.sqf"];
 
 // **************************
 // FUNCTIONS
 // **************************
-dzn_gear_defaultBackpack = "B_Carryall_khk";
-dzn_gear_editModeEnabled = _editModeEnabled;
+#define PREP(NAME) dzn_fnc_gear_##NAME = compileScript ['dzn_gear\fn\##NAME##.sqf']
 
-call compile preprocessFileLineNumbers "dzn_gear\fn\dzn_gear_functions.sqf";
-
-// **************************
-// EDIT MODE
-// **************************
-/*
-if (dzn_gear_editModeEnabled) then {
-	[] call compileScript ["dzn_gear\fn\dzn_gear_editMode.sqf"];
-};
-*/
+PREP(assignKit);
+PREP(assignKitByGAT);
+PREP(assignGear);
+PREP(assignCargoGear);
+PREP(assignIdentity);
+PREP(getGear);
+PREP(getCargoGear);
+PREP(getPreciseGear);
+PREP(setPreciseGear);
+PREP(initialize);
 
 // **************************
 // GEARS
 // **************************
-call compile preprocessFileLineNumbers dzn_gear_kits; // "dzn_gear\Kits.sqf";
+[] call compileScript [dzn_gear_kitsFile]; // "dzn_gear\Kits.sqf";
+dzn_gear_gat_table = [dzn_gear_GATFile] call dzn_fnc_parseSFML;
 
 // **************************
 // INITIALIZATION
 // **************************
-// Delay before run
-if (_timeout > 0) then {
-	waitUntil { time > _timeout };
-};
 
 /*
 if (dzn_gear_enableGearNotes) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\GearNotes.sqf"; };
@@ -59,24 +55,27 @@ if (
 */
 
 [
-	{ !hasInterface || { !isNull player && local player } },
+	{ time >= (_this # 1) && ( !hasInterface || { !isNull player && local player } ) },
 	{
 		// -- Local initialization
 		[] call dzn_fnc_gear_initialize;
 
 		// -- Plugins
-		dzn_gear_PluginSettings = ["dzn_gear\plugins\PluginSettings.yml"] call dzn_fnc_parseSFML;
+		private _pluginSettings = ["dzn_gear\plugins\PluginSettings.yml"] call dzn_fnc_parseSFML;
 		{
 			private _name = _x;
+			if (_name == "Editor" && !(_this # 0)) then { continue }; // Prevent Editor from running if arg not passed
+
 			private _path = format ["dzn_gear\plugins\%1\init.sqf", _name];
 			if !(fileExists _path) then {
 				diag_log parseText format ["(dzn_gear) [init] Plugin '%1' is disabled (no init file %2). Skip.", _name, _path];
 				continue;
 			};
-			[dzn_gear_PluginSettings get _name] call compileScript [_path];
+			[_pluginSettings get _name] call compileScript [_path];
 		} forEach dzn_gear_Plugins;
-	}
-] call CBA_waitAndExecute;
+	},
+	[_editModeEnabled, _timeout]
+] call CBA_fnc_waitUntilAndExecute;
 
 
 

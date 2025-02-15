@@ -4,7 +4,6 @@
 #define DBG_ diag_log format [DBG_PREFIX + "[" + DBG_FUNC_PREFIX + "] " +
 #define EOL ]
 
-
 #define Q(X) #X
 #define SQ(X) 'X'
 #define _F(X) fnc_##X
@@ -15,6 +14,3 @@
 #define COMPONENT_PATH dzn_gear\plugins
 
 #define PREP_COMPONENT_FUNCTION(NAME) [F(NAME), compileScript ['COMPONENT_PATH\fnc_##NAME##.sqf']]
-
-
-

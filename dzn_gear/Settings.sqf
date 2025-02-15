@@ -3,7 +3,10 @@
  *	SETTINGS
  */
 
-dzn_gear_kits = "dzn_gear\Kits.sqf";
+// Paths
+dzn_gear_kitsFile = "dzn_gear\Kits.sqf";
+dzn_gear_GATFile = "dzn_gear\GearAssignementTable.yml";
+
 
 // Enable or disable a synchronization of unit's identity (face, voice)
 // from applied kit (in multiplayer)
@@ -14,13 +17,7 @@ dzn_gear_Plugins = [
 	/*
 		Provides powefull GUI tools to create kits.
 	*/
-	"Editor",
-
-	/*
-		Gear Assignment according to units/slot Role Description.
-		Use it to apply gear on players in multiplayer, 100% JIP compatible
-	*/
-	"GearAssignmentTable"
+	"Editor"
 ];
 
 

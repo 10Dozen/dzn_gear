@@ -2,6 +2,8 @@
 
 params ["_isMainCategory"];
 
+DBG_ "Params: %1", _isMainCategory EOL;
+
 private _category = _self get Q(CurrentCategory);
 private _classname = _self get Q(CurrentSelectedLeftItem);
 if (!_isMainCategory) then {

@@ -1,6 +1,7 @@
 #include "defines.h"
 
 params ["_isMainCategory"];
+
 DBG_ "Params: %1", _this EOL;
 
 private _display = _self get Q(Display);
@@ -67,20 +68,22 @@ DBG_ "Composing menu" EOL;
 
 	_menu pushBack ["BUTTON", "<t align='center'>+</t>", {
 		params ["_dialogCOB", "_args"];
-		ThisCOB call [F(addItemToPool), _args];
-		ThisCOB call [F(onShowButtonClick), []];
+		_args params ["_isMainCategory", "_categoryAndItem"];
+		ThisCOB call [F(addItemToPool), _categoryAndItem];
+		ThisCOB call [F(onShowButtonClick), [_isMainCategory]];
 
-	}, [_category, _classname], [["h", 0.08]]];
+	}, [_isMainCategory, [_category, _classname]], [["h", 0.08]]];
 
 	_menu pushBack ["BUTTON",
 		"<t align='center'>-</t>",
 		{
 			params ["_dialogCOB", "_args"];
-			ThisCOB call [F(removeItemFromPool), _args];
-			ThisCOB call [F(onShowButtonClick), []];
+			_args params ["_isMainCategory", "_categoryAndItem"];
+			ThisCOB call [F(removeItemFromPool), _categoryAndItem];
+			ThisCOB call [F(onShowButtonClick), [_isMainCategory]];
 		},
-		[_category, _classname],
-		[["bg", [[0.7, 0.2, 0.2, 1], [0,0,0,1]] select (_count > 1)], ["h", 0.08]]
+		[_isMainCategory, [_category, _classname]],
+		[["bg", [COLOR_PALE_RED, COLOR_BLACK] select (_count > 1)], ["h", 0.08]]
 	];
 	_menu pushBack ["BR"];
 } forEach _itemsShare;
@@ -95,7 +98,7 @@ if (_items isEqualTo []) then {
 	_menu pushBack ["BUTTON", "Copy", {
 		params ["", "_args"];
 		ThisCOB call [F(onExportButtonClick), _args];
-	}, [_isMainCategory], [["w",0.25]]];
+	}, [_isMainCategory], [["w",0.25], ["bg", COLOR_PALE_GREEN]]];
 };
 
 _menu call dzn_fnc_ShowAdvDialog2;

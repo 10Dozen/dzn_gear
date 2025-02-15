@@ -1,6 +1,8 @@
 #include "defines.h"
 
-ThisCOB set [
+private _cob = ThisCOB;
+
+_cob set [
 	Q(OpenedEH),
 	["ace_arsenal_displayOpened", {
 		params ["_display"];
@@ -8,7 +10,7 @@ ThisCOB set [
 	}] call CBA_fnc_addEventHandler
 ];
 
-ThisCOB set [
+_cob set [
 	Q(ClosedEH),
 	["ace_arsenal_displayClosed", {
 		// params ["_display"];

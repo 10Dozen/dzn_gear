@@ -30,7 +30,7 @@ player addAction [
             [cursorTarget, _kitArg] call dzn_fnc_gear_assignGear;
         };
     },
-    _kit ,0
+    +_kit ,0
 ];
 
 // -- Items override

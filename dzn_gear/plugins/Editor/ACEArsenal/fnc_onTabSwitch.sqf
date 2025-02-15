@@ -86,9 +86,7 @@ private _display = _self get Q(Display);
 
 // -- Hide right buttons for some categories
 private _showRightButtons = ((_self get Q(CurrentCategory)) in CATS_WITH_SUBCAT);//  && (_self get Q(CurrentSubCategory)) != 0;
-{
-    ["MODIFY", _display, _x, [["show", _showRightButtons]]] call dzn_fnc_HandleControl;
-} forEach [BTN_SUB_SHOW, BTN_SUB_ADD, BTN_SUB_RESET];
+["MODIFY", _display, "btnSub*", [["show", _showRightButtons]]] call dzn_fnc_HandleControl;
 
 // -- Update opened tab category
 if (isNil "dzn_AdvDialog2") exitWith {
