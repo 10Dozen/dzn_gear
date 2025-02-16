@@ -113,6 +113,7 @@ if (count _gear >= 9) then {
 };
 
 _unit setVariable ["dzn_gear_done", true, true];
+["dzn_gear_kitApplied", []] call CBA_fnc_localEvent;
 
 /*
 

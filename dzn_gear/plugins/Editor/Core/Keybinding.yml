@@ -29,4 +29,3 @@ DIK_DELETE:
 |    ctrl: { ECOB(Editor,Core) call [F(ClearGear), [WIPE_ALL]] }
 |    // Clear backpack items
 |    alt: { ECOB(Editor,Core) call [F(ClearGear), [WIPE_BACKPACK]]}
-

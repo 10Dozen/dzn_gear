@@ -1,0 +1,12 @@
+#include "defines.h"
+
+NOTIF_MSG_NOT_SELECTED: "No units/vehicles selected!"
+NOTIF_MSG_TOO_MUCH_SELECTED: "Select single unit/vehicle to copy gear"
+
+NOTIF_MSG_PERSONAL_GEAR_COPIED: "Unit's gear was copied!"
+NOTIF_MSG_PERSONAL_GEAR_APPLIED: "Gear was applied!"
+NOTIF_MSG_PERSONAL_GEAR_SAVED: "Kit were added to list!"
+
+NOTIF_MSG_CARGO_GEAR_COPIED: "Cargo was copied!"
+NOTIF_MSG_CARGO_GEAR_APPLIED: "Cargo was applied!"
+NOTIF_MSG_CARGO_GEAR_SAVED: "Cargo kit were added to list!"
