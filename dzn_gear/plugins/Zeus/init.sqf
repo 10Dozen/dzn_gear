@@ -8,6 +8,7 @@ ThisCOB = [] call compileScript ['COMPONENT_PATH\Component.sqf'];
     { !isNull (findDisplay 46) },
     {
         (findDisplay 46) displayAddEventHandler ["KeyDown", {
+            systemChat format ["Key down. %1", inputAction "CuratorInterface" ];
             if (inputAction "CuratorInterface" <= 0) exitWith { false };
             [
                 { !isNull (findDisplay 312) },

@@ -13,7 +13,7 @@
     "Open dzn_Gear menu on object",
     {},
     {
-        if (isNull (ThisCOB get Q(ZeusDisplay)) exitWith { false };
+        if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(openMenu), GET_SELECTED_OBJECTS];
     },
     [DIK_G, [false, false, false]]
@@ -25,7 +25,7 @@
     "Copy gear from object",
     {},
     {
-        if (isNull (ThisCOB get Q(ZeusDisplay)) exitWith { false };
+        if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(copyGear), GET_SELECTED_OBJECTS];
     },
     [DIK_G, [false, true, false]]
@@ -37,19 +37,19 @@
     "Paste gear to object",
     {},
     {
-        if (isNull (ThisCOB get Q(ZeusDisplay)) exitWith { false };
+        if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(applyKit), GET_SELECTED_OBJECTS];
     },
-    [DIK_G, [false, true, false]]
+    [DIK_G, [false, false, true]]
 ] call CBA_fnc_addKeybind;
 
 [
     KEYBIND_SETTING_TITLE,
-    "dznGear_Zeus_Paste",
+    "dznGear_Zeus_Save",
     "Save gear of object",
     {},
     {
-        if (isNull (ThisCOB get Q(ZeusDisplay)) exitWith { false };
+        if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(saveKit), GET_SELECTED_OBJECTS];
     },
     [DIK_G, [true, false, false]]
@@ -59,15 +59,7 @@
 private _messages = ['COMPONENT_PATH\Messages.yml',"PREPROCESS_FILE"] call dzn_fnc_parseSFML;
 CONVERT_NUMERIC_KEYS(_messages);
 
-/*
-, { 
-			params ["_units", "_add"];			
-			{
-				[_x, format ["_this %1 'NVGoggles_OPFOR'", SEL(_add, "linkItem", "unlinkItem")]] call dzn_fnc_gear_zc_addItemsToUnits;
-			} forEach _units;			
-			[format ["NVG %1 units", SEL(_add, "added to","removed from")], "success"] call dzn_fnc_gear_zc_showNotif;	
-		}
-        */
+
 private _declaration = [
     [Q(ZeusDisplay), displayNull],
     [Q(FastItems), [
@@ -134,7 +126,7 @@ private _declaration = [
             { _unit removePrimaryWeaponItem ((primaryWeaponItems _unit) # 2); true },
             NOTIF_MSG_ITEM_WEAPON_OPTICS_ADDED,
             NOTIF_MSG_ITEM_WEAPON_OPTICS_REMOVED
-        ]],
+        ]]
     ]],
 
     [Q(Messages), _messages],

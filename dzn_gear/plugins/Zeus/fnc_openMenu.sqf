@@ -37,7 +37,6 @@ private _menu = [
         );
     }, [["tag", "btn_objects"], ["h", 0.2], ["bg", COLOR_PALE_GREEN]]],
     ["BR"],
-
     ["DROPDOWN", _kits, [["tag", "d_kitname"]]],
     ["INPUT", "", [["tag", "i_kitname"], ["tooltip", "Enter name of the kit if can't find one"]]],
     ["BUTTON", "Apply", {
@@ -48,6 +47,7 @@ private _menu = [
 
     ["LABEL", ""],
     ["BR"],
+
 
     ["BUTTON", "Copy gear", {
         ThisCOB call [F(menu_onCopy), _this];
@@ -63,7 +63,7 @@ private _menu = [
     ["LABEL", "Modify inventory", [["bg", COLOR_UI]]],
     ["BR"],
 
-    ["DROPDOWN", _items, 0, [["tag", "d_item"], ["enabled", _hasUnits]],
+    ["DROPDOWN", _items, 0, [["tag", "d_item"], ["enabled", _hasUnits]]],
     ["BUTTON", "+", {
         ThisCOB call [F(menu_onAddItem), _this];
     }, [_units], [["tooltip", "Add selected item"], ["enabled", _hasUnits]]],
@@ -79,6 +79,7 @@ private _menu = [
         ThisCOB call [F(menu_onArsenal), _this];
     }, [_units], [["enabled", _hasUnits]]],
     ["LABEL", ""],
+
     ["BUTTON", "Clear All Items", {
         ThisCOB call [F(menu_onClear), _this];
     }, [_units, _objects], [["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo)"]]]

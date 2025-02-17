@@ -14,7 +14,7 @@
 */
 
 // -- Pick from namespace
-private _personalKits = dzn_gear_personalKits
+private _personalKits = dzn_gear_personalKits;
 private _cargoKits = dzn_gear_cargoKits;
 
 {

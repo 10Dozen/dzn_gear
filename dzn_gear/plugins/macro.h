@@ -24,7 +24,7 @@
             HASH set [parseNumber _x, _y]; \
             _toDelete pushBack _x; \
         }; \
-    } forEach _this; \
+    } forEach HASH; \
     { HASH deleteAt _x } forEach _toDelete
 
 #define STARTS_WITH(STR,SUBSTR) (STR select [0, count SUBSTR] == SUBSTR)
