@@ -52,24 +52,39 @@
 
 
 kit_test1 = [
-	["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],
+	["<EQUIPEMENT       >> ", "U_B_GEN_Soldier_F", "V_TacVest_gen_F", "", "H_MilCap_gen_F", ""],
 
 	// Randomized weapon pattern
 	["<PRIMARY WEAPON   >> ",[
-		["arifle_MX_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
+		["arifle_MX_F",   "30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
 		["arifle_MX_GL_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
-		["SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","",["optic_Aco", ""],""]]
+		["SMG_05_F",       "30Rnd_9x21_Mag_SMG_02",  ["","",["optic_Aco", ""],""]]
 	]],
 
 	["<LAUNCHER WEAPON  >> ","","",["","","",""]],
 	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
 	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
-	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG",2]]],
+	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
 	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]],
 	["<BACKPACK ITEMS   >> ",[]],
 	/* Optional section */
 	["<IDENTITY         >> ","TanoanHead_A3_02","male01engfre","john Doe"],
-];
+	["<TAGS             >> ", "MyTag", ["MyNumber", 123]],
+	["<SCRIPT           >> ",
+		{ (_this # 0) setVariable ["XXX", 123]; },
+		{ hint str(_this # 0 getVariable "XXX")}
+	]
+] call dzn_fnc_gear_make;
+
+kit_test2 = [
+	// Some lines were omitted
+	["<EQUIPEMENT       >> ", "U_B_GEN_Soldier_F", "V_TacVest_gen_F", "", "H_MilCap_gen_F", ""],
+	["<PRIMARY WEAPON   >> ","arifle_MX_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
+	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
+	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
+	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]]
+] call dzn_fnc_gear_make;
 
 cargo_kit_test2 = [
     [[["arifle_MX_ACO_pointer_F","hgun_P07_F"],3]],

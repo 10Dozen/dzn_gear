@@ -3,11 +3,11 @@
 #define DBG_ diag_log format [DBG_PREFIX + "[" + DBG_FUNC_PREFIX + "] " +
 #define EOL ]
 
+#define PREP(NAME) dzn_fnc_gear_##NAME = compileScript ['dzn_gear\fn\##NAME##.sqf']
 
 #define L(X) toLowerANSI(X)
 
-
-#define ARR_CAT_EQUIPMENT "EQUIPMENT"
+#define ARR_CAT_EQUIPMENT "EQUIPEMENT"
 #define ARR_CAT_PRIMARY "PRIMARY WEAPON"
 #define ARR_CAT_LAUNCHER "LAUNCHER WEAPON"
 #define ARR_CAT_HANDGUN "HANDGUN WEAPON"
@@ -37,3 +37,7 @@
 #define MAP_CAT_TAGS L(ARR_CAT_TAGS)
 #define MAP_CAT_SCRIPT L(ARR_CAT_SCRIPT)
 #define MAP_CAT_UNIFORM_TEXTURES L(ARR_CAT_INDENTITY)
+
+#define I_WEAPON_CLASS "class"
+#define I_WEAPON_MAG "magazine"
+#define I_WEAPON_ATTACHES "attaches"

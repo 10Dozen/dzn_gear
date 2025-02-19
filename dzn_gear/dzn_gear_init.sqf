@@ -1,3 +1,4 @@
+#include "fn\defines.h"
 params [["_editModeEnabled", false], ["_timeout", 0]];
 
 // **************************
@@ -24,6 +25,7 @@ dzn_gear_version = "v2.11";
 PREP(assignKit);
 PREP(assignKitByGAT);
 PREP(assignGear);
+PREP(assignGearArray);
 PREP(assignCargoGear);
 PREP(assignIdentity);
 PREP(getGear);
@@ -31,37 +33,34 @@ PREP(getCargoGear);
 PREP(getPreciseGear);
 PREP(setPreciseGear);
 PREP(scanForKitnames);
+PREP(make);
 PREP(initialize);
 
-dzn_gear_gearMapObjectDeclaration = [
+dzn_gear_gearMapDeclaration = [
     ["#type", "dzn_gear_GearMapInterface"],
     ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
-    ["uniform", ""],
-    ["vest", ""],
-    ["backpack", ""],
-    ["headgear", ""],
-    ["facewear", ""],
-    ["primary wepaon",[]],
-    ["launcher wepaon",[]],
-    ["handgun wepaon",[]],
-    ["assigned items", []],
-    ["uniform items", []],
-    ["vest items", []],
-    ["backpack items", []],
+    [MAP_CAT_UNIFORM, ""],
+    [MAP_CAT_VEST, ""],
+    [MAP_CAT_BACKPACK, ""],
+    [MAP_CAT_HEADGEAR, ""],
+    [MAP_CAT_FACEWEAR, ""],
+    [MAP_CAT_PRIMARY,[]],
+    [MAP_CAT_LAUNCHER,[]],
+    [MAP_CAT_HANDGUN,[]],
+    [MAP_CAT_ASSIGNED, []],
+    [MAP_CAT_UNIFORM_ITEMS, []],
+    [MAP_CAT_VEST_ITEMS, []],
+    [MAP_CAT_BACKPACK_ITEMS, []]
 ];
 
+/*
 dzn_gear_weaponPresetDeclaration = [
     ["#type", "dzn_gear_WeaponPresetInterface"],
-    ["class", ""],
-    ["magazine", ""],
-    ["attaches": []],
-    ["#create", {
-        _self set ["class", _this # 0];
-        _self set ["magazine", _this # 1];
-        _self set ["attaches", _this # 2];
-    }]
+    [I_WEAPON_CLASS, ""],
+    [I_WEAPON_MAG, ""],
+    [I_WEAPON_ATTACHES, []]
 ];
-/*
+
 dzn_gear_cargoGearMapObjectDeclaration = [
     ["#type", "dzn_gear_CargoGearMapInterface"],
     ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
@@ -76,13 +75,14 @@ dzn_gear_cargoGearMapObjectDeclaration = [
 // **************************
 // GEARS
 // **************************
-[] call compileScript [dzn_gear_kitsFile]; // "dzn_gear\Kits.sqf";
+[] call compileScript [dzn_gear_kitsFile];
 dzn_gear_gat_table = [dzn_gear_GATFile] call dzn_fnc_parseSFML;
+dzn_gear_gat_table deleteAt "#ERRORS";
+dzn_gear_gat_table deleteAt "#SOURCE";
 
 dzn_gear_personalKits = [];
 dzn_gear_cargoKits = [];
-
-dzn_gear_kits = createHashMap;
+dzn_gear_kitnameToGearMap = createHashMap;
 
 // **************************
 // INITIALIZATION
@@ -98,7 +98,7 @@ if (
     call dzn_fnc_gear_nullifyUnusedVars;
 };
 */
-
+/*
 [
     { time >= (_this # 1) && ( !hasInterface || { !isNull player && local player } ) },
     {
