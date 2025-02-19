@@ -35,8 +35,15 @@ if !((_kit # 0) isEqualType []) exitWith {
 // -- Save selected kitname
 _unit setVariable ["dzn_gear", _kitname, true];
 
-if (_isCargo) then {
+if (_isCargo) exitWith {
 	[_unit, _kit] call dzn_fnc_gear_assignCargoGear;
-} else {
-	[_unit, _kit] call dzn_fnc_gear_assignGear;
 };
+
+// Convert gear array to gear map
+private _gearMap = dzn_gear_kitnameToGearMap getOrDefaultCall [
+	_kitname,
+	{ createHashMapObject [dzn_gear_gearMapObjectDeclaration, _kit] },
+	true
+];
+
+[_unit, _gearMap] call dzn_fnc_gear_assignGear;

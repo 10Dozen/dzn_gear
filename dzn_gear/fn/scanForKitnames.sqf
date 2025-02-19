@@ -48,6 +48,11 @@ private _cargoKits = dzn_gear_cargoKits;
     } forEach _y;
 } forEach dzn_gear_gat_table;
 
+// -- Pick from mapped 
+{
+    _personalKits pushBackUnique _x;
+} forEach (keys dzn_gear_kitnameToGearMap);
+
 _personalKits sort true;
 _cargoKits sort true;
 

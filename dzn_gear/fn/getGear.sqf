@@ -13,7 +13,7 @@
 #define WeaponMag(X) (if ((X) isEqualTo []) then { "" } else { X select 0 })
 
 // @Kit = @Unit call dzn_fnc_gear_getGear
-// Return:	Kit
+// Return:	PersonalGearArray
 
 DBG_ "Params: %1", _this EOL;
 

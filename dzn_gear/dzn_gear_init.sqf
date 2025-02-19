@@ -33,6 +33,46 @@ PREP(setPreciseGear);
 PREP(scanForKitnames);
 PREP(initialize);
 
+dzn_gear_gearMapObjectDeclaration = [
+    ["#type", "dzn_gear_GearMapInterface"],
+    ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
+    ["uniform", ""],
+    ["vest", ""],
+    ["backpack", ""],
+    ["headgear", ""],
+    ["facewear", ""],
+    ["primary wepaon",[]],
+    ["launcher wepaon",[]],
+    ["handgun wepaon",[]],
+    ["assigned items", []],
+    ["uniform items", []],
+    ["vest items", []],
+    ["backpack items", []],
+];
+
+dzn_gear_weaponPresetDeclaration = [
+    ["#type", "dzn_gear_WeaponPresetInterface"],
+    ["class", ""],
+    ["magazine", ""],
+    ["attaches": []],
+    ["#create", {
+        _self set ["class", _this # 0];
+        _self set ["magazine", _this # 1];
+        _self set ["attaches", _this # 2];
+    }]
+];
+/*
+dzn_gear_cargoGearMapObjectDeclaration = [
+    ["#type", "dzn_gear_CargoGearMapInterface"],
+    ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
+    ["weapons", []],
+    ["magazines", []],
+    ["items", []],
+    ["backpacks", []],
+    ["weapons detailed", []]
+];
+*/
+
 // **************************
 // GEARS
 // **************************
@@ -42,6 +82,7 @@ dzn_gear_gat_table = [dzn_gear_GATFile] call dzn_fnc_parseSFML;
 dzn_gear_personalKits = [];
 dzn_gear_cargoKits = [];
 
+dzn_gear_kits = createHashMap;
 
 // **************************
 // INITIALIZATION

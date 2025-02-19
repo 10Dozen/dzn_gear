@@ -67,7 +67,8 @@ kit_test1 = [
 	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG",2]]],
 	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]],
 	["<BACKPACK ITEMS   >> ",[]],
-	["<IDENTITY         >> ","TanoanHead_A3_02","male01engfre","john Doe"]
+	/* Optional section */
+	["<IDENTITY         >> ","TanoanHead_A3_02","male01engfre","john Doe"],
 ];
 
 cargo_kit_test2 = [
