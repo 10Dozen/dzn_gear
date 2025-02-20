@@ -21,7 +21,7 @@ _self set [Q(GenerationIndex), _idx];
 
 if (_unitCount > 0) exitWith {
     private _unit = _units # 0;
-    private _gear = _unit call dzn_fnc_gear_getGear;
+    private _gear = (_unit call dzn_fnc_gear_getGear) call dzn_fnc_gear_make;
     private _kitname = format [
         "kit_%1_%2_%3",
         str(side _unit),

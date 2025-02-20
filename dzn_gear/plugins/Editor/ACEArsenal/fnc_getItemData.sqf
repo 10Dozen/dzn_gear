@@ -43,7 +43,7 @@ if (_category == CAT_VEST) exitWith {
     ]
 };
 
-if (_category == CAT_HEADGEAR) exitWith { // TBD: Headgear armor
+if (_category == CAT_HEADGEAR) exitWith {
     private _cfg = configFile >> "CfgWeapons" >> _itemDescriptor;
     format [
         "%1<br/><t size='0.8'>  <t color='#e3d09f'>Mass: %2 kg</t>   <t color='#a3bde3'>Armor: %3+%4</t>",

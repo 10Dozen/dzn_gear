@@ -3,18 +3,20 @@
 DBG_ "Params: %1", _this EOL;
 
 params ["_ad", "_args"];
-_args params ["_units", "_objects"];
+_args params ["_units", "_crew", "_objects"];
 
 private _applyToUnits = GET_UNITS_BUTTON_STATE(_ad);
+private _applyToCrew = GET_CREW_BUTTON_STATE(_ad);
 private _applyToObjects = GET_OBJECTS_BUTTON_STATE(_ad);
 
-if (!_applyToUnits && !_applyToObjects) exitWith {
+private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _crew] select _applyToCrew);
+_objects = [[], _objects] select _applyToObjects;
+
+
+if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-_self call [F(saveKit), [
-    [[], _units] select _applyToUnits,
-    [[], _objects] select _applyToObjects
-]];
+_self call [F(saveKit), [_allUnits, _objects]];
 
 _self call [F(openMenu), [_units, _objects]];

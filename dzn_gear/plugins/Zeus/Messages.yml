@@ -3,6 +3,9 @@
 NOTIF_MSG_NOT_SELECTED: "No units/vehicles selected!"
 NOTIF_MSG_TOO_MUCH_SELECTED: "Select single unit/vehicle to copy gear"
 
+NOTIF_MSG_NO_UNIT_SELECTED: "No unit/crew selected to apply personal kit!"
+NOTIF_MSG_NO_VEHICLE_SELECTED: "No vehicle selected to apply cargo kit!"
+
 NOTIF_MSG_PERSONAL_GEAR_COPIED: "Unit's gear was copied!"
 NOTIF_MSG_PERSONAL_GEAR_APPLIED: "Gear was applied!"
 NOTIF_MSG_PERSONAL_GEAR_SAVED: "Kit were added to list!"

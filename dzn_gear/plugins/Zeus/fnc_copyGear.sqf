@@ -24,7 +24,10 @@ if (_unitsCount > 1 || _objectsCount > 1) exitWith {
 if (_unitCount > 0) exitWith {
     DBG_ "Going to get gear of first unit: %1", (_units # 0) EOL;
     DBG_ "Gear: %1", (_units # 0) call dzn_fnc_gear_getGear EOL;
-    _self set [Q(LastPersonalGear), (_units # 0) call dzn_fnc_gear_getGear];
+    _self set [
+        Q(LastPersonalGear), 
+        ((_units # 0) call dzn_fnc_gear_getGear) call dzn_fnc_gear_make;
+    ];
     _self call [F(notify), [NOTIF_OK, NOTIF_MSG_PERSONAL_GEAR_COPIED]];
 };
 
