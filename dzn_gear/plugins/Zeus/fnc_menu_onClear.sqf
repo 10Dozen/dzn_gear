@@ -8,7 +8,7 @@ private _applyToUnits = GET_UNITS_BUTTON_STATE(_ad);
 private _applyToObjects = GET_OBJECTS_BUTTON_STATE(_ad);
 
 if (
-	(!_applyToUnits && !_applyToObjects) 
+	(!_applyToUnits && !_applyToObjects)
 	|| (_units isEqualTo [] && _objects isEqualTo [])
 ) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
@@ -19,7 +19,7 @@ if (
     clearBackpackCargoGlobal _unit;
     {_unit removeItemFromVest _x;} forEach (vestItems _unit);
     {_unit removeItemFromUniform _x;} forEach (uniformItems _unit);
-} forEach (_units + (_objects apply { crew _x }));
+} forEach _units;
 
 {
     clearWeaponCargoGlobal _x;

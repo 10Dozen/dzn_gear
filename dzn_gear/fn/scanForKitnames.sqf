@@ -29,6 +29,7 @@ private _cargoKits = dzn_gear_cargoKits;
 } forEach (allVariables missionNamespace);
 
 // -- Pick from GAT
+/*
 {
     // -- Root level map
     if (_y isEqualType "") then {
@@ -47,11 +48,7 @@ private _cargoKits = dzn_gear_cargoKits;
         { _personalKits pushBackUnique _y; } forEach _y;
     } forEach _y;
 } forEach dzn_gear_gat_table;
-
-// -- Pick from mapped 
-{
-    _personalKits pushBackUnique _x;
-} forEach (keys dzn_gear_kitnameToGearMap);
+*/
 
 _personalKits sort true;
 _cargoKits sort true;

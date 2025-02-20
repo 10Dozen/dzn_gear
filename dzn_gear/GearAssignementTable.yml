@@ -8,10 +8,10 @@ MyRole: kit_sec_r
 # Applies only to BLUFOR(west) side AND with rolename
 # Sides: WEST, EAST, GUER, CIV
 WEST:
-    MyRole: kit_sec_r
+    MyRole: kit_test1
     1'2 Squad Leader: kit_sec_sl
 
     # Applies only to BLUFOR(west) side AND in group 1'2 AND with rolename
     1'1:
-        MyRole: kit_test1
+        MyRole: kit_test2
 

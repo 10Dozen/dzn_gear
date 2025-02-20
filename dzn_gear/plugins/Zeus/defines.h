@@ -15,6 +15,7 @@
 #define GET_SELECTED_OBJECTS [((curatorSelected select 0) select { _x isKindOf "CAManBase" }), ((curatorSelected select 0) select { !(_x isKindOf "CAManBase") })]
 
 #define GET_UNITS_BUTTON_STATE(DIALOG) ((DIALOG call ["GetByTag", "btn_units"]) getVariable [Q(Selected), true])
+#define GET_CREW_BUTTON_STATE(DIALOG) ((DIALOG call ["GetByTag", "btn_crew"]) getVariable [Q(Selected), true])
 #define GET_OBJECTS_BUTTON_STATE(DIALOG) ((DIALOG call ["GetByTag", "btn_objects"]) getVariable [Q(Selected), true])
 
 
@@ -48,11 +49,11 @@
 #define NOTIF_MSG_CARGO_CLEARED 40
 
 #define NOTIF_MSG_ITEM_NVG_ADDED 50
-#define NOTIF_MSG_ITEM_NVG_REMOVED 51            
+#define NOTIF_MSG_ITEM_NVG_REMOVED 51
 #define NOTIF_MSG_ITEM_BACKPACK_ADDED 52
 #define NOTIF_MSG_ITEM_BACKPACK_REMOVED 53
 #define NOTIF_MSG_ITEM_WEAPON_LIGHT_ADDED 54
-#define NOTIF_MSG_ITEM_WEAPON_LIGHT_REMOVED 55            
+#define NOTIF_MSG_ITEM_WEAPON_LIGHT_REMOVED 55
 #define NOTIF_MSG_ITEM_WEAPON_SUPPRESSOR_ADDED 56
 #define NOTIF_MSG_ITEM_WEAPON_SUPPRESSOR_REMOVED 57
 #define NOTIF_MSG_ITEM_WEAPON_OPTICS_ADDED 58

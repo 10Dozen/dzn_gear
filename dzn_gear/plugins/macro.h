@@ -39,6 +39,10 @@
 #define COLOR_WHITE      [1,1,1,1]
 #define COLOR_BLACK      [0,0,0,1]
 #define COLOR_GOLD       [0.92, 0.81, 0, 1]
+#define COLOR_LIME       [0.48, 0.75, 0.22, 1]
+#define COLOR_BRICK_RED  [0.92, 0.31, 0.20, 1]
+#define COLOR_AQUA       [0.07, 0.77, 255, 1]
+
 
 #define COLOR_HEX_GOLD SQ(#FFD000)
 #define COLOR_HEX_LIGHT_BLUE SQ(#84b0f0)

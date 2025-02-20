@@ -39,6 +39,7 @@ PREP(initialize);
 dzn_gear_gearMapDeclaration = [
     ["#type", "dzn_gear_GearMapInterface"],
     ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
+    ["#str", compileScript ['dzn_gear\fn\GearMapToString.sqf']],
     [MAP_CAT_UNIFORM, ""],
     [MAP_CAT_VEST, ""],
     [MAP_CAT_BACKPACK, ""],
@@ -53,6 +54,11 @@ dzn_gear_gearMapDeclaration = [
     [MAP_CAT_BACKPACK_ITEMS, []]
 ];
 
+dzn_gear_emptyWeaponDescriptor = createHashMapFromArray [
+    [I_WEAPON_CLASS, ""],
+    [I_WEAPON_MAG, ""],
+    [I_WEAPON_ATTACHES, ["", "", "", ""]]
+];
 /*
 dzn_gear_weaponPresetDeclaration = [
     ["#type", "dzn_gear_WeaponPresetInterface"],
@@ -98,7 +104,7 @@ if (
     call dzn_fnc_gear_nullifyUnusedVars;
 };
 */
-/*
+
 [
     { time >= (_this # 1) && ( !hasInterface || { !isNull player && local player } ) },
     {
@@ -124,6 +130,4 @@ if (
     },
     [_editModeEnabled, _timeout]
 ] call CBA_fnc_waitUntilAndExecute;
-
-
 

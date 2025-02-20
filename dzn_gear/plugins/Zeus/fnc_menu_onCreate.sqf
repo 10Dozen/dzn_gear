@@ -14,7 +14,7 @@ if (!_applyToUnits && !_applyToObjects) exitWith {
 
 _self call [F(saveKit), [
     [[], _units] select _applyToUnits,
-    [[], _objects] select _applyToObjects,
+    [[], _objects] select _applyToObjects
 ]];
 
 _self call [F(openMenu), [_units, _objects]];

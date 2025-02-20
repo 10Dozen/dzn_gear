@@ -13,5 +13,5 @@ if (!_applyToUnits && !_applyToObjects) exitWith {
 
 _self call [F(copyKit), [
     [[], _units] select _applyToUnits,
-    [[], _objects] select _applyToObjects,
+    [[], _objects] select _applyToObjects
 ]];

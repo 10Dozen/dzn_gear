@@ -9,6 +9,12 @@
     _kitObject
 */
 
+// -- Set defaults to weapon that might missing in kit array
+private _emptyWeapon = dzn_gear_emptyWeaponDescriptor;
+_self set [MAP_CAT_PRIMARY, _emptyWeapon];
+_self set [MAP_CAT_LAUNCHER, _emptyWeapon];
+_self set [MAP_CAT_HANDGUN, _emptyWeapon];
+
 {
     private _category = toUpperANSI ((_x # 0) trim ["<> ", 0]);
     DBG_ "Category: %1", _category EOL;

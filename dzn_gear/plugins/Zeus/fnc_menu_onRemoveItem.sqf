@@ -19,4 +19,4 @@ private _successCount = 0;
     _successCount = _successCount + ([0,1] select _isSuccess);
 } forEach _units;
 
-_self call [F(notify), [NOTIF_INFO, format [_onRemoveMessage, _successCount, count _units]];
+_self call [F(notify), [NOTIF_INFO, format [_onRemoveMessage, _successCount, count _units]]];

@@ -7,7 +7,7 @@
 
 	Params:
 	0: _unit (OBJECT) - unit to apply gear
-	1: _gear (ARRAY) - gear 
+	1: _gear (ARRAY) - gear
 */
 
 
@@ -34,6 +34,8 @@ private _magClasses = [];
 
 // -- ADD WEAPONS
 private ["_weaponDescriptor", "_r"];
+
+DBG_ "Gear: %1", _gear EOL;
 
 for "_i" from 1 to 3 do {
 	_weaponDescriptor = (_gear # _i) select [1, 3];

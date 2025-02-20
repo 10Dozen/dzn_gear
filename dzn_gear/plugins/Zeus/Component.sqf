@@ -15,8 +15,9 @@
     {
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(openMenu), GET_SELECTED_OBJECTS];
+        false
     },
-    [DIK_G, [false, false, false]]
+    [DIK_H, [false, false, false]]
 ] call CBA_fnc_addKeybind;
 
 [
@@ -28,7 +29,7 @@
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(copyGear), GET_SELECTED_OBJECTS];
     },
-    [DIK_G, [false, true, false]]
+    [DIK_H, [false, true, false]]
 ] call CBA_fnc_addKeybind;
 
 [
@@ -40,7 +41,7 @@
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(applyKit), GET_SELECTED_OBJECTS];
     },
-    [DIK_G, [false, false, true]]
+    [DIK_H, [false, false, true]]
 ] call CBA_fnc_addKeybind;
 
 [
@@ -52,7 +53,7 @@
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
         ThisCOB call [F(saveKit), GET_SELECTED_OBJECTS];
     },
-    [DIK_G, [true, false, false]]
+    [DIK_H, [true, false, false]]
 ] call CBA_fnc_addKeybind;
 
 
@@ -74,19 +75,19 @@ private _declaration = [
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
             NOTIF_MSG_ITEM_BACKPACK_REMOVED
-        ], [["color", COLOR_HEX_AQUA]]],
+        ], [["color", COLOR_AQUA]]],
         ["OPFOR LR", [
             { _this addBackpack 'tf_mr3000_rhs'; true },
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
             NOTIF_MSG_ITEM_BACKPACK_REMOVED
-        ], [["color", COLOR_HEX_BRICK_RED]]],
+        ], [["color", COLOR_BRICK_RED]]],
         ["INDEP LR", [
             { _this addBackpack 'tf_anprc155_coyote'; true },
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
             NOTIF_MSG_ITEM_BACKPACK_REMOVED
-        ], [["color", COLOR_HEX_LIME]]],
+        ], [["color", COLOR_LIME]]],
         ["Weapon Flashlight", [
             {
                 private _items = (compatibleItems [primaryWeapon _this, "PointerSlot"]);
@@ -137,11 +138,18 @@ private _declaration = [
 
     PREP_COMPONENT_FUNCTION(openMenu),
     PREP_COMPONENT_FUNCTION(copyGear),
-    PREP_COMPONENT_FUNCTION(applyKit),
-    PREP_COMPONENT_FUNCTION(saveKit),
-
+    PREP_COMPONENT_FUNCTION(applyGear),
+    PREP_COMPONENT_FUNCTION(saveGear),
 
     PREP_COMPONENT_FUNCTION(openMenu),
+    PREP_COMPONENT_FUNCTION(menu_onApplyKit),
+    PREP_COMPONENT_FUNCTION(menu_onCopy),
+    PREP_COMPONENT_FUNCTION(menu_onApply),
+    PREP_COMPONENT_FUNCTION(menu_onCreate),
+    PREP_COMPONENT_FUNCTION(menu_onAddItem),
+    PREP_COMPONENT_FUNCTION(menu_onRemoveItem),
+    PREP_COMPONENT_FUNCTION(menu_onArsenal),
+    PREP_COMPONENT_FUNCTION(menu_onClear),
 
     PREP_COMPONENT_FUNCTION(notify)
 ];
