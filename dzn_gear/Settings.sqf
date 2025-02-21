@@ -5,11 +5,7 @@
 
 // Paths
 dzn_gear_kitsFile = "dzn_gear\Kits.sqf";
-dzn_gear_GATFile = "dzn_gear\GearAssignementTable.yml";
-
-// Enable or disable a synchronization of unit's identity (face, voice)
-// from applied kit (in multiplayer)
-dzn_gear_enableIdentitySync			= false;
+dzn_gear_GATFile = "dzn_gear\GearAssignmentTable.yml";
 
 // Plugins - comment line with unwanted plugin to disable
 dzn_gear_Plugins = [

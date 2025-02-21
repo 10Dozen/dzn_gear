@@ -5,5 +5,4 @@ params [];
 
 private _output = _self call [F(getTotals), [player]];
 
-player createDiaryRecord ["Diary", ["Снаряжение", _output]];
-
+player createDiaryRecord ["Diary", [_self get Q(Settings) get "Personal" get "title", _output]];

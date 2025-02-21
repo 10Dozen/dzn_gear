@@ -1,10 +1,4 @@
 
-# Gear Assignment according to units/slot Role Description.
-# Use it to apply gear on players in multiplayer, 100% JIP compatible
-GearAssignmentTable:
-    tableFile: "dzn_gear\GearAssignmentTable.yaml"
-
-
 # Provides powefull GUI tools to create kits.
 Editor:
     UseACEArsenal: true
@@ -28,4 +22,14 @@ Editor:
         2IC: "2ic"
         Командир Взвода: "pl"
 
+Notes:
+    Personal:
+        enable: true
+        title: "Снаряжение"
+
+    Group:
+        enable: true
+        title: "Снаряжение моей группы"
+        refreshTime: 10         # refersh each 10 seconds
+        refreshUntil: `5 * 60`  # 5 minutes after mission start
 

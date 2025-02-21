@@ -49,7 +49,7 @@
 #define BTN_ARSENAL Q(btn_arsenal)
 #define BTN_CLEAR Q(btn_clear)
 
-#define BTN_SELECTED_TITLE(TYPE,COUNT) format ["<t align='center' size='1.5'>%1 %2</t>", TYPE, count COUNT]
+#define BTN_FILTER_TITLE(TYPE,COUNT) format ["<t align='center' size='1.5'>%1 %2</t>", TYPE, count COUNT]
 
 
 // -- Notif

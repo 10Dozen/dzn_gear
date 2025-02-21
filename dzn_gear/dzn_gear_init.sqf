@@ -2,7 +2,7 @@
 params [["_editModeEnabled", false], ["_timeout", 0]];
 
 // **************************
-// 	DZN GEAR v2.11
+// 	DZN GEAR v2.28
 //
 //	Initialized when:
 //	{ !isNil "dzn_gear_initDone" }
@@ -10,7 +10,7 @@ params [["_editModeEnabled", false], ["_timeout", 0]];
 //	Server-side initialized when:
 //	{ !isNil "dzn_gear_serverInitDone" }
 //
-dzn_gear_version = "v2.11";
+dzn_gear_version = "v2.28";
 
 // *************************
 //	SETTINGS
@@ -93,17 +93,6 @@ dzn_gear_kitnameToGearMap = createHashMap;
 // **************************
 // INITIALIZATION
 // **************************
-
-/*
-if (dzn_gear_enableZeusCompatibility) then { call compile preprocessFileLineNumbers "dzn_gear\plugins\ZeusCompatibility.sqf"; };
-
-if (
-    !dzn_gear_editModeEnabled
-    || (isMultiplayer && count (call BIS_fnc_listPlayers) > 3)
-) then {
-    call dzn_fnc_gear_nullifyUnusedVars;
-};
-*/
 
 [
     { time >= (_this # 1) && ( !hasInterface || { !isNull player && local player } ) },

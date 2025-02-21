@@ -6,8 +6,12 @@
 
 */
 
+params ["_settings"];
 
 private _declaration = [
+    [Q(Settings), _settings],
+    [Q(RefreshGroupNotes), _settings get "Group" get "enable"],
+
     PREP_COMPONENT_FUNCTION(AddNotes),
     PREP_COMPONENT_FUNCTION(getTotals),
     PREP_COMPONENT_FUNCTION(showItemInfo)

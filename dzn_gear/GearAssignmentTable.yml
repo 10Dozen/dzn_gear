@@ -1,6 +1,4 @@
 
-# Lines in format -- @UnitName: @Kitname or @RoleDescription: @Kitname
-
 # Applies to any unit with rolename
 Platoon Leader: kit_sec_pl
 MyRole: kit_sec_r
