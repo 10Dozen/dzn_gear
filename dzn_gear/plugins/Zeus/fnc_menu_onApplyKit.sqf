@@ -11,7 +11,10 @@ private _applyToUnits = GET_UNITS_BUTTON_STATE(_ad);
 private _applyToCrew = GET_CREW_BUTTON_STATE(_ad);
 private _applyToObjects = GET_OBJECTS_BUTTON_STATE(_ad);
 
-if (!_applyToUnits && !_applyToCrew && !_applyToObjects) exitWith {
+private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _crew] select _applyToCrew);
+_objects = [[], _objects] select _applyToObjects;
+
+if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
@@ -25,22 +28,22 @@ if (_kitname isEqualTo "") then {
 DBG_ "Final _kitname: %1", _kitname EOL;
 
 // -- Apply personal
-private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _units] select _applyToCrew);
 if (STARTS_WITH(_kitname,"kit_")) exitWith {
     DBG_ "Is personal kit & _applyToUnits=%1", _applyToUnits EOL;
     if (_allUnits isEqualTo []) exitWith {
         DBG_ "No ApplyToUnits select. Skip." EOL;
         _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NO_UNIT_SELECTED]];
     };
-    
+
     {
         DBG_ "Apply personal kit to = %1", _x EOL;
         [_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
     } forEach _allUnits;
+
+    _self call [F(notify), [NOTIF_OK, NOTIF_MSG_PERSONAL_GEAR_APPLIED]];
 };
 
 // -- Apply cargo
-_objects = [[], _objects] select _applyToObjects;
 if (STARTS_WITH(_kitname,"cargo_kit_")) exitWith {
     DBG_ "Is cargo kit & _applyToObjects=%1", _applyToObjects EOL;
 
@@ -52,12 +55,16 @@ if (STARTS_WITH(_kitname,"cargo_kit_")) exitWith {
         DBG_ "Apply cargo kit to = %1", _x EOL;
         [_x, _kitname, true] call dzn_fnc_gear_assignKit;
     } forEach _objects;
+
+    _self call [F(notify), [NOTIF_OK, NOTIF_MSG_CARGO_GEAR_APPLIED]];
 };
 
 // -- Cannot determine what kit is... Let user decide
 if (_allUnits isNotEqualTo []) exitWith {
     { [_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x]; } forEach _allUnits;
+    _self call [F(notify), [NOTIF_OK, NOTIF_MSG_PERSONAL_GEAR_APPLIED]];
 };
 if (_objects isNotEqualTo []) exitWith {
     { [_x, _kitname, true] call dzn_fnc_gear_assignKit; } forEach _objects;
+    _self call [F(notify), [NOTIF_OK, NOTIF_MSG_CARGO_GEAR_APPLIED]];
 };

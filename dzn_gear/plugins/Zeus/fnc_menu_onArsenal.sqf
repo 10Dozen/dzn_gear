@@ -14,5 +14,7 @@ if (_allUnits isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
+_ad call ["Close", []];
+
 [_allUnits # 0, _allUnits # 0, true] call ace_arsenal_fnc_openBox;
 

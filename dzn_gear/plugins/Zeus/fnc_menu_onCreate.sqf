@@ -12,11 +12,10 @@ private _applyToObjects = GET_OBJECTS_BUTTON_STATE(_ad);
 private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _crew] select _applyToCrew);
 _objects = [[], _objects] select _applyToObjects;
 
-
 if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-_self call [F(saveKit), [_allUnits, _objects]];
+_self call [F(saveGear), [_allUnits, _objects]];
 
 _self call [F(openMenu), [_units, _objects]];

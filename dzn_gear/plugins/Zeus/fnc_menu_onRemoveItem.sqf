@@ -13,13 +13,17 @@ if (_allUnits isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-(_ad call ["GetValueByTag", "d_item"]) params ["", "_itemData"];
+(_ad call ["GetValueByTag", "d_item"]) params ["", "", "_itemData"];
 _itemData params ["", "_onRemoveCode", "", "_onRemoveMessage"];
 
 private _successCount = 0;
 {
-    private _isSuccess = [_x] call _onRemoveCode;
+    private _isSuccess = _x call _onRemoveCode;
     _successCount = _successCount + ([0,1] select _isSuccess);
 } forEach _allUnits;
 
-_self call [F(notify), [NOTIF_INFO, format [_onRemoveMessage, _successCount, count _allUnits]]];
+_self call [F(notify), [
+    [NOTIF_INFO, NOTIF_OK] select (_successCount > 0),
+    _onRemoveMessage,
+    [_successCount, count _allUnits]]
+];

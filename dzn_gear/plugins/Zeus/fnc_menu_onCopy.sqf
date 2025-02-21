@@ -15,4 +15,4 @@ if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-_self call [F(copyKit), [_allUnits, _objects]];
+_self call [F(copyGear), [_allUnits, _objects]];

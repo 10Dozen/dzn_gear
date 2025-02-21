@@ -39,7 +39,7 @@
     {},
     {
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
-        ThisCOB call [F(applyKit), GET_SELECTED_OBJECTS];
+        ThisCOB call [F(applyGear), GET_SELECTED_OBJECTS];
     },
     [DIK_H, [false, false, true]]
 ] call CBA_fnc_addKeybind;
@@ -51,7 +51,7 @@
     {},
     {
         if (isNull (ThisCOB get Q(ZeusDisplay))) exitWith { false };
-        ThisCOB call [F(saveKit), GET_SELECTED_OBJECTS];
+        ThisCOB call [F(saveGear), GET_SELECTED_OBJECTS];
     },
     [DIK_H, [true, false, false]]
 ] call CBA_fnc_addKeybind;
@@ -64,25 +64,25 @@ CONVERT_NUMERIC_KEYS(_messages);
 private _declaration = [
     [Q(ZeusDisplay), displayNull],
     [Q(FastItems), [
-        ["NVG", [
+        ["Night Vision Goggles", [
             { _this linkItem "NVGoggles_OPFOR"; true },
             { _this unlinkItem "NVGoggles_OPFOR"; true },
             NOTIF_MSG_ITEM_NVG_ADDED,
             NOTIF_MSG_ITEM_NVG_REMOVED
         ]],
-        ["BLUFOR LR", [
+        ["BLUFOR LR Radio", [
             { _this addBackpack 'tf_rt1523g'; true },
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
             NOTIF_MSG_ITEM_BACKPACK_REMOVED
         ], [["color", COLOR_AQUA]]],
-        ["OPFOR LR", [
+        ["OPFOR LR Radio", [
             { _this addBackpack 'tf_mr3000_rhs'; true },
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
             NOTIF_MSG_ITEM_BACKPACK_REMOVED
         ], [["color", COLOR_BRICK_RED]]],
-        ["INDEP LR", [
+        ["INDEP LR Radio", [
             { _this addBackpack 'tf_anprc155_coyote'; true },
             { removeBackpack _this; true },
             NOTIF_MSG_ITEM_BACKPACK_ADDED,
@@ -93,13 +93,13 @@ private _declaration = [
                 private _items = (compatibleItems [primaryWeapon _this, "PointerSlot"]);
                 private _cfg = configFile >> "CfgWeapons";
                 private _idx = _items findIf {
-                    getNumber(_cfg >> _x >> "ItemInfo" >> "FlashLight" >> "daylight") == 1
+                    getNumber(_cfg >> _x >> "ItemInfo" >> "FlashLight" >> "irLight") == 0
                 };
                 if (_idx == -1) exitWith { false };
                 _this addPrimaryWeaponItem (_items # _idx);
                 true
             },
-            { _unit removePrimaryWeaponItem ((primaryWeaponItems _unit) # 1); true },
+            { _this removePrimaryWeaponItem ((primaryWeaponItems _this) # 1); true },
             NOTIF_MSG_ITEM_WEAPON_LIGHT_ADDED,
             NOTIF_MSG_ITEM_WEAPON_LIGHT_REMOVED
         ]],
@@ -114,7 +114,7 @@ private _declaration = [
                 _this addPrimaryWeaponItem (_items # _idx);
                 true
             },
-            { _unit removePrimaryWeaponItem ((primaryWeaponItems _unit) # 0); true },
+            { _this removePrimaryWeaponItem ((primaryWeaponItems _this) # 0); true },
             NOTIF_MSG_ITEM_WEAPON_SUPPRESSOR_ADDED,
             NOTIF_MSG_ITEM_WEAPON_SUPPRESSOR_REMOVED
         ]],
@@ -124,7 +124,7 @@ private _declaration = [
                 _this addPrimaryWeaponItem (selectRandom _items);
                 true
             },
-            { _unit removePrimaryWeaponItem ((primaryWeaponItems _unit) # 2); true },
+            { _this removePrimaryWeaponItem ((primaryWeaponItems _this) # 2); true },
             NOTIF_MSG_ITEM_WEAPON_OPTICS_ADDED,
             NOTIF_MSG_ITEM_WEAPON_OPTICS_REMOVED
         ]]

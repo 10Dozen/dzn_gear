@@ -13,14 +13,22 @@ if (_allUnits isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-(_ad call ["GetValueByTag", "d_item"]) params ["", "_itemData"];
+(_ad call ["GetValueByTag", "d_item"]) params ["", "", "_itemData"];
+DBG_ "_itemData: %1", _itemData, _onAddMessage EOL;
 _itemData params ["_onAddCode", "", "_onAddMessage"];
+
+DBG_ "Going to execute: %1, _msg=%2", _onAddCode, _onAddMessage EOL;
 
 private _successCount = 0;
 
 {
-    private _isSuccess = [_x] call _onAddCode;
+    private _isSuccess = _x call _onAddCode;
+    DBG_ "_unit: %1, _isSuccess: %2", _x, _isSuccess EOL;
     _successCount = _successCount + ([0,1] select _isSuccess);
 } forEach _allUnits;
 
-_self call [F(notify), [NOTIF_INFO, format [_onAddMessage, _successCount, count _allUnits]]];
+_self call [F(notify), [
+    [NOTIF_INFO, NOTIF_OK] select (_successCount > 0),
+    _onAddMessage,
+    [_successCount, count _allUnits]]
+];

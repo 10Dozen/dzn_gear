@@ -13,6 +13,7 @@ private _hasUnits = _units isNotEqualTo [];
 private _hasCrew = _crew isNotEqualTo [];
 private _hasVehicles = _objects isNotEqualTo [];
 if (!_hasUnits && !_hasVehicles) exitWith {
+    dzN_AdvDialog2 call ["Close"];
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
@@ -24,14 +25,40 @@ private _kits = (dzn_gear_personalKits + dzn_gear_cargoKits) apply {
 };
 private _items = _self get Q(FastItems);
 
+
 private _menu = [
+    ["DIALOG", [["y", 0.5], ["dialog", _self get Q(ZeusDisplay)]]],
+    ["OnCBAEvent", "dzn_gear_zeusSelectionChanged", {
+        DBG_ "OnCustomEvent 'dzn_gear_zeusSelectionChanged'. Params: %1", _this EOL;
+
+        _thisArgs params ["_ad", "_args"];
+
+        GET_SELECTED_OBJECTS params ["_units", "_objects"];
+        private _crew = [];
+        { _crew append (crew _x); } forEach _objects;
+
+        (_ad call ["GetByTag", "btn_units"]) ctrlSetStructuredText parseText format [
+            "<t align='center' size='1.5'>%1 units</t>",
+            count _units
+        ];
+        (_ad call ["GetByTag", "btn_crew"]) ctrlSetStructuredText parseText format [
+            "<t align='center' size='1.5'>%1 crew</t>",
+            count _crew
+        ];
+        (_ad call ["GetByTag", "btn_objects"]) ctrlSetStructuredText parseText format [
+            "<t align='center' size='1.5'>%1 vehicles</t>",
+            count _objects
+        ];
+    }],
+
+
     ["OnDraw", {
         params ["_ad", "_args"];
         (_ad call ["GetByTag", "btn_units"]) setVariable [Q(Selected), _args # 0];
         (_ad call ["GetByTag", "btn_crew"])  setVariable [Q(Selected), _args # 1];
         (_ad call ["GetByTag", "btn_objects"])  setVariable [Q(Selected), _args # 2];
-
     }, [_hasUnits, _hasCrew, _hasVehicles]],
+
     ["HEADER", "dzn Gear - Zeus Tool"],
 
     ["BUTTON", format ["<t align='center' size='1.5'>%1 units</t>", count _units], {
@@ -41,6 +68,9 @@ private _menu = [
         _ctrl ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select _state);
 
         // -- Toggle unit-only controls
+        (_ad call ["GetByTag", "btn_arsenal"]) ctrlEnable _state;
+
+        // -- Toggles unit+crew controls
         _state = _state || (_ad call ["GetByTag", "btn_crew"]) getVariable Q(Selected);
         { (_ad call ["GetByTag", _x]) ctrlEnable _state; } forEach ["d_item", "btn_addItem", "btn_removeItem", "btn_arsenal"];
 
@@ -52,7 +82,7 @@ private _menu = [
         _ctrl setVariable [Q(Selected), _state];
         _ctrl ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select _state);
 
-        // -- Toggle unit-only controls
+        // -- Toggles unit+crew controls
         _state = _state || (_ad call ["GetByTag", "btn_units"]) getVariable Q(Selected);
         { (_ad call ["GetByTag", _x]) ctrlEnable _state; } forEach ["d_item", "btn_addItem", "btn_removeItem", "btn_arsenal"];
 
@@ -67,7 +97,7 @@ private _menu = [
 
     ["LABEL", "<t align='center'>Apply preset kits or create new</t>"],
     ["BR"],
-    ["DROPDOWN", _crew, 0, [["tag", "d_kitname"]]],
+    ["DROPDOWN", _kits, 0, [["tag", "d_kitname"]]],
     ["INPUT", "", [
         ["tag", "i_kitname"],
         ["tooltip", "Enter name of the kit if can't find one"]
@@ -104,20 +134,20 @@ private _menu = [
     ["LABEL", "Modify inventory", [["bg", COLOR_UI]]],
     ["BR"],
 
-    ["DROPDOWN", _items, nil, [["tag", "d_item"], ["enabled", _hasUnits], ["w", 0.75]]],
-    ["BUTTON", "<t align='center'>+</t>", {
+    ["DROPDOWN", _items, nil, [["tag", "d_item"], ["enabled", _hasUnits || _hasCrew], ["w", 0.75]]],
+    ["BUTTON", format ["<t align='center' color='%1'>+</t>", COLOR_HEX_LIME], {
         ThisCOB call [F(menu_onAddItem), _this];
     }, [_units, _crew], [
         ["tag", "btn_addItem"],
         ["tooltip", "Add selected item"],
-        ["enabled", _hasUnits]
+        ["enabled", _hasUnits || _hasCrew]
     ]],
-    ["BUTTON", "<t align='center'>-</t>", {
+    ["BUTTON", format ["<t align='center' color='%1'>-</t>", COLOR_HEX_BRICK_RED], {
         ThisCOB call [F(menu_onRemoveItem), _this];
     }, [_units, _crew], [
         ["tag", "btn_removeItem"],
         ["tooltip", "Remove selected item"],
-        ["enabled", _hasUnits]
+        ["enabled", _hasUnits || _hasCrew]
     ]],
     ["BR"],
 
