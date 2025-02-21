@@ -1,11 +1,13 @@
 #include "defines.h"
 
 DBG_ "Params: %1", _this EOL;
-params [
-    ["_units", []],
-    ["_objects", []]
-];
-AX = _this;
+
+params ["_units", "_objects"];
+if (_this isEqualTo []) then {
+    private _sel = (_self call [F(getSelected), []]);
+    _units = (_sel # 0) + (_sel # 1);
+    _objects = _sel # 2;
+};
 
 private _unitsCount = count _units;
 private _objectsCount = count _objects;
@@ -13,6 +15,7 @@ private _objectsCount = count _objects;
 DBG_ "_unitCount: %1, _units=%2", _unitsCount, _units EOL;
 DBG_ "_objectsCount: %1, _objects=%2", _objectsCount, _objects EOL;
 
+// -- Only 1 unit or vehicle is selected
 if (_unitsCount == 0 && _objectsCount == 0) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };

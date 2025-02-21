@@ -4,12 +4,10 @@
 
 DBG_ "Params: %1", _this EOL;
 
-params ["_ad", "_args"];
-_args params ["_units", "_crew", "_objects"];
+params ["_ad"];
 
-private _applyToUnits = GET_UNITS_BUTTON_STATE(_ad);
-private _applyToCrew = GET_CREW_BUTTON_STATE(_ad);
-private _applyToObjects = GET_OBJECTS_BUTTON_STATE(_ad);
+(_self get Q(MenuFilters)) params ["_applyToUnits", "_applyToCrew", "_applyToObjects"];
+(_self get Q(ZeusLastSelected)) params ["_units", "_crew", "_objects"];
 
 private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _crew] select _applyToCrew);
 _objects = [[], _objects] select _applyToObjects;
@@ -19,10 +17,10 @@ if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
 };
 
 // -- Select kitname from input or dropdown
-private _kitname = _ad call ["GetValueByTag", "i_kitname"];
+private _kitname = _ad call ["GetValueByTag", INP_KITNAME];
 if (_kitname isEqualTo "") then {
     DBG_ "Pick from dropdown _kitname: %1", _kitname EOL;
-    _kitname = (_ad call ["GetValueByTag", "d_kitname"]) select 1;
+    _kitname = (_ad call ["GetValueByTag", DP_KITNAME]) select 1;
 };
 
 DBG_ "Final _kitname: %1", _kitname EOL;
@@ -37,7 +35,7 @@ if (STARTS_WITH(_kitname,"kit_")) exitWith {
 
     {
         DBG_ "Apply personal kit to = %1", _x EOL;
-        [_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x];
+        [_x, _kitname] call dzn_fnc_gear_assignKit;
     } forEach _allUnits;
 
     _self call [F(notify), [NOTIF_OK, NOTIF_MSG_PERSONAL_GEAR_APPLIED]];
@@ -61,7 +59,7 @@ if (STARTS_WITH(_kitname,"cargo_kit_")) exitWith {
 
 // -- Cannot determine what kit is... Let user decide
 if (_allUnits isNotEqualTo []) exitWith {
-    { [_x, _kitname] remoteExec ["dzn_fnc_gear_assignKit", _x]; } forEach _allUnits;
+    { [_x, _kitname] call dzn_fnc_gear_assignKit; } forEach _allUnits;
     _self call [F(notify), [NOTIF_OK, NOTIF_MSG_PERSONAL_GEAR_APPLIED]];
 };
 if (_objects isNotEqualTo []) exitWith {

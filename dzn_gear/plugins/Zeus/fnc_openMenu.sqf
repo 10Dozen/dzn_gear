@@ -1,21 +1,7 @@
 #include "defines.h"
 
 DBG_ "Params: %1", _this EOL;
-params [
-    ["_units", []],
-    ["_objects", []]
-];
-
-private _crew = [];
-{ _crew append (crew _x); } forEach _objects;
-
-private _hasUnits = _units isNotEqualTo [];
-private _hasCrew = _crew isNotEqualTo [];
-private _hasVehicles = _objects isNotEqualTo [];
-if (!_hasUnits && !_hasVehicles) exitWith {
-    dzN_AdvDialog2 call ["Close"];
-    _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
-};
+params [];
 
 private _kits = (dzn_gear_personalKits + dzn_gear_cargoKits) apply {
     [_x, _x, [
@@ -25,87 +11,52 @@ private _kits = (dzn_gear_personalKits + dzn_gear_cargoKits) apply {
 };
 private _items = _self get Q(FastItems);
 
-
-private _menu = [
+// -- Menu
+[
     ["DIALOG", [["y", 0.5], ["dialog", _self get Q(ZeusDisplay)]]],
-    ["OnCBAEvent", "dzn_gear_zeusSelectionChanged", {
-        DBG_ "OnCustomEvent 'dzn_gear_zeusSelectionChanged'. Params: %1", _this EOL;
-
-        _thisArgs params ["_ad", "_args"];
-
-        GET_SELECTED_OBJECTS params ["_units", "_objects"];
-        private _crew = [];
-        { _crew append (crew _x); } forEach _objects;
-
-        (_ad call ["GetByTag", "btn_units"]) ctrlSetStructuredText parseText format [
-            "<t align='center' size='1.5'>%1 units</t>",
-            count _units
-        ];
-        (_ad call ["GetByTag", "btn_crew"]) ctrlSetStructuredText parseText format [
-            "<t align='center' size='1.5'>%1 crew</t>",
-            count _crew
-        ];
-        (_ad call ["GetByTag", "btn_objects"]) ctrlSetStructuredText parseText format [
-            "<t align='center' size='1.5'>%1 vehicles</t>",
-            count _objects
-        ];
-    }],
-
-
+    ["OnCBAEvent", "dzn_gear_zeusSelectionChanged", { ThisCOB call [F(menu_onSelectionUpdate), _thisArgs]; }],
     ["OnDraw", {
         params ["_ad", "_args"];
-        (_ad call ["GetByTag", "btn_units"]) setVariable [Q(Selected), _args # 0];
-        (_ad call ["GetByTag", "btn_crew"])  setVariable [Q(Selected), _args # 1];
-        (_ad call ["GetByTag", "btn_objects"])  setVariable [Q(Selected), _args # 2];
-    }, [_hasUnits, _hasCrew, _hasVehicles]],
+        private _cob = ThisCOB;
+
+        _cob call [F(menu_onSelectionUpdate), [_ad]];
+        _cob call [F(menu_updateState), [_ad]];
+
+        // -- Pre-select not empty filters
+        ((_cob get Q(ZeusLastSelected)) apply { _x isNotEqualTo [] }) params [
+            "_hasUnits", "_hasCrew", "_hasVics"
+        ];
+        MENU_ITEM_BY_TAG(_ad,BTN_UNITS) setVariable [Q(Selected), _hasUnits];
+        MENU_ITEM_BY_TAG(_ad,BTN_CREW) setVariable [Q(Selected), _hasCrew];
+        MENU_ITEM_BY_TAG(_ad,BTN_VICS) setVariable [Q(Selected), _hasVics];
+    }],
 
     ["HEADER", "dzn Gear - Zeus Tool"],
 
-    ["BUTTON", format ["<t align='center' size='1.5'>%1 units</t>", count _units], {
-        params ["_ad", "", "_ctrl"];
-        private _state = !(_ctrl getVariable [Q(Selected), true]);
-        _ctrl setVariable [Q(Selected), _state];
-        _ctrl ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select _state);
+    ["BUTTON", "UNITS", {
+        ThisCOB call [F(menu_onFilterSelect), _this];
+    }, 0, [["tag", BTN_UNITS], ["h", 0.07]]],
 
-        // -- Toggle unit-only controls
-        (_ad call ["GetByTag", "btn_arsenal"]) ctrlEnable _state;
+    ["BUTTON", "CREW", {
+        ThisCOB call [F(menu_onFilterSelect), _this];
+    }, 1, [["tag", BTN_CREW], ["h", 0.07]]],
 
-        // -- Toggles unit+crew controls
-        _state = _state || (_ad call ["GetByTag", "btn_crew"]) getVariable Q(Selected);
-        { (_ad call ["GetByTag", _x]) ctrlEnable _state; } forEach ["d_item", "btn_addItem", "btn_removeItem", "btn_arsenal"];
-
-    }, [], [["tag", "btn_units"], ["h", 0.07], ["bg", [COLOR_BLACK, COLOR_PALE_GREEN] select _hasUnits]]],
-
-    ["BUTTON", format ["<t align='center' size='1.5'>%1 crew</t>", count _crew], {
-        params ["_ad", "", "_ctrl"];
-        private _state = !(_ctrl getVariable [Q(Selected), true]);
-        _ctrl setVariable [Q(Selected), _state];
-        _ctrl ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select _state);
-
-        // -- Toggles unit+crew controls
-        _state = _state || (_ad call ["GetByTag", "btn_units"]) getVariable Q(Selected);
-        { (_ad call ["GetByTag", _x]) ctrlEnable _state; } forEach ["d_item", "btn_addItem", "btn_removeItem", "btn_arsenal"];
-
-    }, [], [["tag", "btn_crew"], ["h", 0.07], ["bg", [COLOR_BLACK, COLOR_PALE_GREEN] select _hasCrew]]],
-
-    ["BUTTON", format ["<t align='center' size='1.5'>%1 vehicles</t>", count _objects], {
-        params ["", "", "_ctrl"];
-        _ctrl setVariable [Q(Selected), !(_ctrl getVariable [Q(Selected), true])];
-        _ctrl ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_PALE_GREEN] select (_ctrl getVariable Q(Selected)));
-    }, [], [["tag", "btn_objects"], ["h", 0.07], ["bg", [COLOR_BLACK, COLOR_PALE_GREEN] select _hasVehicles]]],
+    ["BUTTON", "VEHICLES", {
+        ThisCOB call [F(menu_onFilterSelect), _this];
+    }, 2, [["tag", BTN_VICS], ["h", 0.07]]],
     ["BR"],
 
     ["LABEL", "<t align='center'>Apply preset kits or create new</t>"],
     ["BR"],
-    ["DROPDOWN", _kits, 0, [["tag", "d_kitname"]]],
+    ["DROPDOWN", _kits, 0, [["tag", DP_KITNAME]]],
     ["INPUT", "", [
-        ["tag", "i_kitname"],
+        ["tag", INP_KITNAME],
         ["tooltip", "Enter name of the kit if can't find one"]
     ]],
     ["BUTTON", "Apply", {
         ThisCOB call [F(menu_onApplyKit), _this];
-        (_this # 0) call ["Close",[]];
-    }, [_units, _crew, _objects], [
+    }, [], [
+        ["tag", BTN_APPLY],
         ["bg", COLOR_PALE_GREEN],
         ["tooltip", "Apply selected kit to units/vehicles"],
         ["w", 0.25]
@@ -116,17 +67,20 @@ private _menu = [
 
     ["BUTTON", "Copy gear", {
         ThisCOB call [F(menu_onCopy), _this];
-    }, [_units, _crew, _objects], [
+    }, [], [
+        ["tag", BTN_COPY],
         ["tooltip", "Copy gear of the first unit or vehicle"]
     ]],
     ["BUTTON", "Apply copied gear", {
         ThisCOB call [F(menu_onApply), _this];
-    }, [_units, _crew, _objects], [
+    }, [], [
+        ["tag", BTN_APPLY],
         ["tooltip", "Apply last copied gear to selected units/vehicles"]
     ]],
     ["BUTTON", "Save to kit", {
         ThisCOB call [F(menu_onCreate), _this];
-    }, [_units, _crew, _objects], [
+    }, [], [
+        ["tag", BTN_CREATE],
         ["tooltip", "Create kit from the gear of the first unit/vehicle (unit first)"]
     ]],
     ["BR"],
@@ -134,20 +88,18 @@ private _menu = [
     ["LABEL", "Modify inventory", [["bg", COLOR_UI]]],
     ["BR"],
 
-    ["DROPDOWN", _items, nil, [["tag", "d_item"], ["enabled", _hasUnits || _hasCrew], ["w", 0.75]]],
+    ["DROPDOWN", _items, nil, [["tag", DP_ITEM], ["enabled", _hasUnits || _hasCrew], ["w", 0.75]]],
     ["BUTTON", format ["<t align='center' color='%1'>+</t>", COLOR_HEX_LIME], {
         ThisCOB call [F(menu_onAddItem), _this];
-    }, [_units, _crew], [
-        ["tag", "btn_addItem"],
-        ["tooltip", "Add selected item"],
-        ["enabled", _hasUnits || _hasCrew]
+    }, [], [
+        ["tag", BTN_ADD_ITEM],
+        ["tooltip", "Add selected item"]
     ]],
     ["BUTTON", format ["<t align='center' color='%1'>-</t>", COLOR_HEX_BRICK_RED], {
         ThisCOB call [F(menu_onRemoveItem), _this];
-    }, [_units, _crew], [
-        ["tag", "btn_removeItem"],
-        ["tooltip", "Remove selected item"],
-        ["enabled", _hasUnits || _hasCrew]
+    }, [], [
+        ["tag", BTN_REMOVE_ITEM],
+        ["tooltip", "Remove selected item"]
     ]],
     ["BR"],
 
@@ -156,13 +108,13 @@ private _menu = [
 
     ["BUTTON", "Arsenal", {
         ThisCOB call [F(menu_onArsenal), _this];
-    }, [_units, _crew], [["tag", "btn_arsenal"], ["enabled", _hasUnits]]],
+    }, [], [["tag", BTN_ARSENAL]]],
     ["LABEL", ""],
 
     ["BUTTON", "Clear All Items", {
         ThisCOB call [F(menu_onClear), _this];
-    }, [_units, _crew, _objects], [["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo)"]]]
-
-];
-
-_menu call dzn_fnc_ShowAdvDialog2;
+    }, [], [
+        ["tag", BTN_CLEAR]
+        ["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo)"]
+    ]]
+] call dzn_fnc_ShowAdvDialog2;

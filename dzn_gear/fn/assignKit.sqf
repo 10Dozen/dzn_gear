@@ -59,4 +59,8 @@ DBG_ "_gearMap: %1", _gearMap EOL;
 DBG_ "MAPS: %1", dzn_gear_kitnameToGearMap get _kitname EOL;
 
 
-[_unit, _gearMap] call dzn_fnc_gear_assignGear;
+if (local _unit) then {
+    [_unit, _gearMap] call dzn_fnc_gear_assignGear;
+} else {
+    [_unit, _gearMap] remoteExec ["dzn_fnc_gear_assignGear", _unit];
+};

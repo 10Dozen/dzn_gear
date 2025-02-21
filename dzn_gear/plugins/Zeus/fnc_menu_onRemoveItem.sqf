@@ -1,11 +1,10 @@
 #include "defines.h"
 
 DBG_ "Params: %1", _this EOL;
-params ["_ad", "_args"];
-_args params ["_units", "_crew"];
+params ["_ad"];
 
-private _applyToUnits = GET_UNITS_BUTTON_STATE(_ad);
-private _applyToCrew = GET_CREW_BUTTON_STATE(_ad);
+(_self get Q(MenuFilters)) params ["_applyToUnits", "_applyToCrew", "_applyToObjects"];
+(_self get Q(ZeusLastSelected)) params ["_units", "_crew", "_objects"];
 
 private _allUnits = [] + ([[], _units] select _applyToUnits) + ([[], _crew] select _applyToCrew);
 
@@ -13,7 +12,7 @@ if (_allUnits isEqualTo []) exitWith {
     _self call [F(notify), [NOTIF_FAIL, NOTIF_MSG_NOT_SELECTED]];
 };
 
-(_ad call ["GetValueByTag", "d_item"]) params ["", "", "_itemData"];
+(_ad call ["GetValueByTag", DP_ITEM]) params ["", "", "_itemData"];
 _itemData params ["", "_onRemoveCode", "", "_onRemoveMessage"];
 
 private _successCount = 0;

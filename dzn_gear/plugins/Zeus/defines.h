@@ -30,6 +30,28 @@
 // -- Converts
 #define MASS_TO_KG(X) (X * 0.1 * 0.453592) toFixed 2
 
+// -- Menu items 
+#define MENU_ITEM_BY_TAG(D,T) (D call ["GetByTag", T])
+
+// --   Tags
+#define BTN_UNITS Q(btn_units)
+#define BTN_CREW Q(btn_crew)
+#define BTN_VICS Q(btn_vehicles)
+#define DP_KITNAME Q(dp_kitname)
+#define INP_KITNAME Q(i_kitname)
+#define BTN_APPLY_KIT Q(btn_applyKit)
+#define BTN_COPY Q(btn_copy)
+#define BTN_APPLY Q(btn_apply)
+#define BTN_CREATE Q(btn_create)
+#define DP_ITEM Q(d_item)
+#define BTN_ADD_ITEM Q(btn_addItem)
+#define BTN_REMOVE_ITEM Q(btn_removeItem)
+#define BTN_ARSENAL Q(btn_arsenal)
+#define BTN_CLEAR Q(btn_clear)
+
+#define BTN_SELECTED_TITLE(TYPE,COUNT) format ["<t align='center' size='1.5'>%1 %2</t>", TYPE, count COUNT]
+
+
 // -- Notif
 #define NOTIF_INFO 0
 #define NOTIF_OK 1
