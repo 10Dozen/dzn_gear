@@ -2,11 +2,11 @@
 
 private _declaration = [
     [Q(OpenedEH), -1],
-	[Q(ClosedEH), -1],
+    [Q(ClosedEH), -1],
     [Q(MainMenuOpenedEH), -1],
     [Q(MainMenuClosedEH), -1],
 
-	[Q(SkipSelChangeEvent), true],
+    [Q(SkipSelChangeEvent), true],
 
     [Q(Display), displayNull],
 
@@ -16,9 +16,9 @@ private _declaration = [
     [Q(CurrentSelectedRightItem), ""],
 
     [Q(ItemPoolDisplayed), false],
-	[Q(ItemPools), createHashMap],
-	[Q(Categories), createHashMapFromArray [
-		[CAT_PRIMARY_WEAPON,  "Primary weapon"],
+    [Q(ItemPools), createHashMap],
+    [Q(Categories), createHashMapFromArray [
+        [CAT_PRIMARY_WEAPON,  "Primary weapon"],
         [CAT_HANDGUN_WEAPON,  "Handgun"],
         [CAT_LAUNCHER_WEAPON, "Launcher"],
         [CAT_HEADGEAR, "Headgear"],
@@ -36,14 +36,14 @@ private _declaration = [
         [CAT_FACE, "Face"],
         [CAT_VOICE, "Voice"],
 
-		[CAT_OPTICS, "Scope"],
-		[CAT_POINTER, "Pointer"],
-		[CAT_MUZZLE, "Muzzle"],
-		[CAT_BIPOD, "Bipod"],
+        [CAT_OPTICS, "Scope"],
+        [CAT_POINTER, "Pointer"],
+        [CAT_MUZZLE, "Muzzle"],
+        [CAT_BIPOD, "Bipod"],
 
-		[CAT_MAG, "Magazine"],
-		[CAT_MAG2, "Alt.Magazine"]
-	]],
+        [CAT_MAG, "Magazine"],
+        [CAT_MAG2, "Alt.Magazine"]
+    ]],
 
     PREP_COMPONENT_FUNCTION(Open),
     PREP_COMPONENT_FUNCTION(InitEvents),

@@ -1,11 +1,11 @@
 #include "defines.h"
 /*
     Resolve given kit and call function to assign existing kit to unit.
-    EXAMPLE:	[ @unit, @gearSetName, @isBox ] spawn dzn_fnc_gear_assignKit;
+    EXAMPLE: [ @unit, @gearSetName, @isBox ] spawn dzn_fnc_gear_assignKit;
     INPUT:
-        0: OBJECT		- Unit for which gear will be set
-        1: ARRAY or STRING	- List of Kits or single kit for assignment: ["kit_r","kit_ar"] or "kit_ar"
-        2: BOOLEAN		- Is given unit a box?
+        0: OBJECT - Unit for which gear will be set
+        1: ARRAY or STRING - List of Kits or single kit for assignment: ["kit_r","kit_ar"] or "kit_ar"
+        2: BOOLEAN - Is given unit a box?
     OUTPUT: NULL
 */
 params ["_unit","_kits",["_isCargo", false]];

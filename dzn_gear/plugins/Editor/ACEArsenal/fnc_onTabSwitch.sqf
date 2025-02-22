@@ -42,7 +42,7 @@ if (_isLeftTab) then {
     _self set [Q(CurrentSelectedRightItem), ""];
 
     _self set [Q(SkipSelChangeEvent), true];
-	[{ ThisCOB set [Q(SkipSelChangeEvent), false]; }] call CBA_fnc_execNextFrame;
+    [{ ThisCOB set [Q(SkipSelChangeEvent), false]; }] call CBA_fnc_execNextFrame;
     DBG_
         "(%5) On Left Tab content selected: Category: %1, SubCategory: %2, Item Left: %3, Item Right: %4",
         _self get Q(CurrentCategory),

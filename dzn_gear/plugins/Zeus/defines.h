@@ -30,7 +30,7 @@
 // -- Converts
 #define MASS_TO_KG(X) (X * 0.1 * 0.453592) toFixed 2
 
-// -- Menu items 
+// -- Menu items
 #define MENU_ITEM_BY_TAG(D,T) (D call ["GetByTag", T])
 
 // --   Tags
@@ -49,7 +49,7 @@
 #define BTN_ARSENAL Q(btn_arsenal)
 #define BTN_CLEAR Q(btn_clear)
 
-#define BTN_FILTER_TITLE(TYPE,COUNT) format ["<t align='center' size='1.5'>%1 %2</t>", TYPE, count COUNT]
+#define BTN_FILTER_TITLE(TITLE,COUNT) format ["<t align='center' size='1.5'>%1 %2</t>", count COUNT, TITLE]
 
 
 // -- Notif

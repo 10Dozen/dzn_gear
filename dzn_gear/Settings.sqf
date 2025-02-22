@@ -1,6 +1,5 @@
 /*
- *	GEAR
- *	SETTINGS
+ * SETTINGS
  */
 
 // Paths

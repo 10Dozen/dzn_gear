@@ -1,14 +1,20 @@
 #include "defines.h"
 
 DBG_ "Params: %1", _this EOL;
-params [];
+params [["_kitname", ""]];
 
-private _kits = (dzn_gear_personalKits + dzn_gear_cargoKits) apply {
-    [_x, _x, [
+_self set [Q(MenuFilters), [true, true, true]];
+
+private _preselectedKitIdx = -1;
+private _kits = [];
+{
+    _kits pushBack [_x, _x, [
         ["tooltip", str(missionNamespace getVariable _x)],
         ["color", [COLOR_WHITE, COLOR_LIME] select (_x select [0,4] == 'kit_')]
-    ]]
-};
+    ]];
+    if (_x == _kitname) then { _preselectedKitIdx = _forEachIndex; };
+} forEach (dzn_gear_personalKits + dzn_gear_cargoKits);
+
 private _items = _self get Q(FastItems);
 
 // -- Menu
@@ -19,16 +25,14 @@ private _items = _self get Q(FastItems);
         params ["_ad", "_args"];
         private _cob = ThisCOB;
 
-        _cob call [F(menu_onSelectionUpdate), [_ad]];
-        _cob call [F(menu_updateState), [_ad]];
-
         // -- Pre-select not empty filters
-        ((_cob get Q(ZeusLastSelected)) apply { _x isNotEqualTo [] }) params [
+        ((_cob call [F(getSelected), []]) apply { _x isNotEqualTo [] }) params [
             "_hasUnits", "_hasCrew", "_hasVics"
         ];
-        MENU_ITEM_BY_TAG(_ad,BTN_UNITS) setVariable [Q(Selected), _hasUnits];
-        MENU_ITEM_BY_TAG(_ad,BTN_CREW) setVariable [Q(Selected), _hasCrew];
-        MENU_ITEM_BY_TAG(_ad,BTN_VICS) setVariable [Q(Selected), _hasVics];
+        DBG_ "OnDraw: HasUnits=%1, HasCrew=%2, HasVics=%3", _hasUnits, _hasCrew, _hasVics EOL;
+        _cob call [F(menu_updateFiltersState), [_ad, [_hasUnits, _hasCrew, _hasVics]]];
+        _cob call [F(menu_onSelectionUpdate), [_ad]];
+        _cob call [F(menu_updateMenu), [_ad]];
     }],
 
     ["HEADER", "dzn Gear - Zeus Tool"],
@@ -48,7 +52,7 @@ private _items = _self get Q(FastItems);
 
     ["LABEL", "<t align='center'>Apply preset kits or create new</t>"],
     ["BR"],
-    ["DROPDOWN", _kits, 0, [["tag", DP_KITNAME]]],
+    ["DROPDOWN", _kits, _preselectedKitIdx, [["tag", DP_KITNAME]]],
     ["INPUT", "", [
         ["tag", INP_KITNAME],
         ["tooltip", "Enter name of the kit if can't find one"]
@@ -56,7 +60,7 @@ private _items = _self get Q(FastItems);
     ["BUTTON", "Apply", {
         ThisCOB call [F(menu_onApplyKit), _this];
     }, [], [
-        ["tag", BTN_APPLY],
+        ["tag", BTN_APPLY_KIT],
         ["bg", COLOR_PALE_GREEN],
         ["tooltip", "Apply selected kit to units/vehicles"],
         ["w", 0.25]
@@ -85,7 +89,7 @@ private _items = _self get Q(FastItems);
     ]],
     ["BR"],
 
-    ["LABEL", "Modify inventory", [["bg", COLOR_UI]]],
+    ["LABEL", "<t align='center'>Modify inventory</t>", [["bg", COLOR_UI]]],
     ["BR"],
 
     ["DROPDOWN", _items, nil, [["tag", DP_ITEM], ["enabled", _hasUnits || _hasCrew], ["w", 0.75]]],
@@ -109,12 +113,22 @@ private _items = _self get Q(FastItems);
     ["BUTTON", "Arsenal", {
         ThisCOB call [F(menu_onArsenal), _this];
     }, [], [["tag", BTN_ARSENAL]]],
-    ["LABEL", ""],
 
-    ["BUTTON", "Clear All Items", {
-        ThisCOB call [F(menu_onClear), _this];
+    ["LABEL", "", [["w", 0.17]]],
+
+    ["BUTTON", "<t align='right'>Clear All Items</t>", {
+        ThisCOB call [F(menu_onClear), [_this # 0]];
     }, [], [
-        ["tag", BTN_CLEAR]
-        ["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo)"]
+        ["tag", BTN_CLEAR],
+        ["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo)"],
+        ["w", 0.25]
+    ]],
+
+    ["BUTTON", ".. and Weapons", {
+        ThisCOB call [F(menu_onClear), [_this # 0, true]];
+    }, [], [
+        ["tag", BTN_CLEAR],
+        ["tooltip", "Clears unit/vehicle containers (uniform, vest, cargo) including unit's weapons!"],
+        ["w", 0.25]
     ]]
 ] call dzn_fnc_ShowAdvDialog2;

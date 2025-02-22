@@ -16,7 +16,7 @@ private _declaration = [
     [Q(ZeusSelectionEH), -1],
     [Q(ZeusLastSelected), []],
     [Q(MenuFilters), []],
-    
+
     [Q(FastItems), [] call compileScript ['COMPONENT_PATH\FastItems.sqf']],
 
     [Q(Messages), _messages],
@@ -33,10 +33,9 @@ private _declaration = [
 
     PREP_COMPONENT_FUNCTION(openMenu),
     PREP_COMPONENT_FUNCTION(menu_onSelectionUpdate),
-    PREP_COMPONENT_FUNCTION(menu_updateState),
-
-    PREP_COMPONENT_FUNCTION(menu_onFilterSelect),   
-
+    PREP_COMPONENT_FUNCTION(menu_updateMenu),
+    PREP_COMPONENT_FUNCTION(menu_onFilterSelect),
+    PREP_COMPONENT_FUNCTION(menu_updateFiltersState),
 
     PREP_COMPONENT_FUNCTION(menu_onApplyKit),
     PREP_COMPONENT_FUNCTION(menu_onCopy),

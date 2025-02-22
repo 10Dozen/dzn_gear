@@ -15,11 +15,11 @@ if (_voice isNotEqualTo "") then { _unit setSpeaker _voice };
 /*  Not working for some reason =(
 private _name = getItem( (_identity select 3) );
 if (_name != "") then {
-	if (count (_name splitString " ") < 2) then { _name = format ["%1 %1", _name]; };
-	_unit setName [
-		_name splitString " " joinString " "
-		, (_name splitString " ") select 0
-		, (_name splitString " ") select 1
-	];
+    if (count (_name splitString " ") < 2) then { _name = format ["%1 %1", _name]; };
+    _unit setName [
+        _name splitString " " joinString " "
+        , (_name splitString " ") select 0
+        , (_name splitString " ") select 1
+    ];
 };
 */

@@ -2,18 +2,19 @@
 params [["_editModeEnabled", false], ["_timeout", 0]];
 
 // **************************
-// 	DZN GEAR v2.28
+// DZN GEAR v2.28
 //
-//	Initialized when:
-//	{ !isNil "dzn_gear_initDone" }
+// Initialized when:
+// { !isNil "dzn_gear_initDone" }
 //
-//	Server-side initialized when:
-//	{ !isNil "dzn_gear_serverInitDone" }
-//
+// Server-side initialized when:
+// { !isNil "dzn_gear_serverInitDone" }
+// **************************
+
 dzn_gear_version = "v2.28";
 
 // *************************
-//	SETTINGS
+// SETTINGS
 // **************************
 [] call compileScript ["dzn_gear\Settings.sqf"];
 

@@ -2,7 +2,7 @@
 
 DBG_ "Params: %1", _this EOL;
 
-params ["_ad"];
+params ["_ad", ["_wipeWeapons", false]];
 
 (_self get Q(MenuFilters)) params ["_applyToUnits", "_applyToCrew", "_applyToObjects"];
 (_self get Q(ZeusLastSelected)) params ["_units", "_crew", "_objects"];
@@ -19,6 +19,9 @@ if (_allUnits isEqualTo [] && _objects isEqualTo []) exitWith {
     clearBackpackCargoGlobal _unit;
     {_unit removeItemFromVest _x;} forEach (vestItems _unit);
     {_unit removeItemFromUniform _x;} forEach (uniformItems _unit);
+    if (_wipeWeapons) then {
+        removeAllWeapons  _x;
+    };
 } forEach _allUnits;
 
 {

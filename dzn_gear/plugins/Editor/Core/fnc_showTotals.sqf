@@ -84,8 +84,8 @@ _lines pushBack format [
     if (_item == "") then { continue; };
     _lines pushBack FMT_TITLE2(_item,_title);
 } forEach [
-	[headgear player, "Headgear"],
-	[goggles player, "Facewear"]
+    [headgear player, "Headgear"],
+    [goggles player, "Facewear"]
 ];
 
 // -- Uni, Vest & Backpack
@@ -108,7 +108,7 @@ _lines pushBack format [
             _color = [
                 [COLOR_MAG, COLOR_MAG_FAV] select (_favedMagIdx > -1),
                 COLOR_THROWABLE
-            ] select (_subcategory isEqualTo "Grenade");
+            ] select (_subcategory in ["Grenade", "SmokeShell","UnknownMagazine"]);
 
             if (_favedMagIdx == -1) then {
                 _classname = _classname call dzn_fnc_getItemDisplayName;

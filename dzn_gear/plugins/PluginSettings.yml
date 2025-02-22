@@ -25,11 +25,10 @@ Editor:
 Notes:
     Personal:
         enable: true
-        title: "Снаряжение"
 
     Group:
         enable: true
-        title: "Снаряжение моей группы"
-        refreshTime: 10         # refersh each 10 seconds
+        refreshTime: 10         # refresh each 10 seconds
         refreshUntil: `5 * 60`  # 5 minutes after mission start
+
 

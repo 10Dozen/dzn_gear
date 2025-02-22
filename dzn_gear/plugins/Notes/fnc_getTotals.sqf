@@ -1,7 +1,5 @@
 #include "defines.h"
 
-params ["_unit"];
-
 #define COLOR_ITEM "#cccccc"
 #define COLOR_MAG "#a7b37b"
 #define COLOR_MAG_FAV "#96ad3e"
@@ -32,104 +30,101 @@ params ["_unit"];
     ]
 
 DBG_ "Params: %1", _this EOL;
+params ["_name", "_role", "_loadout"];
 
 // -- Prepare content
-private _favoriteMags = ["","",""];
 private _lines = [
     format [
-        "<font color='#FFD000' align='center' size='16'>%1</font>",
-        [name player, trim (roleDescription _unit)] select (roleDescription _unit != "")
+        "<font size='16'><font color='#FFD000'>%1</font> (%2)</font>",
+        _name,
+        trim (_role)
     ]
 ];
 
 // -- Total weights
-private _load = parseNumber (MASS_TO_KG(loadAbs _unit));
+private _load = parseNumber (MASS_TO_KG(_loadout # 10));
 _lines pushBack format [
-    "<font>Общий вес: %1 кг</font>",
+    TOTALS_WEIGHT_F,
     _load
 ];
 _lines pushBack "<font color='#cccccc'>------</font>";
 
 // -- Guns
+private ["_gun", "_mag", "_attaches", "_attach"];
 {
-    _x params ["_title", "_item", "_attaches", "_mag"];
-    if (_item == "") then { continue; };
+    _x params ["_title", "_wd"];
+    if (_wd isEqualTo []) then { continue; };
 
-    _lines pushBack FMT_TITLE(_item,_title);
+    _attaches = [_wd # 1, _wd # 2, _wd # 3, _wd # 6];
+    (_wd # 4) params [["_mag", ""]];
+    _gun = _wd # 0;
 
-    if (_mag isNotEqualTo []) then {
-        _lines pushBack FMT_PREFIX_MAG_LINE(_mag select 0);
-        _favoriteMags set [_forEachIndex, (_mag select 0)];
+    _lines pushBack FMT_TITLE(_gun,_title);
+
+    DBG_ "_mag = %1", _mag EOL;
+    if (_mag isNotEqualTo "") then {
+        _lines pushBack FMT_PREFIX_MAG_LINE(_mag);
     };
 
-    private "_attach";
     {
-        private _attach = _attaches # _forEachIndex;
+        _attach = _attaches # _forEachIndex;
         if (_attach == "") then { continue };
         _lines pushBack FMT_PREFIX_LINE(_x,_attach);
     } forEach ["MZL", "PTR", "OPT", "BPD"];
-
-    // { _lines pushBack FMT_PREFIX_LINE(_x); } forEach (_attaches select { _x != "" });
 } forEach [
-    ["Primary", primaryWeapon _unit, primaryWeaponItems _unit, primaryWeaponMagazine _unit],
-    ["Launcher", secondaryWeapon _unit, secondaryWeaponItems _unit, secondaryWeaponMagazine _unit],
-    ["Handgun", handgunWeapon _unit, handgunItems _unit, handgunMagazine _unit]
+    [TOTALS_PRIMARY, _loadout # 0],
+    [TOTALS_SECONDARY, _loadout # 1],
+    [TOTALS_HANDGUN, _loadout # 2]
 ];
 
 
 _lines pushBack "<font color='#aaaaaa'>------</font>";
 // -- Misc
 {
-    _x params ["_item","_title"];
+    _x params ["_title", "_item"];
     if (_item == "") then { continue; };
     _lines pushBack FMT_TITLE2(_item,_title);
 } forEach [
-	[headgear _unit, "Headgear"],
-	[goggles _unit, "Facewear"]
+    [TOTALS_HEADGEAR, _loadout # 6],
+    [TOTALS_FACEWEAR, _loadout # 7]
 ];
 
 // -- Uni, Vest & Backpack
 {
-    _x params ["_item", "_itemList", "_title"];
-    if (_item == "") then { continue; };
+    _x params ["_title", "_eq"];
+    if (_eq isEqualTo []) then { continue; };
+    _eq params ["_eqCls", "_items"];
 
-    _lines pushBack FMT_TITLE2(_item,_title);
+    _lines pushBack FMT_TITLE2(_eqCls,_title);
     private "_color";
     {
         _x params ["_classname", "_count"];
 
         (_classname call BIS_fnc_itemType) params ["_category", "_subcategory"];
-        _color = COLOR_ITEM;
 
         if (_category isEqualTo "Magazine") then {
-            private _favedMagIdx = _favoriteMags find (_x # 0);
-            DBG_ "Fav mags: %1, _x=%2, _favedMagIdx=%3", _favoriteMags, _x , _favedMagIdx EOL;
-
             _color = [
-                [COLOR_MAG, COLOR_MAG_FAV] select (_favedMagIdx > -1),
+                COLOR_MAG,
                 COLOR_THROWABLE
-            ] select (_subcategory in ["Grenade", "SmokeShell"]);
+            ] select (_subcategory in ["Grenade", "SmokeShell","UnknownMagazine"]);
 
             _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);
             continue;
         };
 
-        _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);
-    } forEach (_itemList call bis_fnc_consolidateArray);
+        _lines pushBack FMT_COUNT_LINE(_classname,_count,COLOR_ITEM);
+    } forEach _items;
 } forEach [
-    [vest _unit, vestItems _unit, "Vest"],
-    [backpack _unit, backpackItems _unit, "Backpack"],
-    [uniform _unit, uniformItems _unit, "Uniform"]
+    [TOTALS_VEST, _loadout # 4],
+    [TOTALS_BACKPACK, _loadout # 5],
+    [TOTALS_UNIFORM, _loadout # 3]
 ];
 
 // -- Assigned items
-_lines pushBack format [FMT_MARK2, "", "Assigned items"];
+_lines pushBack format [FMT_MARK2, "", TOTALS_ASSIGNED];
 _lines pushBack format [
     "<font color='#aaaaaa'>    %1</font>",
-    ((assignedItems _unit) apply { ITEM_CLICKABLE(_x) }) joinString ", "
+    (((_loadout # 9) + (_loadout # 8)) select { _x != "" } apply { ITEM_CLICKABLE(_x) }) joinString ", "
 ];
 
 (_lines joinString "<br/>")
-
-
-

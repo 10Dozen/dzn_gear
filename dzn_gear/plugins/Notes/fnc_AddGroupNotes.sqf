@@ -1,29 +1,66 @@
 #include "defines.h"
 
 DBG_ "Params: %1", _this EOL;
-params ["_units"];
+params [
+    ["_units", units group player]
+];
 
-private _output = [
-	format ["<t size='14' color='%2'>%1</t>", groupId group player, COLOR_HEX_GOLD],
-	""
+private _content = [
+    format ["<font size='16' color='%2'>%1</font>", groupId group player, COLOR_HEX_GOLD],
+    ""
 ];
 
 private _notes = _self get Q(SharedNotes);
-private ["_role", "_name", "_noteIdx"];
+_notes resize 0;
+
+private ["_role", "_name", "_note", "_noteIdx"];
 {
-	_role = ((roleDescription _x) splitString "@") # 0;
-	_name = name _x;
-	
-	_noteIdx = _notes pushBack (_x getVariable [Q(dzn_gear_Note), []]);
+    _role = ((roleDescription _x) splitString "@") # 0;
+    _name = name _x;
+    _note = _x getVariable [Q(dzn_gear_Note), []];
+    _noteIdx = _notes pushBack [_name, _role, _note];
 
-	_output pushBack format [
-		"<t color='%'>%1</t> - %2 (%3) [See more]",
-		_role, 
-		_name,
-		_noteIdx,
-		COLOR_HEX_LIGHT_GREEN
-	];
+    _previewLine = "";
+    _seeMoreLine = "";
+    DBG_ "_note type = %1, _note = %2", typename _note, _note EOL;
+    if (_note isNotEqualTo []) then {
+        _previewLine = [];
+        for "_i" from 0 to 2 do {
+            DBG_ "Note %1 = %2", _i, (_note # _i) EOL;
+            if ((_note # _i) isEqualTo []) then { continue; };
+            _previewLine pushBack ((_note # _i # 0) call dzn_fnc_getItemDisplayName);
+        };
+
+        DBG_ "_previewLine = %1", _previewLine EOL;
+
+        _previewLine = " (" + (_previewLine joinString " | ") + ")";
+        _seeMoreLine = format [
+            " <execute expression='%1 call [""fnc_showMemberNote"", [%2]]'>[...]</execute>",
+            Q(ThisCOB),
+            _noteIdx
+        ];
+
+        DBG_ "Preview: %1, See more: %2", _previewLine, _seeMoreLine EOL;
+    };
+
+    _content pushBack format [
+        "<font color='%5'>%1</font> %2%3%4",
+        _role,
+        _name,
+        _previewLine,
+        _seeMoreLine,
+        COLOR_HEX_LIGHT_GREEN
+    ];
 } forEach _units;
-private _output = _self call [F(getTotals), [player]];
 
-player createDiaryRecord ["Diary", [_self get Q(Settings) get Q(Group) get Q(title), _output]];
+// -- Refresh diary record
+
+_self set [Q(MemberInfoShown), false];
+player removeDiaryRecord ["Diary", _self get Q(GroupInfoRecord)];
+_self set [
+    Q(GroupInfoRecord),
+    player createDiaryRecord [
+        "Diary",
+        [TOPIC_GROUP_GEAR, _content joinString "<br/>"]
+    ]
+];

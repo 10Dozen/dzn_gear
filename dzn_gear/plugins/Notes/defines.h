@@ -23,3 +23,16 @@
 // -- Converts
 #define MASS_TO_KG(X) (X * 0.1 * 0.453592) toFixed 2
 
+#define TOPIC_MY_GEAR "Снаряжение"
+#define TOPIC_GROUP_GEAR "Снаряжение моей группы"
+
+#define TOTALS_WEIGHT_F "<font>Общий вес: %1 кг</font>"
+#define TOTALS_PRIMARY "Основное"
+#define TOTALS_SECONDARY "Вторичное"
+#define TOTALS_HANDGUN "Пистолет"
+#define TOTALS_HEADGEAR "Голова"
+#define TOTALS_FACEWEAR "Лицо"
+#define TOTALS_VEST "Разгрузка"
+#define TOTALS_BACKPACK "Рюкзак"
+#define TOTALS_UNIFORM "Униформа"
+#define TOTALS_ASSIGNED "Инструменты"

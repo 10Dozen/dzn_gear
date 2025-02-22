@@ -93,3 +93,14 @@ cargo_kit_test2 = [
     [],
     [[["arifle_MX_GL_F", "muzzle_snds_H", "", "optic_aco", ["30Rnd_65x39_caseless_mag", 15], ["3Rnd_HE_Grenade_shell", 2], ""], 2]]
 ];
+
+kit_eee_pl = [
+    ["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],
+    ["<PRIMARY WEAPON   >> ","SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","","",""]],
+    ["<LAUNCHER WEAPON  >> ","","",["","","",""]],
+    ["<HANDGUN WEAPON   >> ","hgun_P07_F","",["","","",""]],
+    ["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS],
+    ["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS]],
+    ["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["16Rnd_9x21_Mag",2],["HandGrenade",1],["SmokeShell",1]]],
+    ["<BACKPACK ITEMS   >> ",[]]
+] call dzn_fnc_gear_make;

@@ -1,7 +1,7 @@
 #include "defines.h"
 
 [
-	
+
 ["Night Vision Goggles", [
     { _this linkItem "NVGoggles_OPFOR"; true },
     { _this unlinkItem "NVGoggles_OPFOR"; true },

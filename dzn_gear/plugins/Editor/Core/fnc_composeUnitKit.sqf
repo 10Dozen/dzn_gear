@@ -47,7 +47,9 @@ if (_overrideUniformItems != NO_OVERRIDE) then {
 };
 
 // -- Format and copy
-private _formatted = _self call [F(FormatKit), [_kit, _name]];
+
+DBG_ "Going to execute FormatKit" EOL;
+private _formatted = _self call [F(FormatKit), [_kit, _name, true]];
 copyToClipboard _formatted;
 
 // -- History and notification
