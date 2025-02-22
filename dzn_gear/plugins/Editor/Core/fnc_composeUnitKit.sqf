@@ -11,7 +11,7 @@ params [
 ];
 
 // -- Save kit to namespace
-missionNamespace setVariable [_name, _kit];
+missionNamespace setVariable [_name, _kit call dzn_fnc_gear_make];
 
 // -- Action
 player addAction [

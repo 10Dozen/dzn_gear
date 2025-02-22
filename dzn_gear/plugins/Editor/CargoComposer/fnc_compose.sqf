@@ -1,4 +1,5 @@
 #include "defines.h"
+#include "..\..\..\fn\defines.h"
 
 params [
     ["_kits", nil, [[]]],
@@ -20,11 +21,6 @@ private _items = [];
         "_uniform","_vest","_backpack"
     ];
 
-    // In case kit created and accessed in runtime and uniform items macro was used
-    if (_uniform isEqualType "") then {
-        _uniform = ["",[]];
-    };
-
     {
         // -- Handle randomized items declaration
         if (_x isEqualType []) then {
@@ -35,18 +31,18 @@ private _items = [];
         _items pushBackUnique _x;
     } forEach [
         // -- Backpack
-        _equip # 3,
+        _x get MAP_CAT_BACKPACK,
         // -- Primary weapon and mag
-        _pw # 1, _pw # 2,
+        _x get MAP_CAT_PRIMARY get I_WEAPON_CLASS, _x get MAP_CAT_PRIMARY get I_WEAPON_MAG,
         // -- Secondary weapon and mag
-        _sw # 1, _sw # 2,
+        _x get MAP_CAT_LAUNCHER get I_WEAPON_CLASS, _x get MAP_CAT_LAUNCHER get I_WEAPON_MAG,
         // -- Handgun magazine
-        _hw # 2
+        _x get MAP_CAT_HANDGUN get I_WEAPON_MAG
     ]
     // -- Items in uniform, vest and backpack
-    + ((_uniform # 1) apply { _x # 0 })
-    + ((_vest # 1) apply { _x # 0 })
-    + ((_backpack # 1) apply { _x # 0 });
+    + ((_x get MAP_CAT_UNIFORM_ITEMS) apply { _x # 0 })
+    + ((_x get MAP_CAT_VEST_ITEMS) apply { _x # 0 })
+    + ((_x get MAP_CAT_BACKPACK_ITEMS) apply { _x # 0 });
 
     DBG_ "(composeCargoItems) Unique item total count: %1", count(_items) EOL;
     DBG_ "(composeCargoItems) Unique items: %1", _items EOL;
