@@ -79,11 +79,27 @@ kit_test1 = [
 kit_test2 = [
 	// Some lines were omitted
 	["<EQUIPEMENT       >> ", "U_B_GEN_Soldier_F", "V_TacVest_gen_F", "", "H_MilCap_gen_F", ""],
-	["<PRIMARY WEAPON   >> ","arifle_MX_F","30Rnd_65x39_caseless_mag",["","",["optic_Aco", ""],""]],
+	["<PRIMARY WEAPON   >> ",
+		["arifle_MX_F", "arifle_MX_GL_F"] ,"30Rnd_65x39_caseless_mag",
+		["","",["optic_Aco", ""],""]],
 	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
 	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
 	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
 	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]]
+] call dzn_fnc_gear_make;
+
+kit_test3 = [
+	// Some lines were omitted
+	["<EQUIPEMENT       >> ", "U_B_GEN_Soldier_F", "V_TacVest_gen_F", "", "H_MilCap_gen_F", ""],
+	["<PRIMARY WEAPON   >> ",
+		"arifle_MX_F" , ["30Rnd_65x39_caseless_mag", "100Rnd_65x39_caseless_black_mag"],
+		["","",["optic_Aco", ""],""]],
+	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
+	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
+	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
+	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],
+		[["HandGrenade", "SmokeShell"],1]
+	]]
 ] call dzn_fnc_gear_make;
 
 cargo_kit_test2 = [

@@ -44,9 +44,9 @@ private ["_role", "_name", "_note", "_noteIdx"];
     };
 
     _content pushBack format [
-        "<font color='%5'>%1</font> %2%3%4",
-        _role,
+        "<font color='%5'>%1</font> - %2 <font color='#cccccc'>%3</font> %4",
         _name,
+        _role,
         _previewLine,
         _seeMoreLine,
         COLOR_HEX_LIGHT_GREEN

@@ -6,6 +6,7 @@ DBG_ "Params: %1", _this EOL;
 
 // -- Save kit to namespace
 missionNamespace setVariable [_name, _kit];
+dzn_gear_cargoKits pushBackUnique _name;
 
 // -- Action
 player addAction [

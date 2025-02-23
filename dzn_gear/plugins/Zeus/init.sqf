@@ -8,7 +8,7 @@ ThisCOB = [] call compileScript ['COMPONENT_PATH\Component.sqf'];
 [] call compileScript ['COMPONENT_PATH\addKeybinding.sqf'];
 
 [
-    { !isNull (findDisplay 46) && (getAssignedCuratorLogic player) isNotEqualTo [] },
+    { !isNull (findDisplay 46) && (getAssignedCuratorLogic player) isNotEqualTo objNull },
     {
         // -- Set Zeus display on key pressed
         ThisCOB set [

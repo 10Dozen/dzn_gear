@@ -5,7 +5,7 @@ params [];
 
 private _content = _self call [F(getTotals), [
     name player,
-    roleDescription player,
+    ((roleDescription player) splitString "@") # 0,
     (getUnitLoadout player) + [loadAbs player]
 ]];
 

@@ -15,6 +15,8 @@ private _str = [];
 private ["_cat", "_postfix", "_attaches"];
 {
     _cat = _self get _x;
+    if (_cat isEqualTo dzn_gear_emptyWeaponDescriptor) then { continue; };
+
     _postfix = "";
     if (_cat isEqualType []) then {
         _cat = _cat # 0;

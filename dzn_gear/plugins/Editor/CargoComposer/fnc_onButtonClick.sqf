@@ -9,9 +9,11 @@ private _filterBy = compile (((_vals get "i_filter") splitString ",") apply {
     format ["(_x select [0, count ""%1""] == ""%1"")", trim _x]
 } joinString " || ");
 
-private _kits = (allVariables missionNamespace) select _filterBy apply {
-    missionNamespace getVariable _x
-} select { (_x # 0) isEqualType [] };
+
+DBG_ "_filterBy: %1", _filterBy EOL;
+private _kits = dzn_gear_personalKits select _filterBy apply {
+    (missionNamespace getVariable _x)
+} select { !(_x isEqualType []) }; // Filter out random kits [kit1,kit2,kit3]
 DBG_ "Filtered: %1", _kits EOL;
 
 private _composed = _self call [F(compose), [

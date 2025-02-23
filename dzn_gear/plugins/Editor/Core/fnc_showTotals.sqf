@@ -113,11 +113,7 @@ _lines pushBack format [
             if (_favedMagIdx == -1) then {
                 _classname = _classname call dzn_fnc_getItemDisplayName;
             } else {
-                _classname = [
-                    "PRIMARY MAG",
-                    "SECONDARY MAG",
-                    "HANDGUN MAG"
-                ] select _favedMagIdx;
+                _classname = [MAG_PRIMARY, MAG_LAUNCHER, MAG_HANDGUN] select _favedMagIdx;
             };
 
             _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);

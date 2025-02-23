@@ -1,3 +1,4 @@
+#include "..\fn\categories.h"
 
 #define DBG_PREFIX "(dzn_gear) "
 #define DBG_FUNC_PREFIX __FILE_SHORT__

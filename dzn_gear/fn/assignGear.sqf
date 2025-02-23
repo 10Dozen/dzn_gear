@@ -60,6 +60,7 @@ private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_it
             _mag = _mag # _r;
         };
     };
+    _mag = GET_RANDOM_ITEM(_mag); // In case only mag randomization was used
 
     // Save "PRIMARY MAG"-like template value
     _magClasses pushBack _mag;
@@ -76,9 +77,9 @@ private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_it
 ];
 
 _magClasses = createHashMapFromArray [
-    ["PRIMARY MAG", _magClasses # 0],
-    ["SECONDARY MAG", _magClasses # 1],
-    ["HANDGUN MAG", _magClasses # 2]
+    [MAG_PRIMARY, _magClasses # 0],
+    [MAG_LAUNCHER, _magClasses # 1],
+    [MAG_HANDGUN, _magClasses # 2]
 ];
 
 // -- ADD EQUIP
@@ -102,8 +103,8 @@ _unit addGoggles GET_RANDOM_ITEM(_gear get MAP_CAT_FACEWEAR);
     DBG_ " items %1", (_gear get _category) EOL;
 
     {
-        _item = GET_RANDOM_ITEM(_x select 0);
-        _item = _magClasses getOrDefault [_item, _item];
+        _item = GET_RANDOM_ITEM(_x select 0);  // _x = [_itemClass, _count] or [[_itemCls1, _itemCLs2], _count]
+        _item = _magClasses getOrDefault [_item, _item]; // Replace to PRIMARY MAG like if item is a favourite mag
         _count = _x select 1;
         if (_count isEqualType "") then {
             // "x2-5" -> 2 + floor random 4 (5+1-2) => 2 + 0...3 => 2...5

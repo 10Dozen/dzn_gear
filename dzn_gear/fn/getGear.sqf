@@ -64,9 +64,9 @@ private "_items";
     _items = _x call BIS_fnc_consolidateArray;
     {
         switch (_x select 0) do {
-            case _priMag:  { _x set [0, "PRIMARY MAG"] };
-            case _secMag:  { _x set [0, "SECONDARY MAG"] };
-            case _handMag: { _x set [0, "HANDGUN MAG"] };
+            case _priMag:  { _x set [0, MAG_PRIMARY] };
+            case _secMag:  { _x set [0, MAG_LAUNCHER] };
+            case _handMag: { _x set [0, MAG_HANDGUN] };
         };
     } forEach _items;
 

@@ -10,22 +10,22 @@
 ]],
 
 ["BLUFOR LR Radio", [
-    { _this addBackpack 'tf_rt1523g'; true },
-    { removeBackpack _this; true },
+    { _this addBackpackGlobal 'tf_rt1523g'; true },
+    { removeBackpackGlobal _this; true },
     NOTIF_MSG_ITEM_BACKPACK_ADDED,
     NOTIF_MSG_ITEM_BACKPACK_REMOVED
 ], [["color", COLOR_AQUA]]],
 
 ["OPFOR LR Radio", [
-    { _this addBackpack 'tf_mr3000_rhs'; true },
-    { removeBackpack _this; true },
+    { _this addBackpackGlobal 'tf_mr3000_rhs'; true },
+    { removeBackpackGlobal _this; true },
     NOTIF_MSG_ITEM_BACKPACK_ADDED,
     NOTIF_MSG_ITEM_BACKPACK_REMOVED
 ], [["color", COLOR_BRICK_RED]]],
 
 ["INDEP LR Radio", [
-    { _this addBackpack 'tf_anprc155_coyote'; true },
-    { removeBackpack _this; true },
+    { _this addBackpackGlobal 'tf_anprc155_coyote'; true },
+    { removeBackpackGlobal _this; true },
     NOTIF_MSG_ITEM_BACKPACK_ADDED,
     NOTIF_MSG_ITEM_BACKPACK_REMOVED
 ], [["color", COLOR_LIME]]],

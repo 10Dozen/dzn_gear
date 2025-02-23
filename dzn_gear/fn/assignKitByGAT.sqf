@@ -27,6 +27,7 @@ private _table = dzn_gear_gat_table;
 
 // -- Object VarName (is it working in MP?)
 private _kitname = _table getOrDefault [vehicleVarName _unit, ""];
+DBG_ "Varname: %1 -> _kitname=%2", vehicleVarName _unit, _kitname EOL;
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
@@ -37,20 +38,25 @@ private _roleName = roleDescription _unit;
 
 // -- Max precision (Side - Group - Rolename)
 _kitname = [_table, [_sideName, _groupName, _roleName], "", ""] call dzn_fnc_getByPath;
+DBG_ "Side-Group-Role: %1 -> _kitname=%2", [_sideName, _groupName, _roleName], _kitname EOL;
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- Mid precision (Side - Rolename)
 _kitname = [_table, [_sideName, _roleName], "", ""] call dzn_fnc_getByPath;
+DBG_ "Side-Role: %1 -> _kitname=%2", [_sideName, _roleName], _kitname EOL;
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- Min precision (Rolename)
 _kitname = _table getOrDefault [_kitname, ""];
+DBG_ "Role: %1 -> _kitname=%2", [_roleName], _kitname EOL;
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- No kit found - do nothing
+
+DBG_ "Not found" EOL;
