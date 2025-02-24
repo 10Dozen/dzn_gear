@@ -54,15 +54,6 @@ _self set [
     ]
 ] call dzn_fnc_HandleControl;
 
-[
-    "ADD", _display, BTN_RESET, [
-        "BUTTON",
-        format [BTN_FORMAT, "X"],
-        { ThisCOB call [F(onResetButtonClick), [true]]; }, [],
-        [["pos", _POS(0.52)], ["tooltip", "Reset item pool!"], ["bg", COLOR_PALE_RED]]
-    ]
-] call dzn_fnc_HandleControl;
-
 
 // -- Sub category buttons
 #define _POS(Y) [0.92, Y, 0.1, 0.1]
@@ -83,13 +74,3 @@ _self set [
         [["pos", _POS(0.42)], ["tooltip", "Adds sub-category item to pool"], ["bg", COLOR_PALE_GREEN]]
     ]
 ] call dzn_fnc_HandleControl;
-
-[
-    "ADD", _display, BTN_SUB_RESET, [
-        "BUTTON",
-        format [BTN_FORMAT, "X"],
-        { ThisCOB call [F(onResetButtonClick), [false]]; }, [],
-        [["pos", _POS(0.52)], ["tooltip", "Reset sub-category items pool!"], ["bg", COLOR_PALE_RED]]
-    ]
-] call dzn_fnc_HandleControl;
-

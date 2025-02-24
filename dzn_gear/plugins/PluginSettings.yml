@@ -1,8 +1,6 @@
 
 # Provides powefull GUI tools to create kits.
 Editor:
-    UseACEArsenal: true
-
     UniformItemsOverride:
         Standard: '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS]]'
         Leader: '["<UNIFORM ITEMS    >> ",[UNIFORM_ITEMS_L]]'

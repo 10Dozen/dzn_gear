@@ -14,8 +14,8 @@ DBG_ "Params: %1", _this EOL;
 params ["_units", "_objects"];
 
 if (_this isEqualTo []) then {
-    private _sel = (_self call [F(getSelected), []]);
-    _units = (_sel # 0) + (_sel # 1);
+    private _sel = (_self call [F(getSelected), [true, false, true]]);
+    _units = _sel # 0;
     _objects = _sel # 2;
 };
 

@@ -3,10 +3,13 @@
 DBG_ "Params: %1", _this EOL;
 
 params ["_units", "_objects"];
+
 if (_this isEqualTo []) then {
-    private _sel = (_self call [F(getSelected), []]);
-    _units = (_sel # 0) + (_sel # 1);
+    private _sel = (_self call [F(getSelected), [true, false, true]]);
+    _units = _sel # 0;
     _objects = _sel # 2;
+
+    DBG_ "Read current selections: _units: %1, _objects=%2", _units, _objects EOL;
 };
 
 private _unitsCount = count _units;

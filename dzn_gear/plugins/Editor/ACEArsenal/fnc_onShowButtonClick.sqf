@@ -94,8 +94,12 @@ if (_items isEqualTo []) then {
 } else {
     _menu pushBack ["LABEL", ""];
     _menu pushBack ["BR"];
+    _menu pushBack ["BUTTON", "<t align='center'>Reset</t>", {
+        params ["", "_args"];
+        ThisCOB call [F(onResetButtonClick), _args];
+    }, [_isMainCategory], [["w",0.25], ["bg", COLOR_PALE_RED], ["tooltip", "Reset item pool!"]]];
     _menu pushBack ["LABEL", ""];
-    _menu pushBack ["BUTTON", "Copy", {
+    _menu pushBack ["BUTTON", "<t align='center'>Copy</t>", {
         params ["", "_args"];
         ThisCOB call [F(onExportButtonClick), _args];
     }, [_isMainCategory], [["w",0.25], ["bg", COLOR_PALE_GREEN]]];
