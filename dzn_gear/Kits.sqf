@@ -84,10 +84,11 @@ kit_test2 = [
 		["arifle_MX_F", "arifle_MX_GL_F"] ,"30Rnd_65x39_caseless_mag",
 		["","",["optic_Aco", ""],""]],
 	["<HANDGUN WEAPON   >> ","hgun_P07_F","16Rnd_9x21_Mag",["","","",""]],
-	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio"],
-	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
+	["<ASSIGNED ITEMS   >> ","ItemMap","ItemCompass","ItemWatch","ItemRadio","Laserdesignator"],
+	["<UNIFORM ITEMS    >> ",[["PRIMARY MAG","x2-10"]]],
 	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]],
-	["<UNIFORM TEXTURES >> ",[0, "#(rgb,8,8,3)color(1,0,0,1)"]]
+	["<UNIFORM TEXTURES >> ",[0, "#(rgb,8,8,3)color(1,0,0,1)"]],
+	["<TAGS             >> ", "leader", "PL_NET"]
 ] call dzn_fnc_gear_make;
 
 kit_test3 = [

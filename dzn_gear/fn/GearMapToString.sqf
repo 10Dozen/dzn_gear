@@ -12,6 +12,12 @@
 
 private _str = [];
 
+private _desc = _self get MAP_CAT_DESC;
+if (_desc != "") then {
+    _str pushBack _desc;
+    _str pushBack "------";
+};
+
 private ["_cat", "_postfix", "_attaches"];
 {
     _cat = _self get _x;

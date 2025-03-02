@@ -19,11 +19,11 @@ private _cargoKits = dzn_gear_cargoKits;
 
 {
     if (_x select [0, 4] == "kit_") then {
-        _personalKits pushBack _x;
+        _personalKits pushBackUnique _x;
         continue;
     };
     if (_x select [0, 10] == "cargo_kit_") then {
-        _cargoKits pushBack _x;
+        _cargoKits pushBackUnique _x;
         continue;
     };
 } forEach (allVariables missionNamespace);

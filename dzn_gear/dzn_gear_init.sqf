@@ -13,6 +13,10 @@ params [["_editModeEnabled", false], ["_timeout", 0]];
 
 dzn_gear_version = "v2.28";
 
+#define LOG_ diag_log text format ["[dzn_gear] (init) " +
+#define EOL ]
+LOG_ "Initialization started. Version: %1.", dzn_gear_version EOL;
+
 // *************************
 // SETTINGS
 // **************************
@@ -52,7 +56,8 @@ dzn_gear_gearMapDeclaration = [
     [MAP_CAT_ASSIGNED, []],
     [MAP_CAT_UNIFORM_ITEMS, []],
     [MAP_CAT_VEST_ITEMS, []],
-    [MAP_CAT_BACKPACK_ITEMS, []]
+    [MAP_CAT_BACKPACK_ITEMS, []],
+    [MAP_CAT_DESC, ""]
 ];
 
 dzn_gear_emptyWeaponDescriptor = createHashMapFromArray [
@@ -82,6 +87,7 @@ dzn_gear_cargoGearMapObjectDeclaration = [
 // **************************
 // GEARS
 // **************************
+LOG_ "Going to initialize kits at %1", dzn_gear_kitsFile EOL;
 [] call compileScript [dzn_gear_kitsFile];
 dzn_gear_gat_table = [dzn_gear_GATFile] call dzn_fnc_parseSFML;
 dzn_gear_gat_table deleteAt "#ERRORS";
@@ -91,13 +97,33 @@ dzn_gear_personalKits = [];
 dzn_gear_cargoKits = [];
 dzn_gear_kitnameToGearMap = createHashMap;
 
+
+// -- Plain variant (Array of [Rolename (Side, Group), Kitname]
+dzn_gear_gat_table_plain = [];
+private ["_sideName", "_groupName"];
+{
+    if (_y isEqualType "") then { dzn_gear_gat_table_plain pushBack [_x, _y]; continue; };
+    _sideName = _x;
+    {
+        if (_y isEqualType "") then { dzn_gear_gat_table_plain pushBack [format ["%1 (%2)", _x, _sideName], _y]; continue; };
+        _groupName = _x;
+        { dzn_gear_gat_table_plain pushBack [format ["%1 (%2, %3)", _x, _sideName, _groupName], _y]; } forEach _y;
+    } forEach _y;
+} forEach dzn_gear_gat_table;
+
 // **************************
 // INITIALIZATION
 // **************************
 
 [
+    { !isNil "dzn_gear_serverInitDone" },
+    { LOG_ "Server-side initialized." EOL; }
+] call CBA_fnc_waitUntilAndExecute;
+
+[
     { time >= (_this # 1) && ( !hasInterface || { !isNull player && local player } ) },
     {
+        LOG_ "Init condition met. Starting plugins." EOL;
         // -- Plugins
         private _pluginSettings = ["dzn_gear\plugins\PluginSettings.yml"] call dzn_fnc_parseSFML;
         {
@@ -106,9 +132,10 @@ dzn_gear_kitnameToGearMap = createHashMap;
 
             private _path = format ["dzn_gear\plugins\%1\init.sqf", _name];
             if !(fileExists _path) then {
-                diag_log parseText format ["(dzn_gear) [init] Plugin '%1' is disabled (no init file %2). Skip.", _name, _path];
+                LOG_ "Plugin '%1' is disabled (no init file %2). Skip.", _name, _path EOL;
                 continue;
             };
+            LOG_ "Plugin '%1' is starting", _name EOL;
             [_pluginSettings get _name] call compileScript [_path];
         } forEach dzn_gear_Plugins;
 
@@ -117,7 +144,8 @@ dzn_gear_kitnameToGearMap = createHashMap;
 
         // -- Collect kits for other consumers
         [] call dzn_fnc_gear_scanForKitnames;
+
+        LOG_ "Fully initialized." EOL;
     },
     [_editModeEnabled, _timeout]
 ] call CBA_fnc_waitUntilAndExecute;
-

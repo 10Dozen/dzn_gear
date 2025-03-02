@@ -32,6 +32,9 @@
 DBG_ "Params: %1", _this EOL;
 params ["_name", "_role", "_loadout"];
 
+// -- Remove CBA group name suffix
+_role = (_role splitString "@") # 0;
+
 // -- Prepare content
 private _lines = [
     format [

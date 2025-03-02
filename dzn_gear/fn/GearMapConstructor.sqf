@@ -96,6 +96,12 @@ _self set [MAP_CAT_HANDGUN, _emptyWeapon];
         continue;
     };
 
+    // -- Description
+    if (_category == ARR_CAT_DESC) then {
+        _self set [MAP_CAT_DESC, _x select 1];
+        continue;
+    };
+
     // -- Container items
     _self set [
         [

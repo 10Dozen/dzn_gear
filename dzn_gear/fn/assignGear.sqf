@@ -152,11 +152,11 @@ if (_identity isNotEqualTo []) then {
         };
     };
 
-    if (!isNil "_tex") then {
-        _unit setObjectTextureGlobal [_selection, _tex];
-    };
     if (!isNil "_mat") then {
         _unit setObjectMaterialGlobal [_selection, _mat];
+    };
+    if (!isNil "_tex") then {
+        _unit setObjectTextureGlobal [_selection, _tex];
     };
 } forEach (_gear getOrDefault [MAP_CAT_UNIFORM_TEXTURES, []]);
 

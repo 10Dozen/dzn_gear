@@ -15,6 +15,7 @@
 #define ARR_CAT_SCRIPT "SCRIPT"
 #define ARR_CAT_UNIFORM_TEXTURES "UNIFORM TEXTURES"
 #define ARR_CAT_TAGS "TAGS"
+#define ARR_CAT_DESC "DESC"
 
 
 #define MAP_CAT_UNIFORM "Uniform"
@@ -33,6 +34,7 @@
 #define MAP_CAT_TAGS "Tags"
 #define MAP_CAT_SCRIPT "Script"
 #define MAP_CAT_UNIFORM_TEXTURES "UniformTextures"
+#define MAP_CAT_DESC "Desc"
 
 #define I_WEAPON_CLASS "class"
 #define I_WEAPON_MAG "magazine"

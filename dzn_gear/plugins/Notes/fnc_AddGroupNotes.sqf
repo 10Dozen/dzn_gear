@@ -15,7 +15,7 @@ _notes resize 0;
 
 private ["_role", "_name", "_note", "_noteIdx"];
 {
-    _role = ((roleDescription _x) splitString "@") # 0;
+    _role = roleDescription _x;
     _name = name _x;
     _note = _x getVariable [Q(dzn_gear_Note), []];
     _noteIdx = _notes pushBack [_name, _role, _note];

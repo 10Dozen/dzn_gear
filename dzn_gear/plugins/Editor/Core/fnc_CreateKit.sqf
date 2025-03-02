@@ -1,11 +1,12 @@
 #include "defines.h"
 
 params [
-    "_name",
+    "_nameAndRoleDesc",
     "_target",
     ["_overrideAssignedItems", NO_OVERRIDE],
     ["_overrideUniformItems", NO_OVERRIDE]
 ];
+
 
 private _color = [
     "#", COLOR_POOL, COLOR_POOL, COLOR_POOL
@@ -16,7 +17,7 @@ if (isNull _target) exitWith {
     _self call [
         F(composeUnitKit),
         [
-            "Player's", _name, _color,
+            "Player's", _nameAndRoleDesc, _color,
             player call dzn_fnc_gear_getGear,
             _overrideAssignedItems, _overrideUniformItems
         ]
@@ -27,7 +28,7 @@ if (_target isKindOf "CAManBase") exitWith {
     _self call [
         F(composeUnitKit),
         [
-            "Unit's", _name, _color,
+            "Unit's", _nameAndRoleDesc, _color,
             cursorTarget call dzn_fnc_gear_getGear,
             _overrideAssignedItems, _overrideUniformItems
         ]
@@ -36,5 +37,5 @@ if (_target isKindOf "CAManBase") exitWith {
 
 _self call [
     F(composeCargoKit),
-    ["Vehicle's", _name, _color, cursorTarget call dzn_fnc_gear_getCargoGear]
+    ["Vehicle's", _nameAndRoleDesc, _color, cursorTarget call dzn_fnc_gear_getCargoGear]
 ];

@@ -33,6 +33,8 @@ private _declaration = [
     [Q(MainMenu_AssignedItemsOverrideMode), OVERRIDE_STANDARD],
     [Q(MainMenu_UniformItemsOverrideMode), OVERRIDE_STANDARD],
 
+    [Q(Roles), [ROLES_DEFS]],
+
     PREP_COMPONENT_FUNCTION(HandleMenu),
 
     PREP_COMPONENT_FUNCTION(showMainMenu),

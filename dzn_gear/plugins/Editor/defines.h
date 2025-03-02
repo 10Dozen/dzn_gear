@@ -31,3 +31,29 @@
 // -- Converts
 #define MASS_TO_KG(X) (X * 0.1 * 0.453592) toFixed 2
 
+
+// -- Roles map
+//     @DisplayName, @ID, @Tags
+#define TAG_LEADER "leader"
+#define TAG_PLNET "PL_NET"
+
+#define ROLES_DEFS \
+    ["Platoon Leader", "pl", [TAG_LEADER,TAG_PLNET]], \
+    ["Squad Leader", "sl", [TAG_LEADER,TAG_PLNET]], \
+    ["Fireteam Leader", "ftl", [TAG_LEADER]], \
+    ["Automatic Rifleman", "ar"], \
+    ["Grenadier", "gr"], \
+    ["Rifleman", "r"], \
+    ["Section Leader", "sl", [TAG_LEADER,TAG_PLNET]], \
+    ["2IC", "2ic", [TAG_LEADER]], \
+    ["Командир Взвода", "pl", [TAG_LEADER,TAG_PLNET]], \
+    ["Командир отделения", "sl", [TAG_LEADER,TAG_PLNET]], \
+    ["Наводчик-оператор", "crew"], \
+    ["Механик-водитель", "crew"], \
+    ["Пулеметчик", "mg"], \
+    ["Стрелок-Гранатометчик", "at"], \
+    ["Стрелок, помощник гранатометчика", "aat"], \
+    ["Старший стрелок", "ar"], \
+    ["Стрелок (ГП)", "gr"], \
+    ["Стрелок", "r"], \
+    ["Снайпер", "mm"]

@@ -10,5 +10,5 @@ WEST:
 
     # Applies only to BLUFOR(west) side AND in group 1'2 AND with rolename
     1`2:
-        1`2 Squad Leader@1`2: kit_test2
+        1`2 Squad Leader@1`2@1: kit_test2
 
