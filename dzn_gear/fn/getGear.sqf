@@ -85,7 +85,7 @@ private "_items";
 ];
 
 // Copy idnetity if setting enabled
-if (dzn_gear_enableIdentitySync) then {
+if (dzn_gear_handleIdentity) then {
     _kit pushBack [
         CAT_IDENTITY
         , face _this

@@ -30,8 +30,8 @@ private _declaration = [
 
     [Q(MainMenu_KitKey), ""],
     [Q(MainMenu_KitRole), -1],
-    [Q(MainMenu_AssignedItemsOverrideMode), OVERRIDE_STANDARD],
-    [Q(MainMenu_UniformItemsOverrideMode), OVERRIDE_STANDARD],
+    //[Q(MainMenu_AssignedItemsOverrideMode), OVERRIDE_STANDARD],
+    //[Q(MainMenu_UniformItemsOverrideMode), OVERRIDE_STANDARD],
 
     [Q(Roles), [ROLES_DEFS]],
 

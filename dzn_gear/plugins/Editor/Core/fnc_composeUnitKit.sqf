@@ -20,15 +20,13 @@ _roleDesc params [
 ];
 
 // -- Update gear array
-if (_roleSuffix isNotEqualTo "") then {
-    //_name = format ["%1_%2", _name, _roleSuffix];
-};
 if (_roleTitle isNotEqualTo "") then {
-    _gearArr pushBack [format ["<%1 >> ", ARR_CAT_DESC], _roleTitle];
+    _gearArr pushBack [format ["<%1 >> ", ARR_GEAR_DESC], _roleTitle];
 };
 if (_roleTags isNotEqualTo []) then {
-    _gearArr pushBack ([format ["<%1 >> ", ARR_CAT_TAGS]] + _roleTags);
+    _gearArr pushBack ([format ["<%1 >> ", ARR_GEAR_TAGS]] + _roleTags);
 };
+
 
 // -- Save kit to namespace
 private _gearMap = _gearArr call dzn_fnc_gear_make;

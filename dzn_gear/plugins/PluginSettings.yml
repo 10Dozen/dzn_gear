@@ -9,24 +9,12 @@ Editor:
         Standard: '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS]'
         Leader: '["<ASSIGNED ITEMS   >> ", ASSIGNED_ITEMS_L]'
 
-    Roles:
-        Platoon Leader: "pl"
-        Squad Leader: "sl"
-        Fireteam Leader: "ftl"
-        Automatic Rifleman: "ar"
-        Grenadier: "gr"
-        Rifleman: "r"
-        Section Leader: "sl"
-        2IC: "2ic"
-        Командир Взвода: "pl"
 
 Notes:
     Personal:
-        enable: true
+        enable: false
 
     Group:
-        enable: true
-        refreshTime: 10         # refresh each 10 seconds
-        refreshUntil: `5 * 60`  # 5 minutes after mission start
-
-
+        enable: false
+        refreshTime: 15           # refresh each 10 seconds
+        refreshUntil: `5 * 60`    # 5 minutes after mission start

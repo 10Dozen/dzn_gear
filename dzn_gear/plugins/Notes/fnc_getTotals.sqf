@@ -124,10 +124,14 @@ _lines pushBack "<font color='#aaaaaa'>------</font>";
 ];
 
 // -- Assigned items
+private _binocular = "";
+if ((_loadout # 8) isNotEqualTo []) then {
+    _binocular = _loadout # 8 # 0;
+};
 _lines pushBack format [FMT_MARK2, "", TOTALS_ASSIGNED];
 _lines pushBack format [
     "<font color='#aaaaaa'>    %1</font>",
-    (((_loadout # 9) + (_loadout # 8)) select { _x != "" } apply { ITEM_CLICKABLE(_x) }) joinString ", "
+    (((_loadout # 9) + [_binocular]) select { _x != "" } apply { ITEM_CLICKABLE(_x) }) joinString ", "
 ];
 
 (_lines joinString "<br/>")

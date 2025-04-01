@@ -26,13 +26,7 @@ private _composed = _self call [F(compose), [
 
 private _name = _vals getOrDefault ["i_name","cargo_kit_test"];
 
-//private _exported = ECOB(Editor,Core) call [F(FormatKit), [_composed, _name]];
-//copyToClipboard _exported;
-
 ECOB(Editor,Core) call [
     F(composeCargoKit),
     ["Cargo", _name, "#34bdeb", _composed, true]
 ];
-
-//ECOB(Editor,History) call [F(Add), [HISTORY_COMPOSED, _name, _exported]];
-//ECOB(Editor,Core) call [F(Notify), [NOTIF_KIT_COPIED, ["Cargo", "#FFCC00"]]];

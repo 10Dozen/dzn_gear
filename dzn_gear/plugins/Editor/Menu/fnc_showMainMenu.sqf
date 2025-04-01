@@ -1,6 +1,8 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "fnc_showMainMenu"
 
+
+DBG_ "Params: %1", _this EOL;
 params ["_menuNavbar"];
 
 private _options = [
@@ -8,9 +10,10 @@ private _options = [
     ["Standard", OVERRIDE_STANDARD, [["tooltip", "Overrides with standard items (defined in Settings file)"]]],
     ["Squad Leader", OVERRIDE_LEADER, [["tooltip", "Overrides with leader items (defined in Settings file)"]]]
 ];
-private _assignedItemsCurSel = _options # 1; // findIf {_self get Q(MainMenu_AssignedItemsOverrideMode) == _x # 1};
-private _uniformItemsCurSel = _options # 1; // findIf {_self get Q(MainMenu_UniformItemsOverrideMode) == _x # 1};
+private _assignedItemsCurSel = 1;
+private _uniformItemsCurSel = 1;
 
+DBG_ "Current target..." EOL;
 // Current target
 private _targetIsUnit = true;
 private _targetName = "(player)";
@@ -26,10 +29,12 @@ if (!isNull cursorTarget) then {
     _kitPrefix = ["cargo_kit_", "kit_"] select _targetIsUnit;
 };
 
-
+DBG_ "Composing menu...: %1, %2, %3", _targetIsUnit,_targetName,_kitPrefix  EOL;
 private _menu = +_menuNavbar;
 // -- Cargo gear
 if (!_targetIsUnit) exitWith {
+
+    DBG_ "Target is vehicle" EOL;
     _menu append [
         ["LABEL", "<t size='0.9'>On pressing ""GET"" button - formatted cargo kit will be copied to the clipboard"],
         ["BR"],
@@ -57,6 +62,7 @@ if (!_targetIsUnit) exitWith {
 };
 
 
+DBG_ "Target is player" EOL;
 // -- Unit gear
 // -- Higlight kits that already exists with current key + role
 private _kitKey = _self get Q(MainMenu_KitKey);
@@ -98,6 +104,11 @@ private _onRoleSelection = {
         {  _x lbSetColor [1, COLOR_WHITE]; _x lbSetColor [2, COLOR_WHITE];} forEach _this;
     }, _ctrls, 0.5] call CBA_fnc_waitAndExecute;
 };
+
+
+DBG_ "Vars: %1, %2, %3", _kitKey, _kitRolesLastSelectedId, _kitRoles EOL;
+DBG_ str(_onRoleSelection) EOL;
+
 _menu append [
     ["OnDraw", {
         params ["_ad", "_args"];

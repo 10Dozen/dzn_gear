@@ -31,9 +31,9 @@ private _items = [];
             );
         } forEach _cat;
     } forEach [
-        _kit get MAP_CAT_PRIMARY,
-        _kit get MAP_CAT_LAUNCHER,
-        _kit get MAP_CAT_HANDGUN
+        _kit get MAP_GEAR_PRIMARY,
+        _kit get MAP_GEAR_LAUNCHER,
+        _kit get MAP_GEAR_HANDGUN
     ];
 
     // -- Items in uniform, vest and backpack
@@ -49,10 +49,10 @@ private _items = [];
             } forEach ([[_item], _item] select (_item isEqualType []));
         } forEach _itemsInCat;
     } forEach [
-        [_kit get MAP_CAT_BACKPACK]
-        + ((_kit get MAP_CAT_UNIFORM_ITEMS) apply { _x # 0 })
-        + ((_kit get MAP_CAT_VEST_ITEMS) apply { _x # 0 })
-        + ((_kit get MAP_CAT_BACKPACK_ITEMS) apply { _x # 0 })
+        [_kit get MAP_GEAR_BACKPACK]
+        + ((_kit get MAP_GEAR_UNIFORM_ITEMS) apply { _x # 0 })
+        + ((_kit get MAP_GEAR_VEST_ITEMS) apply { _x # 0 })
+        + ((_kit get MAP_GEAR_BACKPACK_ITEMS) apply { _x # 0 })
     ];
     DBG_ "Unique item total count: %1", count(_items) EOL;
     DBG_ "Unique items: %1", _items EOL;
@@ -91,4 +91,9 @@ private _cfgBackpacks = configFile >> "CfgVehicles";
     _cargoItems pushBack [_x, _itemCount];
 } forEach _items;
 
-[_cargoWeapons, _cargoMagazines, _cargoItems, _cargoBackpacks];
+[
+    [ARR_CARGO_WEAPONS] + _cargoWeapons,
+    [ARR_CARGO_MAGAZINES] + _cargoMagazines,
+    [ARR_CARGO_ITEMS] + _cargoItems,
+    [ARR_CARGO_BACKPACKS] + _cargoBackpacks
+];

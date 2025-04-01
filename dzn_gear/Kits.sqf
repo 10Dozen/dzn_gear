@@ -67,8 +67,8 @@ kit_test1 = [
 	["<UNIFORM ITEMS    >> ",[["FirstAidKit",1],["PRIMARY MAG","x2-10"]]],
 	["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["HANDGUN MAG",2],["HandGrenade",1],["SmokeShell",1]]],
 	["<BACKPACK ITEMS   >> ",[]],
-	/* Optional section */
-	["<IDENTITY         >> ","TanoanHead_A3_02","male01engfre","john Doe"],
+	// Optional section
+	["<IDENTITY         >> ",["TanoanHead_A3_02","TanoanHead_A3_02"],["vvv", "male01engfre"],"john Doe"],
 	["<TAGS             >> ", "MyTag", ["MyNumber", 123]],
 	["<SCRIPT           >> ",
 		{ (_this # 0) setVariable ["XXX", 123]; },
@@ -113,8 +113,25 @@ cargo_kit_test2 = [
     [[["FirstAidKit", "ACE_rope6"],4]],
     [],
     [[["arifle_MX_GL_F", "muzzle_snds_H", "", "optic_aco", ["30Rnd_65x39_caseless_mag", 15], ["3Rnd_HE_Grenade_shell", 2], ""], 2]]
-];
+] call dzn_fnc_gear_make;
 
+cargo_kit_test3 = [
+    ["< WEAPONS    >> ", [
+		[["arifle_MX_ACO_pointer_F","hgun_P07_F"], 3],
+		[
+			// @String          @Sting          @str  @str       @Arr                              @Arr                          @Str
+			["arifle_MX_GL_F", "muzzle_snds_H", "", "optic_aco", ["30Rnd_65x39_caseless_mag", 15], ["3Rnd_HE_Grenade_shell", 2], ""],
+			2
+		]
+	]],
+    ["< MAGAZINES  >> ", []],
+    ["< ITEMS      >> ", [
+        [["FirstAidKit", "ACE_rope6"],4]
+    ]],
+    ["< BACKPACKS  >> ", []]
+] call dzn_fnc_gear_make;
+
+/*
 kit_eee_pl = [
     ["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],
     ["<PRIMARY WEAPON   >> ","SMG_05_F","30Rnd_9x21_Mag_SMG_02",["","","",""]],
@@ -125,3 +142,4 @@ kit_eee_pl = [
     ["<VEST ITEMS       >> ",[["PRIMARY MAG",3],["16Rnd_9x21_Mag",2],["HandGrenade",1],["SmokeShell",1]]],
     ["<BACKPACK ITEMS   >> ",[]]
 ] call dzn_fnc_gear_make;
+*/

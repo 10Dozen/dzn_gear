@@ -4,7 +4,7 @@ params["_unit", "_identity"];
 
 DBG_ "Params: %1", _this EOL;
 
-_identity params ["", "_face", "_voice", "_name"];
+_identity params ["_face", "_voice", "_name"];
 
 _face = selectRandom ([[_face], _face] select (_face isEqualType []));
 if (_face isNotEqualTo "") then { _unit setFace _face };

@@ -20,7 +20,9 @@ LOG_ "Initialization started. Version: %1.", dzn_gear_version EOL;
 // *************************
 // SETTINGS
 // **************************
-[] call compileScript ["dzn_gear\Settings.sqf"];
+if !(missionNamespace getVariable ["dzn_gear_settingsInitialized", false]) then {
+    [] call compileScript ["dzn_gear\Settings.sqf"];
+};
 
 // **************************
 // FUNCTIONS
@@ -30,7 +32,6 @@ LOG_ "Initialization started. Version: %1.", dzn_gear_version EOL;
 PREP(assignKit);
 PREP(assignKitByGAT);
 PREP(assignGear);
-PREP(assignGearArray);
 PREP(assignCargoGear);
 PREP(assignIdentity);
 PREP(getGear);
@@ -45,19 +46,19 @@ dzn_gear_gearMapDeclaration = [
     ["#type", "dzn_gear_GearMapInterface"],
     ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
     ["#str", compileScript ['dzn_gear\fn\GearMapToString.sqf']],
-    [MAP_CAT_UNIFORM, ""],
-    [MAP_CAT_VEST, ""],
-    [MAP_CAT_BACKPACK, ""],
-    [MAP_CAT_HEADGEAR, ""],
-    [MAP_CAT_FACEWEAR, ""],
-    [MAP_CAT_PRIMARY,[]],
-    [MAP_CAT_LAUNCHER,[]],
-    [MAP_CAT_HANDGUN,[]],
-    [MAP_CAT_ASSIGNED, []],
-    [MAP_CAT_UNIFORM_ITEMS, []],
-    [MAP_CAT_VEST_ITEMS, []],
-    [MAP_CAT_BACKPACK_ITEMS, []],
-    [MAP_CAT_DESC, ""]
+    [MAP_GEAR_UNIFORM, ""],
+    [MAP_GEAR_VEST, ""],
+    [MAP_GEAR_BACKPACK, ""],
+    [MAP_GEAR_HEADGEAR, ""],
+    [MAP_GEAR_FACEWEAR, ""],
+    [MAP_GEAR_PRIMARY,[]],
+    [MAP_GEAR_LAUNCHER,[]],
+    [MAP_GEAR_HANDGUN,[]],
+    [MAP_GEAR_ASSIGNED, []],
+    [MAP_GEAR_UNIFORM_ITEMS, []],
+    [MAP_GEAR_VEST_ITEMS, []],
+    [MAP_GEAR_BACKPACK_ITEMS, []],
+    [MAP_GEAR_DESC, ""]
 ];
 
 dzn_gear_emptyWeaponDescriptor = createHashMapFromArray [
@@ -65,24 +66,16 @@ dzn_gear_emptyWeaponDescriptor = createHashMapFromArray [
     [I_WEAPON_MAG, ""],
     [I_WEAPON_ATTACHES, ["", "", "", ""]]
 ];
-/*
-dzn_gear_weaponPresetDeclaration = [
-    ["#type", "dzn_gear_WeaponPresetInterface"],
-    [I_WEAPON_CLASS, ""],
-    [I_WEAPON_MAG, ""],
-    [I_WEAPON_ATTACHES, []]
-];
 
-dzn_gear_cargoGearMapObjectDeclaration = [
-    ["#type", "dzn_gear_CargoGearMapInterface"],
-    ["#create", compileScript ['dzn_gear\fn\GearMapConstructor.sqf']],
-    ["weapons", []],
-    ["magazines", []],
-    ["items", []],
-    ["backpacks", []],
-    ["weapons detailed", []]
+dzn_gear_cargoMapDeclaration = [
+    ["#type", "dzn_gear_CargoMapInterface"],
+    ["#create", compileScript ['dzn_gear\fn\CargoMapConstructor.sqf']],
+    ["#str", compileScript ['dzn_gear\fn\CargoMapToString.sqf']],
+    [MAP_CARGO_WEAPONS, []],
+    [MAP_CARGO_MAGAZINES, []],
+    [MAP_CARGO_ITEMS, []],
+    [MAP_CARGO_BACKPACKS, []]
 ];
-*/
 
 // **************************
 // GEARS
@@ -125,7 +118,7 @@ private ["_sideName", "_groupName"];
     {
         LOG_ "Init condition met. Starting plugins." EOL;
         // -- Plugins
-        private _pluginSettings = ["dzn_gear\plugins\PluginSettings.yml"] call dzn_fnc_parseSFML;
+        private _pluginSettings = [dzn_gear_PluginsSettingsFile] call dzn_fnc_parseSFML;
         {
             private _name = _x;
             if (_name == "Editor" && !(_this # 0)) then { continue }; // Prevent Editor from running if arg not passed

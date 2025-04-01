@@ -1,5 +1,6 @@
 #include "defines.h"
 
+DBG_ "Params: %1", _this EOL;
 params ["_prefix", "_vals", ["_isUnit", true]];
 
 if (!_isUnit) exitWith {

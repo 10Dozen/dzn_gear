@@ -28,7 +28,7 @@ if (_kit isEqualTo []) exitWith {
 };
 
 // -- Random Kit: a list of kitnames
-if (_kit isEqualTo [] && { !((_kit # 0) isEqualType []) }) exitWith {
+if (_kit isEqualType [] && { !((_kit # 0) isEqualType []) }) exitWith {
     [_unit, selectRandom _kit] call dzn_fnc_gear_assignKit;
 };
 

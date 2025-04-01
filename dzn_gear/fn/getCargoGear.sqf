@@ -7,22 +7,31 @@
     OUTPUT: ARRAY (kitArray), Copied to clipboard kit
 */
 
+#define CAT_WEAPONS    "<WEAPONS     >> "
+#define CAT_MAGAZINES  "<MAGAZINES   >> "
+#define CAT_ITEMS      "<ITEMS       >> "
+#define CAT_BACKPACKS  "<BACKPACKS   >> "
 
 DBG_ "Params: %1", _this EOL;
 
 private _kit = [];
-private _cargo = [getWeaponCargo _this, getMagazineCargo _this, getItemCargo _this, getBackpackCargo _this];
 
-private ["_classnames", "_count", "_categoryKit"];
+private ["_categoryName", "_classnames", "_counts", "_categoryCargo"];
 {
-    _classnames = _x select 0;
-    _count = _x select 1;
-    _categoryKit = [];
-    {
-        _categoryKit = _categoryKit + [ [_x, (_count select _forEachIndex)] ];
-    } forEach _classnames;
+    _category   = _x # 0;
+    _classnames = _x # 1 # 0;
+    _counts     = _x # 1 # 1;
 
-    _kit pushBack _categoryKit;
-} forEach _cargo;
+    _categoryCargo = [];
+    {
+        _categoryCargo pushBack [_x, _counts select _forEachIndex];
+    } forEach _classnames;
+    _kit pushBack [_category, _categoryCargo];
+} forEach [
+    [CAT_WEAPONS, getWeaponCargo _this],
+    [CAT_MAGAZINES,getMagazineCargo _this],
+    [CAT_ITEMS, getItemCargo _this],
+    [CAT_BACKPACKS, getBackpackCargo _this]
+];
 
 _kit

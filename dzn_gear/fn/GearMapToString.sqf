@@ -12,50 +12,100 @@
 
 private _str = [];
 
-private _desc = _self get MAP_CAT_DESC;
+private _desc = _self get MAP_GEAR_DESC;
 if (_desc != "") then {
     _str pushBack _desc;
-    _str pushBack "------";
 };
 
-private ["_cat", "_postfix", "_attaches"];
+private _tags = _self get MAP_GEAR_TAGS;
+if (_tags isNotEqualTo []) then {
+    _str pushBack format ["Tags: %1", _tags joinString ", "];
+};
+_str pushBack "------";
+
+private ["_item", "_weapon", "_attaches", "_postfix"];
 {
-    _cat = _self get _x;
-    if (_cat isEqualTo dzn_gear_emptyWeaponDescriptor) then { continue; };
+    _item = _self get _x;
+    if (_item isEqualTo dzn_gear_emptyWeaponDescriptor) then { continue; };
 
     _postfix = "";
-    if (_cat isEqualType []) then {
-        _cat = _cat # 0;
-        _postfix = format [" and %1 more", str(count _cat - 1)];
+    // -- Randomized weapon descriptor
+    if (_item isEqualType []) then {
+        _item = _item # 0;
+        _postfix = format [" or %1 other presets", str(count _item - 1)];
     };
 
-    _attaches = (_cat get I_WEAPON_ATTACHES) select { _x isEqualType [] || { _x != "" }};
+    // -- Randomized weapon
+    DBG_ "ItemType: %1, item: %2", typename _item, _item EOL;
+    _weapon = _item get I_WEAPON_CLASS;
+    if (_weapon isEqualType []) then {
+        _weapon = format ["%1 or %2 other variants", _weapon # 0, count _weapon];
+    };
+
+    _attaches = (_item get I_WEAPON_ATTACHES) select { _x isEqualType [] || { _x != "" }};
     _str pushBack format [
         "%1: %2 %3%4",
         _x,
-        _cat get I_WEAPON_CLASS,
-        ["", _attaches] select (_attaches isNotEqualTo []),
+        _weapon,
+        ["", "+ " + str(_attaches)] select (_attaches isNotEqualTo []),
         _postfix
     ];
 } forEach [
-    MAP_CAT_PRIMARY,
-    MAP_CAT_LAUNCHER,
-    MAP_CAT_HANDGUN
+    MAP_GEAR_PRIMARY,
+    MAP_GEAR_LAUNCHER,
+    MAP_GEAR_HANDGUN
 ];
-
 
 {
-    _str pushBack format ["%1: %2", _x, _self get _x];
+    _item = _self getOrDefault [_x, ""];
+    if (_item isEqualTo "") then { continue };
+    if (_item isEqualType []) then {
+        _item = format ["%1 or %2 other", _item # 0, count _item];
+    };
+    _str pushBack format ["%1: %2", _x, _item];
 } forEach [
-    MAP_CAT_UNIFORM,
-    MAP_CAT_VEST,
-    MAP_CAT_BACKPACK,
-    MAP_CAT_HEADGEAR,
-    MAP_CAT_FACEWEAR,
-    MAP_CAT_ASSIGNED,
-    MAP_CAT_INDENTITY,
-    MAP_CAT_TAGS,
-    MAP_CAT_UNIFORM_TEXTURES
+    MAP_GEAR_UNIFORM,
+    MAP_GEAR_VEST,
+    MAP_GEAR_BACKPACK,
+    MAP_GEAR_HEADGEAR,
+    MAP_GEAR_FACEWEAR
 ];
+
+_str pushBack format [
+    "%1: %2",
+    MAP_GEAR_ASSIGNED,
+    (_self get MAP_GEAR_ASSIGNED) joinString ", "
+];
+
+private _identity = _self getOrDefault [MAP_GEAR_INDENTITY, []];
+if (_identity isNotEqualTo []) then {
+    _identity params ["_face", "_voice"];
+    private _line = format [
+        "(face) %1, (voice) %2",
+        if (_face isEqualType "") then { _face } else {
+            format ["%1 or %2 other", _face # 0, count _face]
+        },
+        if (_voice isEqualType "") then { _voice } else {
+            format ["%1 or %2 other", _voice # 0, count _voice]
+        }
+    ];
+
+    _str pushBack format ["%1: %2", MAP_GEAR_INDENTITY, _line];
+};
+
+
+_str pushBack "------";
+private _textures = _self get MAP_GEAR_UNIFORM_TEXTURES;
+if (_textures isNotEqualTo []) then {
+    _str pushBack format [
+        "Re-textures selections: %1",
+        _textures apply { _x # 0 } joinString ", "
+    ];
+};
+
+private _scripts = _self get MAP_GEAR_SCRIPT;
+if (_scripts isNotEqualTo []) then {
+    _str pushBack format ["Has %1 attached scripts!", count _scripts];
+};
 
 (_str joinString "\n")

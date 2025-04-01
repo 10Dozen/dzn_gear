@@ -18,7 +18,10 @@ DBG_ "Params: %1", _this EOL;
 params ["_unit", "_gear"];
 
 if (_gear isEqualType []) exitWith {
-    [_unit, _gear] call dzn_fnc_gear_assignGearArray;
+    [
+        _unit,
+        _gear call dzn_fnc_gear_make
+    ] call dzn_fnc_gear_assignGear;
 };
 
 _unit setVariable ["BIS_enableRandomization", false];
@@ -71,9 +74,9 @@ private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_it
         if (true) then _addItemExpr;
     } forEach (_attaches + [_mag]);
 } forEach [
-    [MAP_CAT_PRIMARY, { _unit addPrimaryWeaponItem _item }],
-    [MAP_CAT_LAUNCHER, { _unit addSecondaryWeaponItem _item }],
-    [MAP_CAT_HANDGUN, { _unit addSecondaryWeaponItem _item }]
+    [MAP_GEAR_PRIMARY, { _unit addPrimaryWeaponItem _item }],
+    [MAP_GEAR_LAUNCHER, { _unit addSecondaryWeaponItem _item }],
+    [MAP_GEAR_HANDGUN, { _unit addHandgunItem _item }]
 ];
 
 _magClasses = createHashMapFromArray [
@@ -83,16 +86,16 @@ _magClasses = createHashMapFromArray [
 ];
 
 // -- ADD EQUIP
-_unit forceAddUniform GET_RANDOM_ITEM(_gear get MAP_CAT_UNIFORM);
-_unit addVest GET_RANDOM_ITEM(_gear get MAP_CAT_VEST);
-_unit addBackpackGlobal GET_RANDOM_ITEM(_gear get MAP_CAT_BACKPACK);
-_unit addHeadgear GET_RANDOM_ITEM(_gear get MAP_CAT_HEADGEAR);
-_unit addGoggles GET_RANDOM_ITEM(_gear get MAP_CAT_FACEWEAR);
+_unit forceAddUniform GET_RANDOM_ITEM(_gear get MAP_GEAR_UNIFORM);
+_unit addVest GET_RANDOM_ITEM(_gear get MAP_GEAR_VEST);
+_unit addBackpackGlobal GET_RANDOM_ITEM(_gear get MAP_GEAR_BACKPACK);
+_unit addHeadgear GET_RANDOM_ITEM(_gear get MAP_GEAR_HEADGEAR);
+_unit addGoggles GET_RANDOM_ITEM(_gear get MAP_GEAR_FACEWEAR);
 
 // -- ADD ASSIGNED ITEMS
 {
     _unit addWeapon (GET_RANDOM_ITEM(_x));
-} forEach (_gear get MAP_CAT_ASSIGNED);
+} forEach (_gear get MAP_GEAR_ASSIGNED);
 
 // -- ADD ITEMS TO UNIFORM, TO VEST, TO BACKPACK
 {
@@ -117,15 +120,15 @@ _unit addGoggles GET_RANDOM_ITEM(_gear get MAP_CAT_FACEWEAR);
         for "_i" from 1 to _count do _addItemExpr;
     } forEach (_gear get _category);
 } forEach [
-    [MAP_CAT_UNIFORM_ITEMS, { _unit addItemToUniform _item; }],
-    [MAP_CAT_VEST_ITEMS, { _unit addItemToVest _item; }],
-    [MAP_CAT_BACKPACK_ITEMS, { _unit addItemToBackpack _item; }]
+    [MAP_GEAR_UNIFORM_ITEMS, { _unit addItemToUniform _item; }],
+    [MAP_GEAR_VEST_ITEMS, { _unit addItemToVest _item; }],
+    [MAP_GEAR_BACKPACK_ITEMS, { _unit addItemToBackpack _item; }]
 ];
 
 
 // -- EXTRA FIELDS
 // -- IDENTITY
-private _identity = _gear getOrDefault [MAP_CAT_INDENTITY, []];
+private _identity = _gear getOrDefault [MAP_GEAR_INDENTITY, []];
 if (_identity isNotEqualTo []) then {
     [_unit, _identity] remoteExec ["dzn_fnc_gear_assignIdentity", 0];
 };
@@ -138,7 +141,7 @@ if (_identity isNotEqualTo []) then {
     };
     DBG_ "Tag: _valArr = %1", _varArr EOL;
     _unit setVariable _varArr;
-} forEach (_gear getOrDefault [MAP_CAT_TAGS, []]);
+} forEach (_gear getOrDefault [MAP_GEAR_TAGS, []]);
 
 // -- Textures
 {
@@ -158,14 +161,15 @@ if (_identity isNotEqualTo []) then {
     if (!isNil "_tex") then {
         _unit setObjectTextureGlobal [_selection, _tex];
     };
-} forEach (_gear getOrDefault [MAP_CAT_UNIFORM_TEXTURES, []]);
+} forEach (_gear getOrDefault [MAP_GEAR_UNIFORM_TEXTURES, []]);
 
 // -- Script
 {
     DBG_ "Script: _idx = %1, _script=%2", _forEachIndex, _x EOL;
     [_unit, _gear] call _x;
-} forEach (_gear getOrDefault [MAP_CAT_SCRIPT, []]);
+} forEach (_gear getOrDefault [MAP_GEAR_SCRIPT, []]);
 
 // -- Finalize
 _unit setVariable ["dzn_gear_done", true, true];
+[{ enableSentences true; }] call CBA_fnc_execNextFrame;
 ["dzn_gear_kitApplied", [_unit, _gear]] call CBA_fnc_localEvent;

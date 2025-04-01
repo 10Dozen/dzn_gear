@@ -5,6 +5,10 @@
 // Paths
 dzn_gear_kitsFile = "dzn_gear\Kits.sqf";
 dzn_gear_GATFile = "dzn_gear\GearAssignmentTable.yml";
+dzn_gear_PluginsSettingsFile = "dzn_gear\plugins\PluginSettings.yml";
+
+// Identity -- exports identity on getGear. If enabled - exports identity to kit and allows to copy-paste identity to unit via Zeus.
+dzn_gear_handleIdentity = false;
 
 // Plugins - comment line with unwanted plugin to disable
 dzn_gear_Plugins = [

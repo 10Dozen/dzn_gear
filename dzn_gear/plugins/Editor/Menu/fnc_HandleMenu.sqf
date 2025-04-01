@@ -8,7 +8,8 @@
     Returns:
     nothing
 */
-
+diag_log "-----------------------------";
+DBG_ "Params: %1", _this EOL;
 params [["_paginationDirection", 0]];
 
 private _maxIdx = count (_self get Q(Pages)) - 1;
