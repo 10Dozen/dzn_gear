@@ -32,14 +32,14 @@ private ["_item", "_weapon", "_attaches", "_postfix"];
     // -- Randomized weapon descriptor
     if (_item isEqualType []) then {
         _item = _item # 0;
-        _postfix = format [" or %1 other presets", str(count _item - 1)];
+        _postfix = format [" or %1 other presets", (count _item) - 1];
     };
 
     // -- Randomized weapon
-    DBG_ "ItemType: %1, item: %2", typename _item, _item EOL;
+    DBG_2("ItemType: %1, item: %2", typename _item, _item);
     _weapon = _item get I_WEAPON_CLASS;
     if (_weapon isEqualType []) then {
-        _weapon = format ["%1 or %2 other variants", _weapon # 0, count _weapon];
+        _weapon = format ["%1 or %2 other variants", _weapon # 0, (count _weapon) - 1];
     };
 
     _attaches = (_item get I_WEAPON_ATTACHES) select { _x isEqualType [] || { _x != "" }};
@@ -60,7 +60,7 @@ private ["_item", "_weapon", "_attaches", "_postfix"];
     _item = _self getOrDefault [_x, ""];
     if (_item isEqualTo "") then { continue };
     if (_item isEqualType []) then {
-        _item = format ["%1 or %2 other", _item # 0, count _item];
+        _item = format ["%1 or %2 other", _item # 0, (count _item) - 1];
     };
     _str pushBack format ["%1: %2", _x, _item];
 } forEach [
@@ -83,10 +83,10 @@ if (_identity isNotEqualTo []) then {
     private _line = format [
         "(face) %1, (voice) %2",
         if (_face isEqualType "") then { _face } else {
-            format ["%1 or %2 other", _face # 0, count _face]
+            format ["%1 or %2 other", _face # 0, (count _face) - 1]
         },
         if (_voice isEqualType "") then { _voice } else {
-            format ["%1 or %2 other", _voice # 0, count _voice]
+            format ["%1 or %2 other", _voice # 0, (count _voice) - 1]
         }
     ];
 

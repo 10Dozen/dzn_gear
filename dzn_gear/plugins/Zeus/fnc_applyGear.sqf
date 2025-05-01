@@ -5,7 +5,7 @@
     If units are selected - only personal kit is applied.
     If no units selected - apply cargo kit to objects.
 */
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 params ["_units", "_objects"];
 if (_this isEqualTo []) then {

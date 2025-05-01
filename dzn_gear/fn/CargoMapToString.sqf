@@ -9,7 +9,7 @@
     Items: ...
 
 */
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 private _str = ["Cargo"];
 
 private _desc = _self get MAP_CARGO_DESC;
@@ -28,9 +28,9 @@ private ["_items", "_count", "_class", "_line"];
 _line = [];
 {
     if (_forEachIndex > 3) exitWith {
-        _line pushBack format [" and %1 more", count _items];
+        _line pushBack format ["and %1 more", count _items];
     };
-    _count = [_x # 1, format ["x%1", _x # 1]] select ((_x # 1) isEqualType 0);
+    _count = [_x # 1, format ["%1x", _x # 1]] select ((_x # 1) isEqualType 0);
     _class = if (_x # 0 isEqualType "") then {
         _x # 0
     } else {
@@ -39,19 +39,19 @@ _line = [];
             // -- Detailed weapon descriptor
             if (_x # 0 # 0 isEqualType []) then {
                 // -- Randomized weapon in detailed weapons sign
-                format ["%1 or %2 other (detailed)", _x # 0 # 0 # 0, count (_x # 0 # 0)]
+                format ["%1 or %2 other (detailed)", _x # 0 # 0 # 0, count (_x # 0 # 0) - 1]
             } else {
                 // -- Plain weapon
                 format ["%1 (detailed)", _x # 0 # 0, count (_x # 0)]
             }
         } else {
             // -- Randomized weapon
-            format ["%1 or %2 other", _x # 0 # 0, count (_x # 0)]
+            format ["%1 or %2 other", _x # 0 # 0, count (_x # 0) - 1]
         }
     };
     _line pushBack format ["%1 %2", _count, _class];
 } forEach (_self get MAP_CARGO_WEAPONS);
-_str pushBack format ["%1: %2", _x, _line joinString ", "];
+_str pushBack format ["%1: %2", MAP_CARGO_WEAPONS, _line joinString ", "];
 
 
 // -- Other stuff --- [1x Classname] or [1-2x Classnem2 or 3 more]
@@ -62,13 +62,13 @@ _str pushBack format ["%1: %2", _x, _line joinString ", "];
     _line = [];
     {
         if (_forEachIndex > 3) exitWith {
-            _line pushBack format [" and %1 more", count _items];
+            _line pushBack format ["and %1 more", (count _items) - 3];
         };
-        _count = [_x # 1, format ["x%1", _x # 1]] select ((_x # 1) isEqualType 0);
+        _count = [_x # 1, format ["%1x", _x # 1]] select ((_x # 1) isEqualType 0);
         _class = if (_x # 0 isEqualType "") then {
             _x # 0
         } else {
-            format ["%1 or %2 other", _x # 0 # 0, count (_x # 0)]
+            format ["%1 or %2 other", _x # 0 # 0, count (_x # 0) - 1]
         };
         _line pushBack format ["%1 %2", _count, _class];
     } forEach _items;
@@ -95,5 +95,5 @@ if (_scripts isNotEqualTo []) then {
     _str pushBack format ["Has %1 attached scripts!", count _scripts];
 };
 
-DBG_ "Str Out: %1", _str EOL;
+DBG_1("Str Out: %1", _str);
 (_str joinString "\n")

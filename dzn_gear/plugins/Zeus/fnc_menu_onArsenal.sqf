@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 params ["_ad"];
 
@@ -16,4 +16,3 @@ if (_allUnits isEqualTo []) exitWith {
 _ad call ["Close", []];
 
 [_allUnits # 0, _allUnits # 0, true] call ace_arsenal_fnc_openBox;
-

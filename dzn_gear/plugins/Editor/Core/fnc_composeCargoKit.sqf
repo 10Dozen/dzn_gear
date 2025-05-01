@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "fnc_composeVehicleKit"
 
 params ["_title", "_name", "_colorString", "_kit", ["_isComposed", false]];
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 // -- Save kit to namespace
 missionNamespace setVariable [_name, _kit];

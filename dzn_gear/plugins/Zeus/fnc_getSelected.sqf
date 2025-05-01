@@ -9,7 +9,7 @@
     2: _vics (ARRAY)
 */
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 params [
     ["_includeUnits", true],
@@ -17,9 +17,9 @@ params [
     ["_includeVics", true]
 ];
 
-DBG_ "_includeUnits: %1", _includeUnits EOL;
-DBG_ "_includeCrew: %1", _includeCrew EOL;
-DBG_ "_includeVics: %1", _includeVics EOL;
+DBG_1("_includeUnits: %1", _includeUnits);
+DBG_1("_includeCrew: %1", _includeCrew);
+DBG_1("_includeVics: %1", _includeVics);
 
 private _selectedUnits = curatorSelected select 0;
 

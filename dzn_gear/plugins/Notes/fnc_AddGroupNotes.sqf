@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params [
     ["_units", units group player]
 ];
@@ -15,23 +15,23 @@ _notes resize 0;
 
 private ["_role", "_name", "_note", "_noteIdx"];
 {
-    _role = roleDescription _x;
+    _role =  ((roleDescription _x) splitString "@") # 0;;
     _name = name _x;
     _note = _x getVariable [Q(dzn_gear_Note), []];
     _noteIdx = _notes pushBack [_name, _role, _note];
 
     _previewLine = "";
     _seeMoreLine = "";
-    DBG_ "_note type = %1, _note = %2", typename _note, _note EOL;
+    DBG_2("_note type = %1, _note = %2", typename _note, _note);
     if (_note isNotEqualTo []) then {
         _previewLine = [];
         for "_i" from 0 to 2 do {
-            DBG_ "Note %1 = %2", _i, (_note # _i) EOL;
+            DBG_2("Note %1 = %2", _i, (_note # _i));
             if ((_note # _i) isEqualTo []) then { continue; };
             _previewLine pushBack ((_note # _i # 0) call dzn_fnc_getItemDisplayName);
         };
 
-        DBG_ "_previewLine = %1", _previewLine EOL;
+        DBG_1("_previewLine = %1", _previewLine);
 
         _previewLine = " (" + (_previewLine joinString " | ") + ")";
         _seeMoreLine = format [
@@ -40,7 +40,7 @@ private ["_role", "_name", "_note", "_noteIdx"];
             _noteIdx
         ];
 
-        DBG_ "Preview: %1, See more: %2", _previewLine, _seeMoreLine EOL;
+        DBG_2("Preview: %1, See more: %2", _previewLine, _seeMoreLine);
     };
 
     _content pushBack format [

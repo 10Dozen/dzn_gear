@@ -2,13 +2,13 @@
 #define DBG_FUNC_PREFIX "renderMagazinesListDropdown"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 (_self get Q(CurrentMode)) params ["_addPrimaryMags", "_addLauncherMags"];
 (_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
 (_self get Q(CurrentWeaponsMags)) params ["_primaryPreferredMag", "_launcherPreferredMag"];
 
 private _selectedMags = keys (_self get Q(CurrentMagPool));
-DBG_ "Prefered mags=%1", (_self get Q(CurrentWeaponsMags)) EOL;
+DBG_1("Prefered mags=%1", (_self get Q(CurrentWeaponsMags)));
 
 private _allMags = _selectedMags;
 if (_addPrimaryMags) then {
@@ -26,18 +26,18 @@ if (_addLauncherMags) then {
     _allMags append _launcherMags;
 };
 
-DBG_ "_allMags=%1", _allMags EOL;
+DBG_1("_allMags=%1", _allMags);
 
 private _currentSelectedMags = _self get Q(CurrentMagPool);
 private _ctrl = _dialogCOB call ["GetByTag", "d_maglist"];
 
 private _currentSelectedItem = _self get Q(CurrentSelectedMagazine);
 
-DBG_ "_currentSelectedItem: %1", _currentSelectedItem EOL;
+DBG_1("_currentSelectedItem: %1", _currentSelectedItem);
 lbClear _ctrl;
 {
     private _count = _currentSelectedMags getOrDefault [_x, 0];
-    DBG_ "_x: %1, _count: %2", _x, _count EOL;
+    DBG_2("_x: %1, _count: %2", _x, _count);
 
     _ctrl lbAdd format [
         "%1%2",
@@ -60,7 +60,7 @@ lbClear _ctrl;
     ];
     if (_x isEqualTo _currentSelectedItem) then {
 
-        DBG_ "%3) _x vs _currentSelectedItem = %1 vs %2", _x, _currentSelectedItem, _forEachIndex EOL;
+        DBG_3("%3) _x vs _currentSelectedItem = %1 vs %2", _x, _currentSelectedItem, _forEachIndex);
         _ctrl lbSetCurSel _forEachIndex;
     };
 } forEach _allMags;

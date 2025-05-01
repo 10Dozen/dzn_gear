@@ -1,5 +1,5 @@
 #include "defines.h"
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private["_crewKit","_cargoKit","_synKit","_logic","_par","_id","_kit"];
 
@@ -41,7 +41,7 @@ private["_crewKit","_cargoKit","_synKit","_logic","_par","_id","_kit"];
 	_kit = _x getVariable ["dzn_gear", ""];
 	if (_kit == "") then { continue; };
 
-	DBG_ "Variable on unit" EOL;
+	DBG("Variable on unit");
 	[_x,_kit] call dzn_fnc_gear_assignKit;
 } forEach ((allUnits) select {
 	local _x
@@ -50,7 +50,7 @@ private["_crewKit","_cargoKit","_synKit","_logic","_par","_id","_kit"];
 
 // -- Gear assignment table
 if (hasInterface) then {
-	DBG_ "GAT" EOL;
+	DBG("GAT");
 	[player] call dzn_fnc_gear_assignKitByGAT;
 };
 

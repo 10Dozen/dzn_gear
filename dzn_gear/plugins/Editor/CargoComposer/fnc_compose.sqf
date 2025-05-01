@@ -8,14 +8,14 @@ params [
     ["_backpackCount", 1, [0]]
 ];
 
-DBG_ "Kits count: %1", count(_kits) EOL;
+DBG_1("Kits count: %1", count(_kits));
 
 private ["_kit", "_cat", "_w", "_m", "_item"];
 private _items = [];
 // -- Gather list of items all over the kits
 {
     _kit = _x;
-    DBG_ "Kit=%1", _x EOL;
+    DBG_1("Kit=%1", _x);
 
     // -- Weapons: handle random descriptor and/or class randomization
     {
@@ -40,11 +40,11 @@ private _items = [];
     {
         // -- Handle randomized items declaration
         _itemsInCat = _x;
-        DBG_ "Items in cat = %1", _itemsInCat EOL;
+        DBG_1("Items in cat = %1", _itemsInCat);
         {
             _item = _x;
             {
-                DBG_ "Item to add = %1", _x EOL;
+                DBG_1("Item to add = %1", _x);
                 _items pushBackUnique _x
             } forEach ([[_item], _item] select (_item isEqualType []));
         } forEach _itemsInCat;
@@ -54,8 +54,8 @@ private _items = [];
         + ((_kit get MAP_GEAR_VEST_ITEMS) apply { _x # 0 })
         + ((_kit get MAP_GEAR_BACKPACK_ITEMS) apply { _x # 0 })
     ];
-    DBG_ "Unique item total count: %1", count(_items) EOL;
-    DBG_ "Unique items: %1", _items EOL;
+    DBG_1("Unique item total count: %1", count(_items));
+    DBG_1("Unique items: %1", _items);
 } forEach _kits;
 
 // -- Compose Cargo kit from it
@@ -69,31 +69,31 @@ private _cfgMagazines = configFile >> "CfgMagazines";
 private _cfgBackpacks = configFile >> "CfgVehicles";
 
 {
-    DBG_ "Item = %1", _x EOL;
+    DBG_1("Item = %1", _x);
     if (_x in ["", MAG_PRIMARY, MAG_LAUNCHER, MAG_HANDGUN]) then { continue; };
     if (getArray (_cfgWeapons >> _x >> "muzzles") isNotEqualTo []) then {
-        DBG_ "Adding Weapon: %1", _x EOL;
+        DBG_1("Adding Weapon: %1", _x);
         _cargoWeapons pushBack [_x, _weaponCount];
         continue;
     };
     if (isClass(_cfgMagazines >> _x)) then {
-        DBG_ "Adding Magazine: %1", _x EOL;
+        DBG_1("Adding Magazine: %1", _x);
         _cargoMagazines pushBack [_x, _magazineCount];
         continue;
     };
     if (isClass(_cfgBackpacks >> _x)) then {
-        DBG_ "Adding Backpack: %1", _x EOL;
+        DBG_1("Adding Backpack: %1", _x);
         _cargoBackpacks pushBack [_x, _backpackCount];
         continue;
     };
 
-    DBG_ "Adding Misc items: %1", _x EOL;
+    DBG_1("Adding Misc items: %1", _x);
     _cargoItems pushBack [_x, _itemCount];
 } forEach _items;
 
 [
-    [ARR_CARGO_WEAPONS] + _cargoWeapons,
-    [ARR_CARGO_MAGAZINES] + _cargoMagazines,
-    [ARR_CARGO_ITEMS] + _cargoItems,
-    [ARR_CARGO_BACKPACKS] + _cargoBackpacks
+    [EXPORT_CAT_WEAPONS, _cargoWeapons],
+    [EXPORT_CAT_MAGAZINES, _cargoMagazines],
+    [EXPORT_CAT_ITEMS, _cargoItems],
+    [EXPORT_CAT_BACKPACKS, _cargoBackpacks]
 ];

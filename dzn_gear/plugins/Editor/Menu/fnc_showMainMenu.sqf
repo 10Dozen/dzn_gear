@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "fnc_showMainMenu"
 
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params ["_menuNavbar"];
 
 private _options = [
@@ -13,7 +13,7 @@ private _options = [
 private _assignedItemsCurSel = 1;
 private _uniformItemsCurSel = 1;
 
-DBG_ "Current target..." EOL;
+DBG("Current target...");
 // Current target
 private _targetIsUnit = true;
 private _targetName = "(player)";
@@ -29,12 +29,12 @@ if (!isNull cursorTarget) then {
     _kitPrefix = ["cargo_kit_", "kit_"] select _targetIsUnit;
 };
 
-DBG_ "Composing menu...: %1, %2, %3", _targetIsUnit,_targetName,_kitPrefix  EOL;
+DBG_3("Composing menu...: %1, %2, %3", _targetIsUnit,_targetName,_kitPrefix);
 private _menu = +_menuNavbar;
 // -- Cargo gear
 if (!_targetIsUnit) exitWith {
 
-    DBG_ "Target is vehicle" EOL;
+    DBG("Target is vehicle");
     _menu append [
         ["LABEL", "<t size='0.9'>On pressing ""GET"" button - formatted cargo kit will be copied to the clipboard"],
         ["BR"],
@@ -62,7 +62,7 @@ if (!_targetIsUnit) exitWith {
 };
 
 
-DBG_ "Target is player" EOL;
+DBG("Target is player");
 // -- Unit gear
 // -- Higlight kits that already exists with current key + role
 private _kitKey = _self get Q(MainMenu_KitKey);
@@ -106,8 +106,8 @@ private _onRoleSelection = {
 };
 
 
-DBG_ "Vars: %1, %2, %3", _kitKey, _kitRolesLastSelectedId, _kitRoles EOL;
-DBG_ str(_onRoleSelection) EOL;
+DBG_3("Vars: %1, %2, %3", _kitKey, _kitRolesLastSelectedId, _kitRoles);
+DBG(str(_onRoleSelection));
 
 _menu append [
     ["OnDraw", {
@@ -140,7 +140,6 @@ _menu append [
             _args params ["_kitPrefix", "_kitRoles"];
             private _ctrl = _dialogCOB call ["GetByTag", "d_rolename"];
             {
-                DBG_ "%1 :: %2 = %3", _x # 1, format ["kit_%1_%2", _eventData # 1, _x # 1], !isNil format ["kit_%1_%2", _eventData # 1, _x # 1] EOL;
                 _ctrl lbSetColor [
                     _forEachIndex,
                     [

@@ -30,10 +30,10 @@ params [];
         X, COUNT, COLOR \
     ]
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 if !(_self get Q(TotalsShow)) exitWith {
-    DBG_ "Totals are disabled - no render" EOL;
+    DBG("Totals are disabled - no render");
     ["REMOVE", _self get Q(CurrentDisplay), TOTALS_LABEL_TAG] call dzn_fnc_HandleControl;
 };
 
@@ -103,7 +103,7 @@ _lines pushBack format [
 
         if (_category isEqualTo "Magazine") then {
             private _favedMagIdx = _favoriteMags find (_x # 0);
-            DBG_ "Fav mags: %1, _x=%2, _favedMagIdx=%3", _favoriteMags, _x , _favedMagIdx EOL;
+            DBG_3("Fav mags: %1, _x=%2, _favedMagIdx=%3", _favoriteMags, _x , _favedMagIdx);
 
             _color = [
                 [COLOR_MAG, COLOR_MAG_FAV] select (_favedMagIdx > -1),
@@ -139,11 +139,10 @@ private _totalText = _lines joinString "<br/>";
 
 // -- Render
 private _display = _self get Q(CurrentDisplay);
-DBG_ "Target dispaly: %1", _display EOL;
-DBG_ "Controls exist?: %1", ["EXISTS", _display, TOTALS_LABEL_TAG] call dzn_fnc_HandleControl EOL;
+DBG_1("Target dispaly: %1", _display);
 
 if !(["EXISTS", _display, TOTALS_LABEL_TAG] call dzn_fnc_HandleControl) exitWith {
-    DBG_ "Create new", _this EOL;
+    DBG_1("Create new", _this);
     private _positionAttrs = (_self get Q(TotalsRenderSettings)) select (_display isNotEqualTo (findDisplay 46));
     [
         "ADD",_display, TOTALS_LABEL_TAG,
@@ -156,5 +155,5 @@ if !(["EXISTS", _display, TOTALS_LABEL_TAG] call dzn_fnc_HandleControl) exitWith
     ] call dzn_fnc_HandleControl;
 };
 
-DBG_ "Modify existing", _this EOL;
+DBG("Modify existing");
 ["MODIFY", _display, TOTALS_LABEL_TAG, [["title", _totalText]]] call dzn_fnc_HandleControl;

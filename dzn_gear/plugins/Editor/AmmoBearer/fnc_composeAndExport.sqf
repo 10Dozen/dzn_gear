@@ -2,18 +2,18 @@
 #define DBG_FUNC_PREFIX "addMagazine"
 
 params [["_applyToPlayer", false, [false]]];
-DBG_ "Invoked. Params: %1", _this EOL;
+DBG_1("Invoked. Params: %1", _this);
 private _data = (_self get Q(CurrentMagPool)) toArray false;
 
-DBG_ "_data: %1", _data EOL;
+DBG_1("_data: %1", _data);
 if (_applyToPlayer) then {
-    DBG_ "Applying to player backpack" EOL;
+    DBG("Applying to player backpack");
     private _bp = backpackContainer player;
     { _bp addMagazineCargo _x; } forEach _data;
 };
 
 private _str = _data joinString ", ";
-DBG_ "String : %1", _str EOL;
+DBG_1("String : %1", _str);
 
 forceUnicode 0;
 copyToClipboard (_str);

@@ -1,10 +1,10 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "renderEntitiesList"
 
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 params ["_dialogCOB"];
 private _filters = _self get Q(Filters);
-DBG_ "_filters=%1", _filters EOL;
+DBG_1("_filters=%1", _filters);
 
 private _ctrl = _dialogCOB call ["GetByTag", "d_entities"];
 lbClear _ctrl;
@@ -13,16 +13,16 @@ private _values = [];
 {
     _x params ["_type", "_title", "_time", "_content"];
 
-    DBG_ "_x=%1", _x EOL;
+    DBG_1("_x=%1", _x);
     if !(_filters get _type) then {
-        DBG_ "Fileted out!", _x EOL;
+        DBG("Fileted out!");
         continue;
     };
 
     (_self get Q(TypeNames) get _type) params ["_typeName", "_typeColor"];
     _values pushBack _content;
 
-    DBG_ "Adding entity!", _x EOL;
+    DBG("Adding entity!");
     private _idx = _ctrl lbAdd format [
         "%1 > %2",
         [_time/3600, "HH:MM:SS"] call BIS_fnc_timeToString,
@@ -34,5 +34,5 @@ private _values = [];
 } forEach (_self get Q(History));
 _ctrl lbSetCurSel -1;
 
-DBG_ "_values=%1", _values EOL;
+DBG_1("_values=%1", _values);
 _ctrl setVariable [Q(listValues), _values];

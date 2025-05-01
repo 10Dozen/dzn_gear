@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "resetControls"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 _self set [Q(CurrentWeapons), []];
 _self set [Q(CurrentWeaponsMags), []];

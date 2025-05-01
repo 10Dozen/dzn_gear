@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "onFilterChange"
 
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 params ["_dialogCOB"];
 private _allVals = _dialogCOB call ["GetTaggedValues"];
 _self call [F(setFilters), [

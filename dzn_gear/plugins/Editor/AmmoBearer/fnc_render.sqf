@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "render"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 _self call [F(renderWeaponTypeButtons), [_dialogCOB]];
 _self call [F(renderMagazinesListDropdown), [_dialogCOB]];

@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "onCopy"
 
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 params ["_dialogCOB"];
 private _content = _dialogCOB call ["GetValueByTag", "ia_content"];
 

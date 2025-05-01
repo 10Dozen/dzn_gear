@@ -1,7 +1,7 @@
 #include "defines.h"
 
 params ["_category", "_itemDescriptor"];
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 if (_category in CAT_WEAPONS) exitWith {
     _itemDescriptor params ["_w", "_m", "_a"];

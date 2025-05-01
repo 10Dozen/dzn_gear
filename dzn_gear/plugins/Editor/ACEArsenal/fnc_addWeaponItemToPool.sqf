@@ -25,7 +25,7 @@ switch _category do {
     };
 };
 
-DBG_ "ItemDescripotr: %1", _itemDescriptor EOL;
+DBG_1("ItemDescripotr: %1", _itemDescriptor);
 
 private _pool = _self get Q(ItemPools) getOrDefaultCall [_category, { [] }, true];
 _pool pushBack _itemDescriptor;

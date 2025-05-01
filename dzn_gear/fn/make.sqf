@@ -6,7 +6,7 @@
     Params:
     _this (ARRAY) - gear array
 */
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private _personalCategories = [
     ARR_GEAR_EQUIPMENT,
@@ -41,7 +41,7 @@ if (
     } > -1
 ) exitWith {
     // -- Personal kit
-    DBG_ "Personal kit" EOL;
+    DBG("Personal kit");
     private _gearMap = createHashMapObject [
         dzn_gear_gearMapDeclaration,
         _this
@@ -49,10 +49,10 @@ if (
     (_gearMap)
 };
 
-DBG_ "Cargo kit" EOL;
+DBG("Cargo kit");
 private _cargoMap = createHashMapObject [
     dzn_gear_cargoMapDeclaration,
     _this
 ];
-DBG_ "Cargo map: %1", _cargoMap EOL;
+DBG_1("Cargo map: %1", _cargoMap);
 (_cargoMap)

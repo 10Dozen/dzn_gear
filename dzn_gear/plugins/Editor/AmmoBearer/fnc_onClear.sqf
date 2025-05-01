@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "onClear"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 _self call [F(clear), []];
 // -- Update UI

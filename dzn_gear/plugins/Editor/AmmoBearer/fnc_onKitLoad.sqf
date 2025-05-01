@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "onKitLoad"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 _self call [F(resetControls), [_dialogCOB]];
 
 private _kitname = _dialogCOB call ["GetValueByTag", "i_kitname"];

@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "addMagazine"
 
-DBG_ "Invoked. Params: %1", _this EOL;
+DBG_1("Invoked. Params: %1", _this);
 
 params ["_magClass", "_count"];
 private _pool = _self get Q(CurrentMagPool);

@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params [["_kitname", ""]];
 
 _self set [Q(MenuFilters), [true, true, true]];
@@ -29,7 +29,7 @@ private _items = _self get Q(FastItems);
         ((_cob call [F(getSelected), []]) apply { _x isNotEqualTo [] }) params [
             "_hasUnits", "_hasCrew", "_hasVics"
         ];
-        DBG_ "OnDraw: HasUnits=%1, HasCrew=%2, HasVics=%3", _hasUnits, _hasCrew, _hasVics EOL;
+        DBG_3("OnDraw: HasUnits=%1, HasCrew=%2, HasVics=%3", _hasUnits, _hasCrew, _hasVics);
         _cob call [F(menu_updateFiltersState), [_ad, [_hasUnits, _hasCrew, _hasVics]]];
         _cob call [F(menu_onSelectionUpdate), [_ad]];
         _cob call [F(menu_updateMenu), [_ad]];

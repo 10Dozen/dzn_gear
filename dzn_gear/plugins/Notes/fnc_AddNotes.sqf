@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params [];
 
 private _content = _self call [F(getTotals), [

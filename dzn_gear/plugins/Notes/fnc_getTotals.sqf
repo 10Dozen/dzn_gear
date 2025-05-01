@@ -29,11 +29,13 @@
         ITEM_CLICKABLE(X), COUNT, COLOR \
     ]
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params ["_name", "_role", "_loadout"];
 
 // -- Remove CBA group name suffix
-_role = (_role splitString "@") # 0;
+if (_role != "") then {
+    _role = (_role splitString "@") # 0;
+};
 
 // -- Prepare content
 private _lines = [
@@ -64,7 +66,7 @@ private ["_gun", "_mag", "_attaches", "_attach"];
 
     _lines pushBack FMT_TITLE(_gun,_title);
 
-    DBG_ "_mag = %1", _mag EOL;
+    DBG_1("_mag = %1", _mag);
     if (_mag isNotEqualTo "") then {
         _lines pushBack FMT_PREFIX_MAG_LINE(_mag);
     };

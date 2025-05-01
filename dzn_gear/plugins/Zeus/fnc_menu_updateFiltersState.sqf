@@ -7,20 +7,20 @@
 params ["_ad", "_payload"];
 private _filtersState = _self get Q(MenuFilters);
 
-DBG_ "_payload = %1", _payload EOL;
-DBG_ "Before _filtersState = %1", _filtersState EOL;
+DBG_1("_payload = %1", _payload);
+DBG_1("Before _filtersState = %1", _filtersState);
 
 if (_payload isEqualType []) then {
     // -- Set filters state - [bool, bool, bool]
-    DBG_ "Updating all filters, %1", _filterState EOL;
+    DBG_1("Updating all filters, %1", _filterState);
     { _filtersState set [_forEachIndex, _x]; } forEach _payload;
 } else {
     // -- Toggle filter - by idx
-    DBG_ "Updating specific filter" EOL;
+    DBG("Updating specific filter");
     _filtersState set [_payload, !(_filtersState # _payload)];
 };
 
-DBG_ "_filtersState = %1", _filtersState EOL;
+DBG_1("_filtersState = %1", _filtersState);
 
 // -- Update filter button color
 MENU_ITEM_BY_TAG(_ad,BTN_UNITS) ctrlSetBackgroundColor ([COLOR_BLACK, COLOR_STEEL_BLUE] select (_filtersState # 0));

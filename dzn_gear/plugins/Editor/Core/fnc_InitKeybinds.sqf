@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "fnc_InitKeybinds"
 
 params ["_display"];
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 _display displayAddEventHandler [
     "KeyUp",

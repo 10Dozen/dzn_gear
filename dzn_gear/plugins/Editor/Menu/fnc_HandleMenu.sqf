@@ -9,7 +9,7 @@
     nothing
 */
 diag_log "-----------------------------";
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params [["_paginationDirection", 0]];
 
 private _maxIdx = count (_self get Q(Pages)) - 1;

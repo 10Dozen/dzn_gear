@@ -10,11 +10,11 @@ private _filterBy = compile (((_vals get "i_filter") splitString ",") apply {
 } joinString " || ");
 
 
-DBG_ "_filterBy: %1", _filterBy EOL;
+DBG_1("_filterBy: %1", _filterBy);
 private _kits = dzn_gear_personalKits select _filterBy apply {
     (missionNamespace getVariable _x)
 } select { !(_x isEqualType []) }; // Filter out random kits [kit1,kit2,kit3]
-DBG_ "Filtered: %1", _kits EOL;
+DBG_1("Filtered: %1", _kits);
 
 private _composed = _self call [F(compose), [
     _kits,

@@ -10,7 +10,7 @@
 */
 params ["_unit","_kits",["_isCargo", false]];
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private _kitname = _kits;
 
@@ -39,24 +39,24 @@ if (_isCargo) exitWith {
     [_unit, _kit] call dzn_fnc_gear_assignCargoGear;
 };
 
-DBG_ "Goint to convert to GearMap format: %1", _kit EOL;
+DBG_1("Goint to convert to GearMap format: %1", _kit);
 // Convert gear array to gear map
-DBG_ "_kit type == %1", typename _kit EOL;
+DBG_1("_kit type == %1", typename _kit);
 private _gearMap = dzn_gear_kitnameToGearMap getOrDefaultCall [
     _kitname,
     {
         if (_kit isEqualType []) then {
-            DBG_ "Convert gearArray to gearMap" EOL;
+            DBG("Convert gearArray to gearMap");
             _kit = createHashMapObject [dzn_gear_gearMapDeclaration, _kit];
         };
-        DBG_ "Save gearMap" EOL;
+        DBG("Save gearMap");
         _kit
     },
     true
 ];
-DBG_ "_kit: %1", _kit EOL;
-DBG_ "_gearMap: %1", _gearMap EOL;
-DBG_ "MAPS: %1", dzn_gear_kitnameToGearMap get _kitname EOL;
+DBG_1("_kit: %1", _kit);
+DBG_1("_gearMap: %1", _gearMap);
+DBG_1("MAPS: %1", dzn_gear_kitnameToGearMap get _kitname);
 
 
 if (local _unit) then {

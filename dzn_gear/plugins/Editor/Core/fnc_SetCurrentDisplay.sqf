@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "fnc_SetCurrentDisplay"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 params [["_display", displayNull, [displayNull]]];
 

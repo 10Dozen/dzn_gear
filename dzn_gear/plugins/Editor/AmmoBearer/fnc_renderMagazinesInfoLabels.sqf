@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "renderMagazinesInfoLabels"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 private _totalMass = 0;
 private _totalCount = 0;

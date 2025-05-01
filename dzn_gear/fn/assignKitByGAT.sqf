@@ -18,7 +18,7 @@
 
 params ["_unit"];
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 // -- Prevent GAT application if unit already loaded with kit
 if ((_unit getVariable ["dzn_gear", ""]) isNotEqualTo "") exitWith {};
@@ -27,7 +27,7 @@ private _table = dzn_gear_gat_table;
 
 // -- Object VarName (is it working in MP?)
 private _kitname = _table getOrDefault [vehicleVarName _unit, ""];
-DBG_ "Varname: %1 -> _kitname=%2", vehicleVarName _unit, _kitname EOL;
+DBG_2("Varname: %1 -> _kitname=%2", vehicleVarName _unit, _kitname);
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
@@ -38,25 +38,25 @@ private _roleName = roleDescription _unit;
 
 // -- Max precision (Side - Group - Rolename)
 _kitname = [_table, [_sideName, _groupName, _roleName], "", ""] call dzn_fnc_getByPath;
-DBG_ "Side-Group-Role: %1 -> _kitname=%2", [_sideName, _groupName, _roleName], _kitname EOL;
+DBG_4("Side-Group-Role: %1, %2, %3 -> _kitname=%4", _sideName, _groupName, _roleName, _kitname);
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- Mid precision (Side - Rolename)
 _kitname = [_table, [_sideName, _roleName], "", ""] call dzn_fnc_getByPath;
-DBG_ "Side-Role: %1 -> _kitname=%2", [_sideName, _roleName], _kitname EOL;
+DBG_3("Side-Role: %1, %2 -> _kitname=%3", _sideName, _roleName, _kitname);
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- Min precision (Rolename)
 _kitname = _table getOrDefault [_kitname, ""];
-DBG_ "Role: %1 -> _kitname=%2", [_roleName], _kitname EOL;
+DBG_2("Role: %1 -> _kitname=%2", _roleName, _kitname);
 if (_kitname isNotEqualTo "") exitWith {
     CALL_ASSIGN_KIT;
 };
 
 // -- No kit found - do nothing
 
-DBG_ "Not found" EOL;
+DBG("Not found");

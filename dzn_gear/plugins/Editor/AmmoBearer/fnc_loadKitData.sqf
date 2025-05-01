@@ -3,7 +3,7 @@
 
 // Loads data from kit (if given and exists) or from current loadout (if kitname is empty). Does nothing if kitname not exists.
 params ["_kitname"];
-DBG_ "(ABC.loadKitData) Invoked. Params: %1", _this EOL;
+DBG_1("(ABC.loadKitData) Invoked. Params: %1", _this);
 
 private _weapons = [primaryWeapon player, secondaryWeapon player];
 private _magazines = ["", ""];
@@ -21,7 +21,7 @@ if (_secondaryMagArr isNotEqualTo []) then {
 if (_kitname != "") then {
     private _kit = missionNamespace getVariable [_kitname, []];
     if (_kit isEqualTo []) exitWith {};
-    DBG_ "(ABC.loadKitData) Using Kit weapons" EOL;
+    DBG("(ABC.loadKitData) Using Kit weapons");
 
     // -- Weapon/magazine may be a randomized array, so pick first item
     _weapons = [_kit # 1 # 1, _kit # 2 # 1] apply {

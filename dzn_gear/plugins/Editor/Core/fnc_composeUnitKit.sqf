@@ -54,21 +54,21 @@ player addAction [
 ];
 
 // -- Items override
-DBG_ "Override assigned items = %1", _overrideAssignedItems EOL;
-DBG_ "Override assigned items = %1", _self get Q(Settings) get "AssignedItemsOverride" get _overrideAssignedItems EOL;
+DBG_1("Override assigned items = %1", _overrideAssignedItems);
+DBG_1("Override assigned items = %1", _self get Q(Settings) get "AssignedItemsOverride" get _overrideAssignedItems);
 if (_overrideAssignedItems != NO_OVERRIDE) then {
     _gearArr set [4, _self get Q(Settings) get "AssignedItemsOverride" get _overrideAssignedItems]
 };
 
-DBG_ "Override assigned items = %1", _overrideUniformItems EOL;
-DBG_ "Override assigned items = %1", _self get Q(Settings) get "UniformItemsOverride" get _overrideUniformItems EOL;
+DBG_1("Override assigned items = %1", _overrideUniformItems);
+DBG_1("Override assigned items = %1", _self get Q(Settings) get "UniformItemsOverride" get _overrideUniformItems);
 if (_overrideUniformItems != NO_OVERRIDE) then {
     _gearArr set [5, _self get Q(Settings) get "UniformItemsOverride" get _overrideUniformItems]
 };
 
 // -- Format and copy
 
-DBG_ "Going to execute FormatKit" EOL;
+DBG("Going to execute FormatKit");
 private _formatted = _self call [F(FormatKit), [_gearArr, _name, true]];
 copyToClipboard _formatted;
 

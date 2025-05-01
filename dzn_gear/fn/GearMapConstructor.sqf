@@ -17,7 +17,7 @@ _self set [MAP_GEAR_HANDGUN, _emptyWeapon];
 
 {
     private _category = toUpperANSI ((_x # 0) trim ["<> ", 0]);
-    DBG_ "Category: %1", _category EOL;
+    DBG_1("Category: %1", _category);
 
     if (_category == ARR_GEAR_EQUIPMENT) then {
         _self set [MAP_GEAR_UNIFORM, _x # 1];
@@ -35,7 +35,7 @@ _self set [MAP_GEAR_HANDGUN, _emptyWeapon];
             MAP_GEAR_PRIMARY
         ] select (_category == ARR_GEAR_PRIMARY);
 
-        DBG_ "WpnCat: %1", _wpnCategory EOL;
+        DBG_1("WpnCat: %1", _wpnCategory);
 
         // Randomized:               [[_cls, _mag, _att], [_cls, _mag, _att] ]
         // Single weapon:            _cls, _mag, _att
@@ -44,7 +44,7 @@ _self set [MAP_GEAR_HANDGUN, _emptyWeapon];
         private ["_weaponPreset"];
         if (count _x == 2) then {
             // Randomized weapon preset: [[...], [...]]
-            DBG_ "Randomzmied weapon :: _x: %1", _x EOL;
+            DBG_1("Randomzmied weapon :: _x: %1", _x);
             _weaponPreset = (_x # 1) apply {
                 createHashMapFromArray [
                     [I_WEAPON_CLASS, _x # 0],
@@ -54,14 +54,14 @@ _self set [MAP_GEAR_HANDGUN, _emptyWeapon];
             };
         } else {
             // Single weapon descriptor: "class", "mag", "attaches[]"
-            DBG_ "Single weapon :: _x: %1", _x EOL;
+            DBG_1("Single weapon :: _x: %1", _x);
             _weaponPreset = createHashMapFromArray [
                 [I_WEAPON_CLASS, _x # 1],
                 [I_WEAPON_MAG, _x # 2],
                 [I_WEAPON_ATTACHES, _x # 3]
             ];
         };
-        DBG_ "_weaponPreset: %1", _weaponPreset EOL;
+        DBG_1("_weaponPreset: %1", _weaponPreset);
         _self set [_wpnCategory, _weaponPreset];
         continue;
     };

@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "onShow"
 
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 params ["_dialogCOB"];
 

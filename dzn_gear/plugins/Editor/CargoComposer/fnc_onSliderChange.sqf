@@ -3,7 +3,7 @@
 
 params ["_eventArgs", "_ad", "_args"];
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 _eventArgs params ["", "_newValue"];
 (_ad call ["GetByTag", _args]) ctrlSetStructuredText parseText format ["<t align='right'>x%1</t>", _newValue];

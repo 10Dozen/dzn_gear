@@ -3,7 +3,7 @@
  */
 
 // Paths
-dzn_gear_kitsFile = "dzn_gear\Kits.sqf";
+dzn_gear_kitsFiles = ["dzn_gear\Kits.sqf"];
 dzn_gear_GATFile = "dzn_gear\GearAssignmentTable.yml";
 dzn_gear_PluginsSettingsFile = "dzn_gear\plugins\PluginSettings.yml";
 

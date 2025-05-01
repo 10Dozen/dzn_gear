@@ -12,7 +12,7 @@
 
 #define GET_RANDOM_ITEM(ITEM) (selectRandom ([[ITEM], ITEM] select ((ITEM) isEqualType [])))
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 // [@Unit, @GearSet] spawn dzn_fnc_gear_assignGear;
 params ["_unit", "_gear"];
@@ -34,7 +34,7 @@ removeGoggles _unit;
 removeAllAssignedItems _unit;
 removeAllWeapons _unit;
 
-private _magClasses = [];
+private _magClasses = ["", "", ""];
 
 // -- ADD WEAPONS
 private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_item", "_count"];
@@ -42,7 +42,7 @@ private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_it
 {
     _category = _x # 0;
     _addItemExpr = _x # 1;
-    DBG_ "Adding weapon %1", _category EOL;
+    DBG_1("Adding weapon %1", _category);
     _weaponDescriptor = _gear get _category;
     if (_weaponDescriptor isEqualType []) then {
         // -- Radnomized preset
@@ -66,7 +66,7 @@ private ["_category", "_addItemExpr", "_weaponDescriptor", "_r", "_varArr", "_it
     _mag = GET_RANDOM_ITEM(_mag); // In case only mag randomization was used
 
     // Save "PRIMARY MAG"-like template value
-    _magClasses pushBack _mag;
+    _magClasses set [_forEachIndex, _mag];
 
     _unit addWeaponGlobal _weapon;
     {
@@ -102,8 +102,8 @@ _unit addGoggles GET_RANDOM_ITEM(_gear get MAP_GEAR_FACEWEAR);
     _category = _x # 0;
     _addItemExpr = _x # 1;
 
-    DBG_ "Adding %1", _category EOL;
-    DBG_ " items %1", (_gear get _category) EOL;
+    DBG_1("Adding %1", _category);
+    DBG_1(" items %1", (_gear get _category));
 
     {
         _item = GET_RANDOM_ITEM(_x select 0);  // _x = [_itemClass, _count] or [[_itemCls1, _itemCLs2], _count]
@@ -113,10 +113,10 @@ _unit addGoggles GET_RANDOM_ITEM(_gear get MAP_GEAR_FACEWEAR);
             // "x2-5" -> 2 + floor random 4 (5+1-2) => 2 + 0...3 => 2...5
             _limits = ((_count trim ["x ", 0]) splitString "-") apply { parseNumber _x };
             _count = (_limits # 0) + floor random ((_limits # 1) - (_limits # 0) + 1);
-            DBG_ "Limits: %1", _limits EOL;
+            DBG_1("Limits: %1", _limits);
         };
 
-        DBG_ "  - %1 x%2", _item, _count EOL;
+        DBG_2("  - %1 x%2", _item, _count);
         for "_i" from 1 to _count do _addItemExpr;
     } forEach (_gear get _category);
 } forEach [
@@ -139,13 +139,13 @@ if (_identity isNotEqualTo []) then {
     if (_x isEqualType []) then {
         _varArr = [_x # 0, _x # 1, true];
     };
-    DBG_ "Tag: _valArr = %1", _varArr EOL;
+    DBG_1("Tag: _valArr = %1", _varArr);
     _unit setVariable _varArr;
 } forEach (_gear getOrDefault [MAP_GEAR_TAGS, []]);
 
 // -- Textures
 {
-    _x params ["_selection", "_tex", "_mat"];
+    _x params ["_selection", ["_tex", ""], ["_mat", ""]];
     // -- Select random index from 2 arrays
     if (_tex isEqualType []) then {
         _r = round random (count _tex - 1);
@@ -155,17 +155,17 @@ if (_identity isNotEqualTo []) then {
         };
     };
 
-    if (!isNil "_mat") then {
+    if (_mat != "") then {
         _unit setObjectMaterialGlobal [_selection, _mat];
     };
-    if (!isNil "_tex") then {
+    if (_tex != "") then {
         _unit setObjectTextureGlobal [_selection, _tex];
     };
 } forEach (_gear getOrDefault [MAP_GEAR_UNIFORM_TEXTURES, []]);
 
 // -- Script
 {
-    DBG_ "Script: _idx = %1, _script=%2", _forEachIndex, _x EOL;
+    DBG_2("Script: _idx = %1, _script=%2", _forEachIndex, _x);
     [_unit, _gear] call _x;
 } forEach (_gear getOrDefault [MAP_GEAR_SCRIPT, []]);
 

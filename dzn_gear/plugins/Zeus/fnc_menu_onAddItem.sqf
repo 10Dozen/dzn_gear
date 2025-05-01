@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params ["_ad"];
 
 (_self get Q(MenuFilters)) params ["_applyToUnits", "_applyToCrew"];
@@ -13,16 +13,16 @@ if (_allUnits isEqualTo []) exitWith {
 };
 
 (_ad call ["GetValueByTag", DP_ITEM]) params ["", "", "_itemData"];
-DBG_ "_itemData: %1", _itemData, _onAddMessage EOL;
+DBG_2("_itemData: %1", _itemData, _onAddMessage);
 _itemData params ["_onAddCode", "", "_onAddMessage"];
 
-DBG_ "Going to execute: %1, _msg=%2", _onAddCode, _onAddMessage EOL;
+DBG_2("Going to execute: %1, _msg=%2", _onAddCode, _onAddMessage);
 
 private _successCount = 0;
 
 {
     private _isSuccess = _x call _onAddCode;
-    DBG_ "_unit: %1, _isSuccess: %2", _x, _isSuccess EOL;
+    DBG_2("_unit: %1, _isSuccess: %2", _x, _isSuccess);
     _successCount = _successCount + ([0,1] select _isSuccess);
 } forEach _allUnits;
 

@@ -61,3 +61,20 @@
 
 // isEqualTypeArray
 #define CARGO_DETAILED_WEAPON_SIGNATURE [nil, nil, nil, nil, [], [], nil]
+
+// ----
+#define EXPORT_CAT_EQUIPMENT      "<EQUIPEMENT       >> "
+#define EXPORT_CAT_PRIMARY        "<PRIMARY WEAPON   >> "
+#define EXPORT_CAT_LAUNCHER       "<LAUNCHER WEAPON  >> "
+#define EXPORT_CAT_HANDGUN        "<HANDGUN WEAPON   >> "
+#define EXPORT_CAT_ASSIGNED       "<ASSIGNED ITEMS   >> "
+#define EXPORT_CAT_UNIFORM_ITEMS  "<UNIFORM ITEMS    >> "
+#define EXPORT_CAT_VEST_ITEMS     "<VEST ITEMS       >> "
+#define EXPORT_CAT_BACKPACK_ITEMS "<BACKPACK ITEMS   >> "
+#define EXPORT_CAT_IDENTITY       "<IDENTITY         >> "
+
+
+#define EXPORT_CAT_WEAPONS    "<WEAPONS     >> "
+#define EXPORT_CAT_MAGAZINES  "<MAGAZINES   >> "
+#define EXPORT_CAT_ITEMS      "<ITEMS       >> "
+#define EXPORT_CAT_BACKPACKS  "<BACKPACKS   >> "

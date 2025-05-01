@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "InitEvents!" EOL;
+DBG("InitEvents!");
 
 private _display = findDisplay 46;
 _self call [F(SetCurrentDisplay), [_display]];
@@ -9,10 +9,10 @@ _self call [F(SetCurrentDisplay), [_display]];
 _self call [F(InitKeybinds), [_display]];
 
 // -- Arsenal events
-ECOB(Editor,Arsenal)  call [F(InitEvents)];
+ECOB(Editor,Arsenal) call [F(InitEvents)];
 
 // -- Loadout cahnge events
 ["loadout", {
-    DBG_ "On loadout change!" EOL;
+    DBG("On loadout change!");
     ThisCOB call [F(ShowTotals), []];
 }, true] call CBA_fnc_addPlayerEventHandler;

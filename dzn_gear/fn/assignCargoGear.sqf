@@ -16,7 +16,7 @@ if (_gear isEqualType []) exitWith {
     ] call dzn_fnc_gear_assignCargoGear;
 };
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 // Clear boxes
 clearWeaponCargoGlobal _container;
@@ -99,7 +99,7 @@ clearItemCargoGlobal _container;
     if (_x isEqualType []) then {
         _varArr = [_x # 0, _x # 1, true];
     };
-    DBG_ "Tag: _valArr = %1", _varArr EOL;
+    DBG_1("Tag: _valArr = %1", _varArr);
     _container setVariable _varArr;
 } forEach (_gear getOrDefault [MAP_CARGO_TAGS, []]);
 
@@ -125,7 +125,7 @@ clearItemCargoGlobal _container;
 
 // -- Script
 {
-    DBG_ "Script: _idx = %1, _script=%2", _forEachIndex, _x EOL;
+    DBG_2("Script: _idx = %1, _script=%2", _forEachIndex, _x);
     [_container, _gear] call _x;
 } forEach (_gear getOrDefault [MAP_CARGO_SCRIPT, []]);
 

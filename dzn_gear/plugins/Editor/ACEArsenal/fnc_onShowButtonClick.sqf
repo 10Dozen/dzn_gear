@@ -2,7 +2,7 @@
 
 params ["_isMainCategory"];
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private _display = _self get Q(Display);
 
@@ -28,7 +28,7 @@ private _items = _self get Q(ItemPools) getOrDefault [_category, []];
 private _itemsShare = [];
 private _totalCount = count _items;
 
-DBG_ "Items to display: %1", _items EOL;
+DBG_1("Items to display: %1", _items);
 
 private _menu = [
     ["DIALOG", [["dialog", _display],["w", 0.6],["x", 0.2],["dialogShowTime", 0],["dialogID", _dialogID]]],
@@ -38,7 +38,7 @@ private _menu = [
 
 // -- Plain list items to format of 33% Itemname
 {
-    DBG_ "%1", _x EOL;
+    DBG_1("%1", _x);
     _x params ["_classname", "_count"];
     _itemsShare pushBack [
         _classname,
@@ -55,9 +55,9 @@ private _menu = [
 } forEach (_items call BIS_fnc_consolidateArray);
 
 
-DBG_ "Composing menu" EOL;
+DBG("Composing menu");
 {
-    DBG_ "%1", _x EOL;
+    DBG_1("%1", _x);
     _x params ["_classname", "_count", "_itemTitle"];
 
     _menu pushBack ["LABEL", _itemTitle, [

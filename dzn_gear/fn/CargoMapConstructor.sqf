@@ -9,14 +9,14 @@
     _cargoKitObject
 */
 
-DBG_ "Self: %1", _self EOL;
-DBG_ "Type Self: %1", typename _self EOL;
+DBG_1("Self: %1", _self);
+DBG_1("Type Self: %1", typename _self);
 
 // -- New format: ["< CATEGORY NAME  >> ", [...content...]]
 if ((_this # 0) isEqualTypeParams ["", []]) then {
     {
         private _category = toUpperANSI ((_x # 0) trim ["<> ", 0]);
-        DBG_ "Category: %1", _category EOL;
+        DBG_1("Category: %1", _category);
 
         // -- Tags
         if (_category == ARR_CARGO_TAGS) then {
@@ -43,7 +43,7 @@ if ((_this # 0) isEqualTypeParams ["", []]) then {
         };
 
         // -- Items
-        DBG_ "Item pool: %1", _x select 1 EOL;
+        DBG_1("Item pool: %1", _x select 1);
         _self set [
             [
                 [
@@ -59,7 +59,7 @@ if ((_this # 0) isEqualTypeParams ["", []]) then {
         ];
     } forEach _this;
 
-    DBG_ "From new format Created: %1", _self EOL;
+    DBG_1("From new format Created: %1", _self);
 } else {
     // -- Old format [ [...content...], ... ]
     _this params ["_weapons", "_mags", "_items", "_backpacks", ["_weaponsExtended", []]];
@@ -69,5 +69,5 @@ if ((_this # 0) isEqualTypeParams ["", []]) then {
     _self set [MAP_CARGO_BACKPACKS, _backpacks];
     (_self get MAP_CARGO_WEAPONS) append _weaponsExtended;
 
-    DBG_ "From old format Created: %1", _self EOL;
+    DBG_1("From old format Created: %1", _self);
 };

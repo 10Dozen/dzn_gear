@@ -2,7 +2,7 @@
 
 params ["_isMainCategory"];
 
-DBG_ "Params: %1", _isMainCategory EOL;
+DBG_1("Params: %1", _isMainCategory);
 
 private _category = _self get Q(CurrentCategory);
 private _classname = _self get Q(CurrentSelectedLeftItem);
@@ -11,7 +11,7 @@ if (!_isMainCategory) then {
     _classname = _self get Q(CurrentSelectedRightItem);
 };
 
-DBG_ "Category=%1, Adding item: %2", _category, _classname EOL;
+DBG_2("Category=%1, Adding item: %2", _category, _classname);
 
 if (_category in CAT_WEAPONS) then {
     _self call [F(addWeaponItemToPool), [_category]];

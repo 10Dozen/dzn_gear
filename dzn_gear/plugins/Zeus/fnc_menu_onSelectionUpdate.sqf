@@ -5,7 +5,7 @@
     Menu's OnCBAEvent::dzn_gear_zeusSelectionChanged handled.
 
 */
-DBG_ "OnCustomEvent 'dzn_gear_zeusSelectionChanged'. Params: %1", _this EOL;
+DBG_1("OnCustomEvent 'dzn_gear_zeusSelectionChanged'. Params: %1", _this);
 
 _this params ["_ad"];
 

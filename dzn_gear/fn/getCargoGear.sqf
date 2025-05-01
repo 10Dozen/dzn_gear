@@ -7,12 +7,7 @@
     OUTPUT: ARRAY (kitArray), Copied to clipboard kit
 */
 
-#define CAT_WEAPONS    "<WEAPONS     >> "
-#define CAT_MAGAZINES  "<MAGAZINES   >> "
-#define CAT_ITEMS      "<ITEMS       >> "
-#define CAT_BACKPACKS  "<BACKPACKS   >> "
-
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private _kit = [];
 
@@ -28,10 +23,10 @@ private ["_categoryName", "_classnames", "_counts", "_categoryCargo"];
     } forEach _classnames;
     _kit pushBack [_category, _categoryCargo];
 } forEach [
-    [CAT_WEAPONS, getWeaponCargo _this],
-    [CAT_MAGAZINES,getMagazineCargo _this],
-    [CAT_ITEMS, getItemCargo _this],
-    [CAT_BACKPACKS, getBackpackCargo _this]
+    [EXPORT_CAT_WEAPONS, getWeaponCargo _this],
+    [EXPORT_CAT_MAGAZINES,getMagazineCargo _this],
+    [EXPORT_CAT_ITEMS, getItemCargo _this],
+    [EXPORT_CAT_BACKPACKS, getBackpackCargo _this]
 ];
 
 _kit

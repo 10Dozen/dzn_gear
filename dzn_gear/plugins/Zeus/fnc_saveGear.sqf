@@ -10,7 +10,7 @@
     Returns:
     _kitname (STRING) - name of the generated kit
 */
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params ["_units", "_objects"];
 
 if (_this isEqualTo []) then {

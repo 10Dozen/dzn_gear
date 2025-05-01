@@ -1,6 +1,6 @@
 #include "defines.h"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 params ["_type", "_msgId", ["_msgArgs", []]];
 
 [
@@ -14,6 +14,3 @@ params ["_type", "_msgId", ["_msgArgs", []]];
     ],
     [0,1,1,1], nil, 7, 0.2, 0
 ] spawn BIS_fnc_textTiles;
-
-
-

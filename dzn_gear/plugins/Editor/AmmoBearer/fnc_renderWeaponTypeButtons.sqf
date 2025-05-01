@@ -2,7 +2,7 @@
 #define DBG_FUNC_PREFIX "renderWeaponTypeButtons"
 
 params ["_dialogCOB"];
-DBG_ "Invoked" EOL;
+DBG("Invoked");
 
 (_self get Q(CurrentWeapons)) params ["_primary", "_launcher"];
 (_self get Q(CurrentMode)) params ["_primarySelected", "_launcherSelected"];

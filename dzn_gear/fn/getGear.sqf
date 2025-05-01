@@ -1,26 +1,17 @@
 #include "defines.h"
 
-#define CAT_EQUIPMENT      "<EQUIPEMENT       >> "
-#define CAT_PRIMARY        "<PRIMARY WEAPON   >> "
-#define CAT_LAUNCHER       "<LAUNCHER WEAPON  >> "
-#define CAT_HANDGUN        "<HANDGUN WEAPON   >> "
-#define CAT_ASSIGNED       "<ASSIGNED ITEMS   >> "
-#define CAT_UNIFORM_ITEMS  "<UNIFORM ITEMS    >> "
-#define CAT_VEST_ITEMS     "<VEST ITEMS       >> "
-#define CAT_BACKPACK_ITEMS "<BACKPACK ITEMS   >> "
-#define CAT_IDENTITY       "<IDENTITY         >> "
 
 #define WeaponMag(X) (if ((X) isEqualTo []) then { "" } else { X select 0 })
 
 // @Kit = @Unit call dzn_fnc_gear_getGear
 // Return: PersonalGearArray
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 private _kit = [];
 
 _kit pushBack [
-    CAT_EQUIPMENT
+    EXPORT_CAT_EQUIPMENT
     ,uniform _this
     ,vest _this
     ,backpack _this
@@ -31,7 +22,7 @@ _kit pushBack [
 // Primary
 private _priMag = WeaponMag(primaryWeaponMagazine _this);
 _kit pushBack [
-    CAT_PRIMARY
+    EXPORT_CAT_PRIMARY
     ,primaryWeapon _this
     ,_priMag
     ,primaryWeaponItems _this
@@ -40,7 +31,7 @@ _kit pushBack [
 // Secondary
 private _secMag = WeaponMag(secondaryWeaponMagazine _this);
 _kit pushBack [
-    CAT_LAUNCHER
+    EXPORT_CAT_LAUNCHER
     ,secondaryWeapon _this
     ,_secMag
     ,secondaryWeaponItems _this
@@ -49,14 +40,14 @@ _kit pushBack [
 // Handgun
 private _handMag = WeaponMag(handgunMagazine _this);
 _kit pushBack [
-    CAT_HANDGUN
+    EXPORT_CAT_HANDGUN
     ,handgunWeapon _this
     ,_handMag
     ,handgunItems _this
 ];
 
 // Assigned Items
-_kit pushBack ([CAT_ASSIGNED] + assignedItems _this);
+_kit pushBack ([EXPORT_CAT_ASSIGNED] + assignedItems _this);
 
 // Equiped Items and magazines
 private "_items";
@@ -72,9 +63,9 @@ private "_items";
 
     _kit pushBack [
         switch (_forEachIndex) do {
-            case 0: { CAT_UNIFORM_ITEMS  };
-            case 1: { CAT_VEST_ITEMS     };
-            case 2: { CAT_BACKPACK_ITEMS };
+            case 0: { EXPORT_CAT_UNIFORM_ITEMS  };
+            case 1: { EXPORT_CAT_VEST_ITEMS     };
+            case 2: { EXPORT_CAT_BACKPACK_ITEMS };
         },
         _items
     ];
@@ -87,7 +78,7 @@ private "_items";
 // Copy idnetity if setting enabled
 if (dzn_gear_handleIdentity) then {
     _kit pushBack [
-        CAT_IDENTITY
+        EXPORT_CAT_IDENTITY
         , face _this
         , speaker _this
         , name _this

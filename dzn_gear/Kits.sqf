@@ -131,6 +131,20 @@ cargo_kit_test3 = [
     ["< BACKPACKS  >> ", []]
 ] call dzn_fnc_gear_make;
 
+cargo_kit_test4 = [
+    ["<WEAPONS     >> ",[["arifle_MX_F",2],["arifle_MX_GL_F",2],["SMG_05_F",2],["hgun_P07_F",2]]],
+    ["<MAGAZINES   >> ",[["30Rnd_65x39_caseless_mag",20],["30Rnd_9x21_Mag_SMG_02",20],["16Rnd_9x21_Mag",20],["HandGrenade",20],["SmokeShell",20],["100Rnd_65x39_caseless_black_mag",20]]],
+    ["<ITEMS       >> ",[["FirstAidKit",10]]],
+    ["<BACKPACKS   >> ",[]],
+    ["<DESC        >> ", "Super cool kit for vehicles"],
+    ["<TAGS        >> ", "isCoolVehicle"],
+    ["<SCRIPT      >> ",
+		{ (_this # 0) setVariable ["XXX", 123]; },
+		{ hint str(_this # 0 getVariable "XXX") }
+	],
+	["<TEXTURES    >> ", ["camo1", ["/data/my_tex1.paa", "/data/my_tex2.paa"]]]
+] call dzn_fnc_gear_make;
+
 /*
 kit_eee_pl = [
     ["<EQUIPEMENT       >> ","U_B_GEN_Soldier_F","V_TacVest_gen_F","","H_MilCap_gen_F",""],

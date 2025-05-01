@@ -1,5 +1,5 @@
 #include "fn\categories.h"
-params [["_editModeEnabled", false], ["_timeout", 0]];
+params [["_editModeEnabled", false], ["_timeout", 0], ["_settingsFile", "dzn_gear\Settings.sqf"]];
 
 // **************************
 // DZN GEAR v2.28
@@ -15,14 +15,12 @@ dzn_gear_version = "v2.28";
 
 #define LOG_ diag_log text format ["[dzn_gear] (init) " +
 #define EOL ]
-LOG_ "Initialization started. Version: %1.", dzn_gear_version EOL;
 
+LOG_ "Initialization started. Version: %1.", dzn_gear_version EOL;
 // *************************
 // SETTINGS
 // **************************
-if !(missionNamespace getVariable ["dzn_gear_settingsInitialized", false]) then {
-    [] call compileScript ["dzn_gear\Settings.sqf"];
-};
+[] call compileScript [_settingsFile];
 
 // **************************
 // FUNCTIONS
@@ -78,11 +76,21 @@ dzn_gear_cargoMapDeclaration = [
 ];
 
 // **************************
-// GEARS
+// GEAR AND KITS
 // **************************
-LOG_ "Going to initialize kits at %1", dzn_gear_kitsFile EOL;
-[] call compileScript [dzn_gear_kitsFile];
+{
+    LOG_ "Going to initialize kits at %1", _x EOL;
+    [] call compileScript [_x];
+} forEach dzn_gear_kitsFiles;
+
 dzn_gear_gat_table = [dzn_gear_GATFile] call dzn_fnc_parseSFML;
+if ((dzn_gear_gat_table get "#ERRORS") isNotEqualTo []) then {
+    [
+        "dzn_gear :: Gear Assignment Table :: %1 error(s) occured! See RPT logs for more info.",
+        count (dzn_gear_gat_table get "#ERRORS")
+    ] call BIS_fnc_error;
+    { LOG_ "GAT Error at [%1] - %2", _x # 2, _x # 3 EOL; } forEach (dzn_gear_gat_table get "#ERRORS");
+};
 dzn_gear_gat_table deleteAt "#ERRORS";
 dzn_gear_gat_table deleteAt "#SOURCE";
 

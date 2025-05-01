@@ -1,7 +1,7 @@
 #include "defines.h"
 #define DBG_FUNC_PREFIX "onKeyPressed"
 
-DBG_ "Params: %1", _this EOL;
+DBG_1("Params: %1", _this);
 
 params ["_display", "_key", "_shift", "_ctrl", "_alt"];
 
@@ -17,7 +17,7 @@ private _execKey = [
 ] select { _x != "" } joinString "+";
 if (_execKey == "") then { _execKey = "key"; };
 
-DBG_ "_execKey=%1, exec=%2", _execKey, _binding get _execKey EOL;
+DBG_2("_execKey=%1, exec=%2", _execKey, _binding get _execKey);
 [] call (_binding get _execKey);
 
 true
