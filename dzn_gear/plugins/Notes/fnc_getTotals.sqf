@@ -1,6 +1,7 @@
 #include "defines.h"
 
 #define COLOR_ITEM "#cccccc"
+#define COLOR_GUN "#c9c67b"
 #define COLOR_MAG "#a7b37b"
 #define COLOR_MAG_FAV "#96ad3e"
 #define COLOR_THROWABLE "#d9b5a0"
@@ -99,6 +100,7 @@ _lines pushBack "<font color='#aaaaaa'>------</font>";
     _x params ["_title", "_eq"];
     if (_eq isEqualTo []) then { continue; };
     _eq params ["_eqCls", "_items"];
+    DBG_3("_title=%1, _eq = %2, _eqCls=%3", _title, _eq, _eqCls);
 
     _lines pushBack FMT_TITLE2(_eqCls,_title);
     private "_color";
@@ -106,6 +108,7 @@ _lines pushBack "<font color='#aaaaaa'>------</font>";
         _x params ["_classname", "_count"];
 
         (_classname call BIS_fnc_itemType) params ["_category", "_subcategory"];
+        DBG_3("_classname = %1, _category=%2, _subcategory=%3", _classname, _category, _subcategory);
 
         if (_category isEqualTo "Magazine") then {
             _color = [
@@ -114,6 +117,12 @@ _lines pushBack "<font color='#aaaaaa'>------</font>";
             ] select (_subcategory in ["Grenade", "SmokeShell","UnknownMagazine"]);
 
             _lines pushBack FMT_COUNT_LINE(_classname,_count,_color);
+            continue;
+        };
+
+        if (_category isEqualTo "Weapon") then {
+            private _classname = _classname # 0;
+            _lines pushBack FMT_COUNT_LINE(_classname,1,COLOR_GUN);
             continue;
         };
 
